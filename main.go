@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "github.com/cristiano-pacheco/goflix/cmd"
 
 func main() {
-	fmt.Println("GoFlix API!")
+	cmd.Execute()
 }
