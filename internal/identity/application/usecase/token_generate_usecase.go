@@ -11,20 +11,7 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/validator"
 )
 
-type TokenGenerateUseCase interface {
-	Execute(ctx context.Context, input TokenGenerateInput) (TokenGenerateOutput, error)
-}
-
-type TokenGenerateInput struct {
-	Email    string `validate:"required,email"`
-	Password string `validate:"required"`
-}
-
-type TokenGenerateOutput struct {
-	Token string
-}
-
-type tokenGenerateUseCase struct {
+type TokenGenerateUseCase struct {
 	validator    validator.Validate
 	userRepo     repository.UserRepository
 	hashService  service.HashService
@@ -36,8 +23,8 @@ func NewTokenGenerateUseCase(
 	userRepo repository.UserRepository,
 	hashService service.HashService,
 	tokenService service.TokenService,
-) TokenGenerateUseCase {
-	return &tokenGenerateUseCase{
+) *TokenGenerateUseCase {
+	return &TokenGenerateUseCase{
 		validator,
 		userRepo,
 		hashService,
@@ -45,7 +32,16 @@ func NewTokenGenerateUseCase(
 	}
 }
 
-func (uc *tokenGenerateUseCase) Execute(ctx context.Context, input TokenGenerateInput) (TokenGenerateOutput, error) {
+type TokenGenerateInput struct {
+	Email    string `validate:"required,email"`
+	Password string `validate:"required"`
+}
+
+type TokenGenerateOutput struct {
+	Token string
+}
+
+func (uc *TokenGenerateUseCase) Execute(ctx context.Context, input TokenGenerateInput) (TokenGenerateOutput, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "TokenGenerateUseCase.Execute")
 	defer span.End()
 

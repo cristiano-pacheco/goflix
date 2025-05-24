@@ -8,8 +8,16 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
 )
 
-type UserFindUseCase interface {
-	Execute(ctx context.Context, input UserFindInput) (UserFindOutput, error)
+type UserFindUseCase struct {
+	userRepo repository.UserRepository
+	logger   logger.Logger
+}
+
+func NewUserFindUseCase(
+	userRepo repository.UserRepository,
+	logger logger.Logger,
+) *UserFindUseCase {
+	return &UserFindUseCase{userRepo, logger}
 }
 
 type UserFindInput struct {
@@ -23,19 +31,7 @@ type UserFindOutput struct {
 	Password string
 }
 
-type userFindUseCase struct {
-	userRepo repository.UserRepository
-	logger   logger.Logger
-}
-
-func NewUserFindUseCase(
-	userRepo repository.UserRepository,
-	logger logger.Logger,
-) UserFindUseCase {
-	return &userFindUseCase{userRepo, logger}
-}
-
-func (uc *userFindUseCase) Execute(ctx context.Context, input UserFindInput) (UserFindOutput, error) {
+func (uc *UserFindUseCase) Execute(ctx context.Context, input UserFindInput) (UserFindOutput, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "UserFindUseCase.Execute")
 	defer span.End()
 

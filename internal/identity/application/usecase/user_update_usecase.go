@@ -11,17 +11,7 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/validator"
 )
 
-type UserUpdateUseCase interface {
-	Execute(ctx context.Context, input UserUpdateInput) error
-}
-
-type UserUpdateInput struct {
-	UserID   uint64 `validate:"required"`
-	Name     string `validate:"required,min=3,max=255"`
-	Password string `validate:"required,min=8"`
-}
-
-type userUpdateUseCase struct {
+type UserUpdateUseCase struct {
 	validate    validator.Validate
 	userRepo    repository.UserRepository
 	logger      logger.Logger
@@ -33,11 +23,17 @@ func NewUserUpdateUseCase(
 	userRepo repository.UserRepository,
 	logger logger.Logger,
 	hashService service.HashService,
-) UserUpdateUseCase {
-	return &userUpdateUseCase{validate, userRepo, logger, hashService}
+) *UserUpdateUseCase {
+	return &UserUpdateUseCase{validate, userRepo, logger, hashService}
 }
 
-func (uc *userUpdateUseCase) Execute(ctx context.Context, input UserUpdateInput) error {
+type UserUpdateInput struct {
+	UserID   uint64 `validate:"required"`
+	Name     string `validate:"required,min=3,max=255"`
+	Password string `validate:"required,min=8"`
+}
+
+func (uc *UserUpdateUseCase) Execute(ctx context.Context, input UserUpdateInput) error {
 	ctx, span := otel.Trace().StartSpan(ctx, "UserUpdateUseCase.Execute")
 	defer span.End()
 

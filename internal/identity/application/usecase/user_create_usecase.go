@@ -15,8 +15,28 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/validator"
 )
 
-type UserCreateUseCase interface {
-	Execute(ctx context.Context, input UserCreateInput) (UserCreateOutput, error)
+type UserCreateUseCase struct {
+	sendEmailConfirmationService service.SendEmailConfirmationService
+	hashService                  service.HashService
+	userRepository               repository.UserRepository
+	validate                     validator.Validate
+	logger                       logger.Logger
+}
+
+func NewUserCreateUseCase(
+	sendEmailConfirmationService service.SendEmailConfirmationService,
+	hashService service.HashService,
+	userRepo repository.UserRepository,
+	validate validator.Validate,
+	logger logger.Logger,
+) *UserCreateUseCase {
+	return &UserCreateUseCase{
+		sendEmailConfirmationService,
+		hashService,
+		userRepo,
+		validate,
+		logger,
+	}
 }
 
 type UserCreateInput struct {
@@ -31,31 +51,7 @@ type UserCreateOutput struct {
 	UserID uint64
 }
 
-type userCreateUseCase struct {
-	sendEmailConfirmationService service.SendEmailConfirmationService
-	hashService                  service.HashService
-	userRepository               repository.UserRepository
-	validate                     validator.Validate
-	logger                       logger.Logger
-}
-
-func NewUserCreateUseCase(
-	sendEmailConfirmationService service.SendEmailConfirmationService,
-	hashService service.HashService,
-	userRepo repository.UserRepository,
-	validate validator.Validate,
-	logger logger.Logger,
-) UserCreateUseCase {
-	return &userCreateUseCase{
-		sendEmailConfirmationService,
-		hashService,
-		userRepo,
-		validate,
-		logger,
-	}
-}
-
-func (uc *userCreateUseCase) Execute(ctx context.Context, input UserCreateInput) (UserCreateOutput, error) {
+func (uc *UserCreateUseCase) Execute(ctx context.Context, input UserCreateInput) (UserCreateOutput, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "UserCreateUseCase.Execute")
 	defer span.End()
 

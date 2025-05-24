@@ -10,15 +10,7 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/validator"
 )
 
-type UserActivateUseCase interface {
-	Execute(ctx context.Context, input UserActivateInput) error
-}
-
-type UserActivateInput struct {
-	Token string `validate:"required"`
-}
-
-type userActivateUseCase struct {
+type UserActivateUseCase struct {
 	userRepository repository.UserRepository
 	validate       validator.Validate
 	logger         logger.Logger
@@ -28,11 +20,15 @@ func NewUserActivateUseCase(
 	userRepository repository.UserRepository,
 	validate validator.Validate,
 	logger logger.Logger,
-) UserActivateUseCase {
-	return &userActivateUseCase{userRepository, validate, logger}
+) *UserActivateUseCase {
+	return &UserActivateUseCase{userRepository, validate, logger}
 }
 
-func (uc *userActivateUseCase) Execute(ctx context.Context, input UserActivateInput) error {
+type UserActivateInput struct {
+	Token string `validate:"required"`
+}
+
+func (uc *UserActivateUseCase) Execute(ctx context.Context, input UserActivateInput) error {
 	ctx, span := otel.Trace().StartSpan(ctx, "UserActivateUseCase.Execute")
 	defer span.End()
 
