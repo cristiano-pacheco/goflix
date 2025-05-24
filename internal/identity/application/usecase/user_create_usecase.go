@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"encoding/base64"
+	"errors"
 	"time"
 
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/errs"
@@ -12,7 +13,6 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/logger"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/validator"
-	// shared_errs "github.com/cristiano-pacheco/goflix/shared/modules/errs"
 )
 
 type UserCreateUseCase interface {
@@ -67,10 +67,10 @@ func (uc *userCreateUseCase) Execute(ctx context.Context, input UserCreateInput)
 	}
 
 	user, err := uc.userRepository.FindByEmail(ctx, input.Email)
-	// if err != nil && !errors.Is(err, shared_errs.ErrNotFound) {
-	// 	uc.logger.Error("error finding user by email", "error", err)
-	// 	return output, err
-	// }
+	if err != nil && !errors.Is(err, errs.ErrNotFound) {
+		uc.logger.Error("error finding user by email", "error", err)
+		return output, err
+	}
 
 	if user.ID() != 0 {
 		return output, errs.ErrEmailAlreadyInUse

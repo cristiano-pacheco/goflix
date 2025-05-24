@@ -4,6 +4,10 @@ import (
 	"errors"
 )
 
+var (
+	ErrNotFound = errors.New("not found")
+)
+
 // Password validation errors
 var (
 	ErrPasswordTooShort      = errors.New("password must be at least 8 characters long")
