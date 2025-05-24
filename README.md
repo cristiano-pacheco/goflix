@@ -18,11 +18,13 @@
     - [ ] non functional requirements
     - [ ] Arquitecture design
     - [ ] Stack docs
-    
+General Tasks  
 - [ ] Communication between modules using gRPC
 - [ ] Integrate NATS as message broker
   - [ ] send email confirmation
   - [ ] send reset password email
+- Add Redis
+  [ ] - Add redis cache for the user
 
 - [ ] Improve cursor rules
   - application
