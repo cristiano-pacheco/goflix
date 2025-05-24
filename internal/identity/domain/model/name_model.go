@@ -4,6 +4,7 @@ import (
 	"errors"
 	"strings"
 	"unicode"
+	"unicode/utf8"
 
 	"github.com/samber/lo"
 )
@@ -25,15 +26,17 @@ func (n NameModel) String() string {
 }
 
 func validateName(value string) error {
-	if len(value) == 0 {
+	charCount := utf8.RuneCountInString(value)
+
+	if charCount == 0 {
 		return errors.New("name is required")
 	}
 
-	if len(value) < 2 {
+	if charCount < 2 {
 		return errors.New("name must be at least 2 characters long")
 	}
 
-	if len(value) > 255 {
+	if charCount > 255 {
 		return errors.New("name cannot exceed 255 characters")
 	}
 
