@@ -1,8 +1,10 @@
 ---
 description: 
-globs: 
+globs: *test.go
 alwaysApply: false
 ---
+Unit tests
+
 ## Planning Rules
 
 1. Identify Items to Test:
@@ -126,3 +128,5 @@ func TestSomeFunction(t *testing.T) {
   - Add comments for complex test setups or assertions if needed.
   - Never use inline struct construction, always create a new varialbe and assigns the instance to it.
   - Each line has to have in max 120 characters.
+
+9. Never explain the test after generating the code. Just say Oh Yeah! when the process is finished.
