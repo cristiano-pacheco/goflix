@@ -2,14 +2,28 @@
 
 ### Roadmap
 
-- Docs
-  - [ ] C4 diagrams
-  - [ ] functional requirements
-  - [ ] non functional requirements
+- Docs (README.md)
+  - [ ] Introduction 
+    - [ ] Purpose of this repository
+    - [ ] Out of Scope
+    - [ ] Reason
+    - [ ] Give it a star
+  - [ ] Domain
+    - [ ] Description
+    - [ ] Conceptual Model
+    - [ ] Event Storming
+  - Architecture
+    - [ ] C4 Model
+    - [ ] functional requirements
+    - [ ] non functional requirements
+    - [ ] Arquitecture design
+    - [ ] Stack docs
+    
 - [ ] Communication between modules using gRPC
 - [ ] Integrate NATS as message broker
   - [ ] send email confirmation
   - [ ] send reset password email
+
 - [ ] Improve cursor rules
   - application
     - [ ] usecase
@@ -21,11 +35,16 @@
     - [ ] repository
     - [ ] entity
 - [ ] api tests (e2n)
-- Ops
+  
+- OPS
     - [ ] add Dockerfile
     - [ ] add docker-compose.yml
     - [ ] lint
-    - github actions
+    - CI
         - [ ] lint
         - [ ] unit tests
         - [ ] integration tests
+
+- [ ] How to Run
+- [ ] Licence
+- [ ] Inspirations and Recommendations
