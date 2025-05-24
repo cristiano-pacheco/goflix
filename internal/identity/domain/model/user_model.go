@@ -1,7 +1,9 @@
 package model
 
 import (
+	"crypto/subtle"
 	"errors"
+	"strings"
 	"time"
 )
 
@@ -27,6 +29,17 @@ func CreateUserModel(
 	confirmationToken string,
 	confirmationExpiresAt time.Time,
 ) (UserModel, error) {
+	// Trim whitespace from inputs
+	name = strings.TrimSpace(name)
+	email = strings.TrimSpace(email)
+	passwordHash = strings.TrimSpace(passwordHash)
+	confirmationToken = strings.TrimSpace(confirmationToken)
+
+	// Validate inputs
+	if err := validateUserCreationInputs(name, email, passwordHash, confirmationToken, confirmationExpiresAt); err != nil {
+		return UserModel{}, err
+	}
+
 	// Validate and create name model
 	nameModel, err := CreateNameModel(name)
 	if err != nil {
@@ -39,15 +52,10 @@ func CreateUserModel(
 		return UserModel{}, err
 	}
 
-	// Validate password hash
-	if passwordHash == "" {
-		return UserModel{}, errors.New("password hash is required")
-	}
-
 	// Create user model
 	return UserModel{
-		name:                  *nameModel,
-		email:                 *emailModel,
+		name:                  nameModel,
+		email:                 emailModel,
 		passwordHash:          passwordHash,
 		isActivated:           false,
 		confirmationToken:     &confirmationToken,
@@ -71,6 +79,16 @@ func RestoreUserModel(
 	createdAt time.Time,
 	updatedAt time.Time,
 ) (UserModel, error) {
+	// Trim whitespace from inputs
+	name = strings.TrimSpace(name)
+	email = strings.TrimSpace(email)
+	passwordHash = strings.TrimSpace(passwordHash)
+
+	// Validate inputs
+	if err := validateUserRestorationInputs(id, name, email, passwordHash, createdAt, updatedAt); err != nil {
+		return UserModel{}, err
+	}
+
 	// Validate and create name model
 	nameModel, err := CreateNameModel(name)
 	if err != nil {
@@ -83,16 +101,11 @@ func RestoreUserModel(
 		return UserModel{}, err
 	}
 
-	// Validate password hash
-	if passwordHash == "" {
-		return UserModel{}, errors.New("password hash is required")
-	}
-
 	// Create user model with all fields
 	return UserModel{
 		id:                     id,
-		name:                   *nameModel,
-		email:                  *emailModel,
+		name:                   nameModel,
+		email:                  emailModel,
 		passwordHash:           passwordHash,
 		isActivated:            isActivated,
 		confirmationToken:      confirmationToken,
@@ -105,6 +118,7 @@ func RestoreUserModel(
 	}, nil
 }
 
+// Getter methods
 func (u *UserModel) ID() uint64 {
 	return u.id
 }
@@ -153,6 +167,7 @@ func (u *UserModel) UpdatedAt() time.Time {
 	return u.updatedAt
 }
 
+// Business methods
 func (u *UserModel) Activate() {
 	u.isActivated = true
 	u.updatedAt = time.Now().UTC()
@@ -168,21 +183,178 @@ func (u *UserModel) ConfirmAccount() {
 }
 
 func (u *UserModel) IsConfirmationTokenValid(token string) bool {
-	return u.confirmationToken != nil &&
-		u.confirmationExpiresAt != nil &&
-		u.confirmedAt == nil &&
-		(*u.confirmationExpiresAt).After(time.Now().UTC()) &&
-		*u.confirmationToken == token
+	// Check if confirmation is still pending
+	if u.confirmationToken == nil || u.confirmationExpiresAt == nil || u.confirmedAt != nil {
+		return false
+	}
+
+	// Check if token has expired
+	if !(*u.confirmationExpiresAt).After(time.Now().UTC()) {
+		return false
+	}
+
+	// Use constant-time comparison to prevent timing attacks
+	return subtle.ConstantTimeCompare([]byte(*u.confirmationToken), []byte(token)) == 1
 }
 
-func (u *UserModel) SetResetPasswordDetails(token string, expiresAt time.Time) {
+func (u *UserModel) SetResetPasswordDetails(token string, expiresAt time.Time) error {
+	token = strings.TrimSpace(token)
+	if err := validateResetPasswordToken(token, expiresAt); err != nil {
+		return err
+	}
+
 	u.resetPasswordToken = &token
 	u.resetPasswordExpiresAt = &expiresAt
 	u.updatedAt = time.Now().UTC()
+	return nil
 }
 
 func (u *UserModel) ClearResetPasswordDetails() {
 	u.resetPasswordToken = nil
 	u.resetPasswordExpiresAt = nil
 	u.updatedAt = time.Now().UTC()
+}
+
+func (u *UserModel) IsResetPasswordTokenValid(token string) bool {
+	// Check if reset password token exists
+	if u.resetPasswordToken == nil || u.resetPasswordExpiresAt == nil {
+		return false
+	}
+
+	// Check if token has expired
+	if !(*u.resetPasswordExpiresAt).After(time.Now().UTC()) {
+		return false
+	}
+
+	// Use constant-time comparison to prevent timing attacks
+	return subtle.ConstantTimeCompare([]byte(*u.resetPasswordToken), []byte(token)) == 1
+}
+
+func (u *UserModel) UpdatePasswordHash(newPasswordHash string) error {
+	newPasswordHash = strings.TrimSpace(newPasswordHash)
+	if err := validatePasswordHash(newPasswordHash); err != nil {
+		return err
+	}
+
+	u.passwordHash = newPasswordHash
+	u.updatedAt = time.Now().UTC()
+	return nil
+}
+
+// Validation functions
+func validateUserCreationInputs(name, email, passwordHash, confirmationToken string, confirmationExpiresAt time.Time) error {
+	if err := validatePasswordHash(passwordHash); err != nil {
+		return err
+	}
+
+	if err := validateConfirmationToken(confirmationToken); err != nil {
+		return err
+	}
+
+	if err := validateConfirmationExpiresAt(confirmationExpiresAt); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func validateUserRestorationInputs(id uint64, name, email, passwordHash string, createdAt, updatedAt time.Time) error {
+	if id == 0 {
+		return errors.New("user ID is required and must be greater than zero")
+	}
+
+	if err := validatePasswordHash(passwordHash); err != nil {
+		return err
+	}
+
+	if err := validateTimestamps(createdAt, updatedAt); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func validatePasswordHash(passwordHash string) error {
+	if len(passwordHash) == 0 {
+		return errors.New("password hash is required")
+	}
+
+	// Basic validation for common hash formats (bcrypt, argon2, etc.)
+	if len(passwordHash) < 32 {
+		return errors.New("password hash appears to be too short (minimum 32 characters)")
+	}
+
+	if len(passwordHash) > 255 {
+		return errors.New("password hash exceeds maximum length of 255 characters")
+	}
+
+	return nil
+}
+
+func validateConfirmationToken(token string) error {
+	if len(token) == 0 {
+		return errors.New("confirmation token is required")
+	}
+
+	if len(token) < 16 {
+		return errors.New("confirmation token must be at least 16 characters long")
+	}
+
+	if len(token) > 255 {
+		return errors.New("confirmation token exceeds maximum length of 255 characters")
+	}
+
+	return nil
+}
+
+func validateConfirmationExpiresAt(expiresAt time.Time) error {
+	if expiresAt.IsZero() {
+		return errors.New("confirmation expiration time is required")
+	}
+
+	if !expiresAt.After(time.Now().UTC()) {
+		return errors.New("confirmation expiration time must be in the future")
+	}
+
+	return nil
+}
+
+func validateResetPasswordToken(token string, expiresAt time.Time) error {
+	if len(token) == 0 {
+		return errors.New("reset password token is required")
+	}
+
+	if len(token) < 16 {
+		return errors.New("reset password token must be at least 16 characters long")
+	}
+
+	if len(token) > 255 {
+		return errors.New("reset password token exceeds maximum length of 255 characters")
+	}
+
+	if expiresAt.IsZero() {
+		return errors.New("reset password expiration time is required")
+	}
+
+	if !expiresAt.After(time.Now().UTC()) {
+		return errors.New("reset password expiration time must be in the future")
+	}
+
+	return nil
+}
+
+func validateTimestamps(createdAt, updatedAt time.Time) error {
+	if createdAt.IsZero() {
+		return errors.New("created at timestamp is required")
+	}
+
+	if updatedAt.IsZero() {
+		return errors.New("updated at timestamp is required")
+	}
+
+	if updatedAt.Before(createdAt) {
+		return errors.New("updated at timestamp cannot be before created at timestamp")
+	}
+
+	return nil
 }

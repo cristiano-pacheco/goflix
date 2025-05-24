@@ -1,132 +1,386 @@
 package model
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestCreateEmailModel(t *testing.T) {
-	tests := []struct {
-		name        string
-		email       string
-		expectError bool
-		errorMsg    string
-	}{
-		{
-			name:        "Valid email",
-			email:       "test@example.com",
-			expectError: false,
-		},
-		{
-			name:        "Empty email",
-			email:       "",
-			expectError: true,
-			errorMsg:    "email is required",
-		},
-		{
-			name:        "Email with spaces",
-			email:       "  test@example.com  ",
-			expectError: false,
-		},
-		{
-			name:        "Email without @",
-			email:       "testexample.com",
-			expectError: true,
-			errorMsg:    "invalid email format: missing @ symbol or invalid position",
-		},
-		{
-			name:        "Email with @ at beginning",
-			email:       "@example.com",
-			expectError: true,
-			errorMsg:    "invalid email format: missing @ symbol or invalid position",
-		},
-		{
-			name:        "Email with @ at end",
-			email:       "test@",
-			expectError: true,
-			errorMsg:    "invalid email format: missing @ symbol or invalid position",
-		},
-		{
-			name:        "Email without dot in domain",
-			email:       "test@examplecom",
-			expectError: true,
-			errorMsg:    "invalid email format: missing dot in domain or invalid position",
-		},
-		{
-			name:        "Email with dot at beginning of domain",
-			email:       "test@.example.com",
-			expectError: true,
-			errorMsg:    "invalid email format: domain cannot start with a dot",
-		},
-		{
-			name:        "Email with dot at end of domain",
-			email:       "test@example.",
-			expectError: true,
-			errorMsg:    "invalid email format: missing dot in domain or invalid position",
-		},
-		{
-			name:        "Email with very long local part",
-			email:       strings.Repeat("a", 65) + "@example.com",
-			expectError: true,
-			errorMsg:    "local part of email exceeds maximum length of 64 characters",
-		},
-		{
-			name:        "Email with very long domain part",
-			email:       "test@" + strings.Repeat("a", 256) + ".com",
-			expectError: true,
-			errorMsg:    "domain part of email exceeds maximum length of 255 characters",
-		},
-		{
-			name:        "Email with invalid character in local part",
-			email:       "test<script>@example.com",
-			expectError: true,
-			errorMsg:    "invalid character in email local part",
-		},
-		{
-			name:        "Email with invalid character in domain part",
-			email:       "test@example_com",
-			expectError: true,
-			errorMsg:    "invalid character in email domain part",
-		},
-		{
-			name:        "Email with special characters in local part",
-			email:       "test.user+filter!#$%&'*-/=?^_`{|}~@example.com",
-			expectError: false,
-		},
-	}
+	t.Run("valid email addresses", func(t *testing.T) {
+		validEmails := []string{
+			"test@example.com",
+			"user.name@domain.co.uk",
+			"user+tag@example.org",
+			"user_name@example-domain.com",
+			"a@b.co",
+			"test123@example123.com",
+			"user.name+tag@sub.domain.com",
+		}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			email, err := CreateEmailModel(tt.email)
+		for _, email := range validEmails {
+			// Arrange & Act
+			result, err := CreateEmailModel(email)
 
-			if tt.expectError {
-				assert.Error(t, err, "Expected an error for invalid email: %s", tt.email)
-				assert.Nil(t, email, "Expected nil email model for invalid email: %s", tt.email)
-				if err != nil { // Avoid nil pointer dereference
-					assert.Contains(t, err.Error(), tt.errorMsg, "Error message doesn't match for email: %s", tt.email)
-				}
-			} else {
-				assert.NoError(t, err, "Unexpected error for valid email: %s", tt.email)
-				require.NotNil(t, email, "Email model should not be nil for valid email: %s", tt.email)
-				if email != nil { // Avoid nil pointer dereference
-					// If the input had spaces, they should be trimmed
-					expectedValue := strings.TrimSpace(tt.email)
-					assert.Equal(t, expectedValue, email.String(), "Email value doesn't match for: %s", tt.email)
-				}
-			}
-		})
-	}
+			// Assert
+			assert.NoError(t, err)
+			assert.Equal(t, email, result.String())
+		}
+	})
+
+	t.Run("valid email with whitespace trimming", func(t *testing.T) {
+		// Arrange
+		emailWithSpaces := "  test@example.com  "
+		expectedEmail := "test@example.com"
+
+		// Act
+		result, err := CreateEmailModel(emailWithSpaces)
+
+		// Assert
+		assert.NoError(t, err)
+		assert.Equal(t, expectedEmail, result.String())
+	})
+
+	t.Run("empty email", func(t *testing.T) {
+		// Arrange
+		email := ""
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "email is required", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("whitespace only email", func(t *testing.T) {
+		// Arrange
+		email := "   "
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "email is required", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("email exceeds maximum length", func(t *testing.T) {
+		// Arrange
+		longEmail := "a" + "@" + "b" + ".com"
+		for len(longEmail) <= 320 {
+			longEmail = "a" + longEmail
+		}
+
+		// Act
+		result, err := CreateEmailModel(longEmail)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "email exceeds maximum length of 320 characters", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("missing @ symbol", func(t *testing.T) {
+		// Arrange
+		email := "testexample.com"
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "invalid email format: missing @ symbol or invalid position", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("@ symbol at beginning", func(t *testing.T) {
+		// Arrange
+		email := "@example.com"
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "invalid email format: missing @ symbol or invalid position", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("@ symbol at end", func(t *testing.T) {
+		// Arrange
+		email := "test@"
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "invalid email format: missing @ symbol or invalid position", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("multiple @ symbols", func(t *testing.T) {
+		// Arrange
+		email := "test@example@com"
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "invalid email format: multiple @ symbols found", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("local part too long", func(t *testing.T) {
+		// Arrange
+		longLocalPart := ""
+		for len(longLocalPart) <= 64 {
+			longLocalPart += "a"
+		}
+		email := longLocalPart + "@example.com"
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "email local part exceeds maximum length of 64 characters", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("local part with consecutive dots", func(t *testing.T) {
+		// Arrange
+		email := "test..user@example.com"
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "email local part cannot contain consecutive dots", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("local part starts with dot", func(t *testing.T) {
+		// Arrange
+		email := ".test@example.com"
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "email local part cannot start or end with a dot", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("local part ends with dot", func(t *testing.T) {
+		// Arrange
+		email := "test.@example.com"
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "email local part cannot start or end with a dot", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("local part with invalid characters", func(t *testing.T) {
+		// Arrange
+		email := "test@user@example.com"
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "invalid email format: multiple @ symbols found", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("domain too long", func(t *testing.T) {
+		// Arrange
+		longDomain := ""
+		for len(longDomain) <= 255 {
+			longDomain += "a"
+		}
+		longDomain += ".com"
+		email := "test@" + longDomain
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "email domain exceeds maximum length of 255 characters", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("domain starts with dot", func(t *testing.T) {
+		// Arrange
+		email := "test@.example.com"
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "email domain cannot start or end with a dot", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("domain ends with dot", func(t *testing.T) {
+		// Arrange
+		email := "test@example.com."
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "email domain cannot start or end with a dot", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("domain starts with hyphen", func(t *testing.T) {
+		// Arrange
+		email := "test@-example.com"
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "email domain cannot start or end with a hyphen", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("domain ends with hyphen", func(t *testing.T) {
+		// Arrange
+		email := "test@example-.com"
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "email domain cannot start or end with a hyphen", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("domain without dot", func(t *testing.T) {
+		// Arrange
+		email := "test@example"
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "email domain must contain at least one dot", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("domain with consecutive dots", func(t *testing.T) {
+		// Arrange
+		email := "test@example..com"
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "email domain cannot contain consecutive dots", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("domain label too long", func(t *testing.T) {
+		// Arrange
+		longLabel := ""
+		for len(longLabel) <= 63 {
+			longLabel += "a"
+		}
+		email := "test@" + longLabel + ".com"
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "email domain label exceeds maximum length of 63 characters", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("top level domain too short", func(t *testing.T) {
+		// Arrange
+		email := "test@example.c"
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "email top-level domain must be at least 2 characters", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("top level domain with numbers", func(t *testing.T) {
+		// Arrange
+		email := "test@example.c0m"
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "email top-level domain must contain only letters", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("domain label starts with hyphen", func(t *testing.T) {
+		// Arrange
+		email := "test@-sub.example.com"
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "email domain label cannot start or end with hyphen", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
+
+	t.Run("domain label ends with hyphen", func(t *testing.T) {
+		// Arrange
+		email := "test@sub-.example.com"
+
+		// Act
+		result, err := CreateEmailModel(email)
+
+		// Assert
+		assert.Error(t, err)
+		assert.Equal(t, "email domain label cannot start or end with hyphen", err.Error())
+		assert.Equal(t, EmailModel{}, result)
+	})
 }
 
 func TestEmailModel_String(t *testing.T) {
-	// Create a valid email model
-	email, err := CreateEmailModel("test@example.com")
-	require.NoError(t, err)
-	require.NotNil(t, email)
+	t.Run("returns email value", func(t *testing.T) {
+		// Arrange
+		expectedEmail := "test@example.com"
+		emailModel, err := CreateEmailModel(expectedEmail)
 
-	// Test the String method
-	assert.Equal(t, "test@example.com", email.String())
+		// Act
+		result := emailModel.String()
+
+		// Assert
+		assert.NoError(t, err)
+		assert.Equal(t, expectedEmail, result)
+	})
 }

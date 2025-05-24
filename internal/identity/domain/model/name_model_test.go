@@ -8,126 +8,338 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCreateNameModel(t *testing.T) {
-	tests := []struct {
-		name        string
-		input       string
-		expectError bool
-		errorMsg    string
+func TestCreateNameModel_ValidNames(t *testing.T) {
+	testCases := []struct {
+		name     string
+		input    string
+		expected string
 	}{
 		{
-			name:        "Valid name",
-			input:       "John Doe",
-			expectError: false,
+			name:     "simple first name",
+			input:    "John",
+			expected: "John",
 		},
 		{
-			name:        "Empty name",
-			input:       "",
-			expectError: true,
-			errorMsg:    "name is required",
+			name:     "full name with space",
+			input:    "John Doe",
+			expected: "John Doe",
 		},
 		{
-			name:        "Name with spaces",
-			input:       "  Jane Smith  ",
-			expectError: false,
+			name:     "name with hyphen",
+			input:    "Mary-Ann",
+			expected: "Mary-Ann",
 		},
 		{
-			name:        "Name too short",
-			input:       "J",
-			expectError: true,
-			errorMsg:    "name must be at least 2 characters long",
+			name:     "name with apostrophe",
+			input:    "O'Connor",
+			expected: "O'Connor",
 		},
 		{
-			name:        "Name at minimum length",
-			input:       "Jo",
-			expectError: false,
+			name:     "name with title and period",
+			input:    "Dr. Smith",
+			expected: "Dr. Smith",
 		},
 		{
-			name:        "Name at maximum valid length",
-			input:       "John " + strings.Repeat("a", 250),
-			expectError: false,
+			name:     "name with multiple parts",
+			input:    "Jean-Claude Van Damme",
+			expected: "Jean-Claude Van Damme",
 		},
 		{
-			name:        "Name with invalid format (long string)",
-			input:       "1" + strings.Repeat("a", 254), // Starts with a number
-			expectError: true,
-			errorMsg:    "invalid name format: must start with a letter",
+			name:     "name with numbers",
+			input:    "John Doe Jr2",
+			expected: "John Doe Jr2",
 		},
 		{
-			name:        "Name too long",
-			input:       strings.Repeat("a", 256),
-			expectError: true,
-			errorMsg:    "name cannot exceed 255 characters",
+			name:     "name with leading/trailing spaces (should be trimmed)",
+			input:    "  John Doe  ",
+			expected: "John Doe",
 		},
 		{
-			name:        "Name with hyphen",
-			input:       "Mary-Jane Watson",
-			expectError: false,
+			name:     "minimum length name",
+			input:    "Jo",
+			expected: "Jo",
 		},
 		{
-			name:        "Name with apostrophe",
-			input:       "O'Connor",
-			expectError: false,
-		},
-		{
-			name:        "Name with period",
-			input:       "Dr. John Smith",
-			expectError: false,
-		},
-		{
-			name:        "Name with invalid character",
-			input:       "John@Doe",
-			expectError: true,
-			errorMsg:    "name contains invalid characters",
-		},
-		{
-			name:        "Name starting with number",
-			input:       "1John",
-			expectError: true,
-			errorMsg:    "invalid name format",
-		},
-		{
-			name:        "Name with valid number in middle",
-			input:       "John2Doe",
-			expectError: false,
-		},
-		{
-			name:        "Name with invalid format",
-			input:       "John  Doe", // Double space
-			expectError: true,
-			errorMsg:    "invalid name format: contains consecutive spaces",
+			name:     "name with period in middle",
+			input:    "J.R.R. Tolkien",
+			expected: "J.R.R. Tolkien",
 		},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			nameModel, err := CreateNameModel(tt.input)
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			nameModel, err := CreateNameModel(tc.input)
+			require.NoError(t, err)
+			assert.Equal(t, tc.expected, nameModel.String())
+		})
+	}
+}
 
-			if tt.expectError {
-				assert.Error(t, err, "Expected an error for invalid name: %s", tt.input)
-				assert.Nil(t, nameModel, "Expected nil name model for invalid name: %s", tt.input)
-				if err != nil { // Avoid nil pointer dereference
-					assert.Contains(t, err.Error(), tt.errorMsg, "Error message doesn't match for name: %s", tt.input)
-				}
-			} else {
-				assert.NoError(t, err, "Unexpected error for valid name: %s", tt.input)
-				require.NotNil(t, nameModel, "Name model should not be nil for valid name: %s", tt.input)
-				if nameModel != nil { // Avoid nil pointer dereference
-					// If the input had spaces, they should be trimmed
-					expectedValue := strings.TrimSpace(tt.input)
-					assert.Equal(t, expectedValue, nameModel.String(), "Name value doesn't match for: %s", tt.input)
-				}
-			}
+func TestCreateNameModel_InvalidNames(t *testing.T) {
+	testCases := []struct {
+		name          string
+		input         string
+		expectedError string
+	}{
+		{
+			name:          "empty name",
+			input:         "",
+			expectedError: "name is required",
+		},
+		{
+			name:          "only spaces",
+			input:         "   ",
+			expectedError: "name is required",
+		},
+		{
+			name:          "too short",
+			input:         "J",
+			expectedError: "name must be at least 2 characters long",
+		},
+		{
+			name:          "too long",
+			input:         strings.Repeat("a", 256),
+			expectedError: "name cannot exceed 255 characters",
+		},
+		{
+			name:          "starts with number",
+			input:         "1John",
+			expectedError: "name must start with a letter",
+		},
+		{
+			name:          "starts with space",
+			input:         " John",
+			expectedError: "name must start with a letter",
+		},
+		{
+			name:          "starts with hyphen",
+			input:         "-John",
+			expectedError: "name cannot start with punctuation",
+		},
+		{
+			name:          "starts with apostrophe",
+			input:         "'John",
+			expectedError: "name cannot start with punctuation",
+		},
+		{
+			name:          "ends with hyphen",
+			input:         "John-",
+			expectedError: "name cannot end with punctuation",
+		},
+		{
+			name:          "ends with apostrophe",
+			input:         "John'",
+			expectedError: "name cannot end with punctuation",
+		},
+		{
+			name:          "ends with period",
+			input:         "John.",
+			expectedError: "name must end with a letter or digit",
+		},
+		{
+			name:          "consecutive spaces",
+			input:         "John  Doe",
+			expectedError: "name cannot contain consecutive spaces",
+		},
+		{
+			name:          "invalid characters - special symbols",
+			input:         "John@Doe",
+			expectedError: "name contains invalid characters (only letters, digits, spaces, hyphens, apostrophes, and periods are allowed)",
+		},
+		{
+			name:          "invalid characters - underscore",
+			input:         "John_Doe",
+			expectedError: "name contains invalid characters (only letters, digits, spaces, hyphens, apostrophes, and periods are allowed)",
+		},
+		{
+			name:          "invalid characters - parentheses",
+			input:         "John (Doe)",
+			expectedError: "name contains invalid characters (only letters, digits, spaces, hyphens, apostrophes, and periods are allowed)",
+		},
+		{
+			name:          "excessive punctuation",
+			input:         "John----Doe",
+			expectedError: "name cannot contain more than 3 consecutive punctuation marks",
+		},
+		{
+			name:          "excessive apostrophes",
+			input:         "John''''Doe",
+			expectedError: "name cannot contain more than 3 consecutive punctuation marks",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			nameModel, err := CreateNameModel(tc.input)
+			require.Error(t, err)
+			assert.Equal(t, NameModel{}, nameModel)
+			assert.Contains(t, err.Error(), tc.expectedError)
 		})
 	}
 }
 
 func TestNameModel_String(t *testing.T) {
-	// Create a valid name model
-	nameModel, err := CreateNameModel("John Doe")
-	require.NoError(t, err)
-	require.NotNil(t, nameModel)
+	testCases := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{
+			name:     "simple name",
+			input:    "John",
+			expected: "John",
+		},
+		{
+			name:     "full name",
+			input:    "John Doe",
+			expected: "John Doe",
+		},
+		{
+			name:     "complex name",
+			input:    "Jean-Claude O'Connor Jr.",
+			expected: "Jean-Claude O'Connor Jr.",
+		},
+	}
 
-	// Test the String method
-	assert.Equal(t, "John Doe", nameModel.String())
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			nameModel, err := CreateNameModel(tc.input)
+			require.NoError(t, err)
+			assert.Equal(t, tc.expected, nameModel.String())
+		})
+	}
+}
+
+func TestValidateNameFormat(t *testing.T) {
+	testCases := []struct {
+		name          string
+		input         string
+		expectedError string
+	}{
+		{
+			name:          "valid name",
+			input:         "John Doe",
+			expectedError: "",
+		},
+		{
+			name:          "leading space",
+			input:         " John",
+			expectedError: "name cannot start or end with spaces",
+		},
+		{
+			name:          "trailing space",
+			input:         "John ",
+			expectedError: "name cannot start or end with spaces",
+		},
+		{
+			name:          "starts with hyphen",
+			input:         "-John",
+			expectedError: "name cannot start with punctuation",
+		},
+		{
+			name:          "ends with hyphen",
+			input:         "John-",
+			expectedError: "name cannot end with punctuation",
+		},
+		{
+			name:          "excessive punctuation",
+			input:         "John----Doe",
+			expectedError: "name cannot contain more than 3 consecutive punctuation marks",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			err := validateNameFormat(tc.input)
+			if tc.expectedError == "" {
+				assert.NoError(t, err)
+			} else {
+				require.Error(t, err)
+				assert.Contains(t, err.Error(), tc.expectedError)
+			}
+		})
+	}
+}
+
+func TestIsValidNameChar(t *testing.T) {
+	testCases := []struct {
+		name     string
+		input    rune
+		expected bool
+	}{
+		{
+			name:     "letter",
+			input:    'A',
+			expected: true,
+		},
+		{
+			name:     "lowercase letter",
+			input:    'a',
+			expected: true,
+		},
+		{
+			name:     "digit",
+			input:    '1',
+			expected: true,
+		},
+		{
+			name:     "space",
+			input:    ' ',
+			expected: true,
+		},
+		{
+			name:     "hyphen",
+			input:    '-',
+			expected: true,
+		},
+		{
+			name:     "apostrophe",
+			input:    '\'',
+			expected: true,
+		},
+		{
+			name:     "period",
+			input:    '.',
+			expected: true,
+		},
+		{
+			name:     "at symbol",
+			input:    '@',
+			expected: false,
+		},
+		{
+			name:     "underscore",
+			input:    '_',
+			expected: false,
+		},
+		{
+			name:     "parenthesis",
+			input:    '(',
+			expected: false,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			result := isValidNameChar(tc.input)
+			assert.Equal(t, tc.expected, result)
+		})
+	}
+}
+
+// Benchmark tests
+func BenchmarkCreateNameModel(b *testing.B) {
+	testName := "John Doe"
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, _ = CreateNameModel(testName)
+	}
+}
+
+func BenchmarkValidateName(b *testing.B) {
+	testName := "John Doe"
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = validateName(testName)
+	}
 }
