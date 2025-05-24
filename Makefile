@@ -12,6 +12,9 @@ install-libs:
 # ==============================================================================
 # Administration
 
+ping:
+	curl -il http://localhost:4000/api/v1/ping
+
 run:
 	go run .
 
@@ -29,17 +32,11 @@ lint:
 vuln-check:
 	govulncheck -show verbose ./... 
 
-field-alignment:
-	fieldalignment ./...
-
-field-alignment-fix:
-	fieldalignment -fix ./...
-
-static-tests: lint vuln-check
+test: test-only lint vuln-check
 
 test-race: test-r lint vuln-check
 
-unit-tests:
+tests:
 	CGO_ENABLED=0 go test -count=1 ./...
 
 tests-coverage:
@@ -47,9 +44,19 @@ tests-coverage:
 	CGO_ENABLED=0 go tool cover -html cover.out -o cover.html
 	open cover.html
 
-generate-mocks:
+mocks:
 	mockery
 
 update-swagger:
 	swag fmt -d docs
 	swag i --parseDependency
+
+# ==============================================================================
+# NOTES
+#
+# RSA Keys
+# 	To generate a private key PEM file.
+# 	$ openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 | base64 | tr -d '\n' > private_key_base64.txt
+#
+#	To convert the txt file to a PEM file.
+#   base64 -D -i private_key_base64.txt -o private.pem
