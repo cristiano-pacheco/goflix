@@ -19,10 +19,10 @@ type Logger interface {
 
 type loggerAdapter struct {
 	logger *slog.Logger
-	config LoggerConfig
+	config Config
 }
 
-func New(config LoggerConfig) Logger {
+func New(config Config) Logger {
 	slogger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 	return &loggerAdapter{
 		logger: slogger,

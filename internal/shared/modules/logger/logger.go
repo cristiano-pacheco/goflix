@@ -10,7 +10,7 @@ type Logger interface {
 }
 
 func New(config config.Config) Logger {
-	logConfig := logger.LoggerConfig{
+	logConfig := logger.Config{
 		IsEnabled: config.Log.IsEnabled,
 		LogLevel:  logger.LogLevel(config.Log.LogLevel),
 	}

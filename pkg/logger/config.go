@@ -2,7 +2,7 @@ package logger
 
 import "log/slog"
 
-type LoggerConfig struct {
+type Config struct {
 	IsEnabled bool
 	LogLevel  LogLevel
 }
