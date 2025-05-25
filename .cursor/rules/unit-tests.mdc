@@ -27,11 +27,12 @@ Unit tests
   - Create a suite struct that contains a sut (System Under Test) field.
   - Implement a SetupTest method to initialize the sut and its dependencies.
   - Do not use .AssertExpectations(s.T()).
- - Identify the constructor for the type and use it. Generally the name is NewTypeName, example NewAccountValidator(deps...)
+  - Identify the constructor for the type and use it. Generally the name is NewTypeName, example NewAccountValidator(deps...)
+  - Always use _test suffix for the package name in the tests
   - example:
   - Example test suite:
 ```go
-package mypackage
+package mypackage_test
 
 import (
 	"testing"
@@ -129,4 +130,4 @@ func TestSomeFunction(t *testing.T) {
   - Never use inline struct construction, always create a new varialbe and assigns the instance to it.
   - Each line has to have in max 120 characters.
 
-9. Never explain the test after generating the code. Just say Oh Yeah! when the process is finished.
+9. Never explain the test after generating the code. Just say Tests Done, Oh Yeah! when the process is finished.
