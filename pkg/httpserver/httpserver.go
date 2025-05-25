@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"net/http"
 
-	_ "github.com/cristiano-pacheco/goflix/docs"
 	"github.com/julienschmidt/httprouter"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	httpSwagger "github.com/swaggo/http-swagger"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+
+	_ "github.com/cristiano-pacheco/goflix/docs" // imports swagger docs for API documentation
 )
 
 type HTTPServer struct {
@@ -48,7 +49,7 @@ func NewHTTPServer(
 	}
 
 	// Health check
-	r.GET("/healthcheck", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	r.GET("/healthcheck", func(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 	})
