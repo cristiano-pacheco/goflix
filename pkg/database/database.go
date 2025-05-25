@@ -2,8 +2,10 @@ package database
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
+	"net"
 	"os"
+	"strconv"
 	"time"
 
 	"gorm.io/driver/postgres"
@@ -12,6 +14,14 @@ import (
 )
 
 const defaultSlowQueryThreshold = 200 * time.Millisecond
+
+type slogWriter struct {
+	logger *slog.Logger
+}
+
+func (w *slogWriter) Printf(format string, args ...interface{}) {
+	w.logger.Info(fmt.Sprintf(format, args...))
+}
 
 func OpenConnection(cfg Config) *gorm.DB {
 	dsn := generateGormDatabaseDSN(cfg)
@@ -26,7 +36,7 @@ func OpenConnection(cfg Config) *gorm.DB {
 	}
 
 	newLogger := logger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		&slogWriter{logger: slog.New(slog.NewTextHandler(os.Stdout, nil))}, // io writer
 		loggerConfig,
 	)
 
@@ -69,12 +79,12 @@ func generateGormDatabaseDSN(cfg Config) string {
 }
 
 func GeneratePostgresDatabaseDSN(cfg Config) string {
+	hostPort := net.JoinHostPort(cfg.Host, strconv.Itoa(int(cfg.Port)))
 	return fmt.Sprintf(
-		"postgres://%s:%s@%s:%d/%s?sslmode=disable&TimeZone=UTC",
+		"postgres://%s:%s@%s/%s?sslmode=disable&TimeZone=UTC",
 		cfg.User,
 		cfg.Password,
-		cfg.Host,
-		cfg.Port,
+		hostPort,
 		cfg.Name,
 	)
 }
