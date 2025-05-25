@@ -16,6 +16,7 @@ import (
 
 type Trace interface {
 	StartSpan(ctx context.Context, name string) (context.Context, oteltrace.Span)
+	WithSpan(ctx context.Context, name string, fn func(ctx context.Context, span oteltrace.Span) error) error
 	Shutdown(ctx context.Context) error
 }
 
@@ -87,7 +88,18 @@ func newExporter(config TracerConfig) sdktrace.SpanExporter {
 }
 
 func (t *trace) StartSpan(ctx context.Context, name string) (context.Context, oteltrace.Span) {
+	//nolint:spancheck // span is returned to caller who is responsible for ending it
 	return t.tracer.Start(ctx, name)
+}
+
+func (t *trace) WithSpan(
+	ctx context.Context,
+	name string,
+	fn func(ctx context.Context, span oteltrace.Span) error,
+) error {
+	ctx, span := t.tracer.Start(ctx, name)
+	defer span.End()
+	return fn(ctx, span)
 }
 
 func (t *trace) Shutdown(ctx context.Context) error {

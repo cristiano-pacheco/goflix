@@ -35,7 +35,7 @@ func TestCreateNameModel(t *testing.T) {
 			result, err := model.CreateNameModel(name)
 
 			// Assert
-			assert.NoError(t, err)
+			require.NoError(t, err)
 			assert.Equal(t, name, result.String())
 		}
 	})
