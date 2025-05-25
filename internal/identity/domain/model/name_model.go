@@ -9,6 +9,12 @@ import (
 	"github.com/samber/lo"
 )
 
+const (
+	minNameLength             = 2
+	maxNameLength             = 255
+	maxConsecutivePunctuation = 3
+)
+
 type NameModel struct {
 	value string
 }
@@ -32,11 +38,11 @@ func validateName(value string) error {
 		return errors.New("name is required")
 	}
 
-	if charCount < 2 {
+	if charCount < minNameLength {
 		return errors.New("name must be at least 2 characters long")
 	}
 
-	if charCount > 255 {
+	if charCount > maxNameLength {
 		return errors.New("name cannot exceed 255 characters")
 	}
 
@@ -60,7 +66,9 @@ func validateName(value string) error {
 	// Check for invalid characters using functional approach
 	runes := []rune(value)
 	if !lo.EveryBy(runes, isValidNameChar) {
-		return errors.New("name contains invalid characters (only letters, digits, spaces, hyphens, apostrophes, and periods are allowed)")
+		return errors.New(
+			"name contains invalid characters (only letters, digits, spaces, hyphens, apostrophes, and periods are allowed)",
+		)
 	}
 
 	// Additional format validations
@@ -72,6 +80,14 @@ func validateName(value string) error {
 }
 
 func validateNameFormat(value string) error {
+	if err := validateNameBoundaries(value); err != nil {
+		return err
+	}
+
+	return validatePunctuationRules(value)
+}
+
+func validateNameBoundaries(value string) error {
 	// Check for leading or trailing spaces (should be trimmed already, but double-check)
 	if strings.HasPrefix(value, " ") || strings.HasSuffix(value, " ") {
 		return errors.New("name cannot start or end with spaces")
@@ -86,12 +102,16 @@ func validateNameFormat(value string) error {
 		return errors.New("name cannot end with punctuation")
 	}
 
+	return nil
+}
+
+func validatePunctuationRules(value string) error {
 	// Check for excessive punctuation (more than 3 consecutive punctuation marks)
 	punctuationCount := 0
 	for _, r := range value {
 		if r == '-' || r == '\'' || r == '.' {
 			punctuationCount++
-			if punctuationCount > 3 {
+			if punctuationCount > maxConsecutivePunctuation {
 				return errors.New("name cannot contain more than 3 consecutive punctuation marks")
 			}
 		} else {

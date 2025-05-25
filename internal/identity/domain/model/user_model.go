@@ -43,7 +43,7 @@ func CreateUserModel(
 	confirmationToken = strings.TrimSpace(confirmationToken)
 
 	// Validate inputs
-	if err := validateUserCreationInputs(name, email, passwordHash, confirmationToken, confirmationExpiresAt); err != nil {
+	if err := validateUserCreationInputs(passwordHash, confirmationToken, confirmationExpiresAt); err != nil {
 		return UserModel{}, err
 	}
 
@@ -92,7 +92,7 @@ func RestoreUserModel(
 	passwordHash = strings.TrimSpace(passwordHash)
 
 	// Validate inputs
-	if err := validateUserRestorationInputs(id, name, email, passwordHash, createdAt, updatedAt); err != nil {
+	if err := validateUserRestorationInputs(id, passwordHash, createdAt, updatedAt); err != nil {
 		return UserModel{}, err
 	}
 
@@ -247,7 +247,7 @@ func (u *UserModel) UpdatePasswordHash(newPasswordHash string) error {
 }
 
 func validateUserCreationInputs(
-	name, email, passwordHash, confirmationToken string,
+	passwordHash, confirmationToken string,
 	confirmationExpiresAt time.Time,
 ) error {
 	if err := validatePasswordHash(passwordHash); err != nil {
@@ -265,7 +265,7 @@ func validateUserCreationInputs(
 	return nil
 }
 
-func validateUserRestorationInputs(id uint64, name, email, passwordHash string, createdAt, updatedAt time.Time) error {
+func validateUserRestorationInputs(id uint64, passwordHash string, createdAt, updatedAt time.Time) error {
 	if id == 0 {
 		return errors.New("user ID is required and must be greater than zero")
 	}

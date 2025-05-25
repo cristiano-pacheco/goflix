@@ -4,9 +4,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
 )
 
 func TestCreateNameModel(t *testing.T) {

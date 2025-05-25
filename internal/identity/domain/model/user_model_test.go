@@ -468,7 +468,6 @@ func TestUserModel_BusinessMethods(t *testing.T) {
 	})
 }
 
-// Helper function to create a valid user for testing
 func createValidUser(t *testing.T) model.UserModel {
 	t.Helper()
 

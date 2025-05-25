@@ -3,9 +3,10 @@ package model_test
 import (
 	"testing"
 
-	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
 )
 
 func TestCreateEmailModel(t *testing.T) {

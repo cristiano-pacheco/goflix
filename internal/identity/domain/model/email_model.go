@@ -8,6 +8,15 @@ import (
 	"github.com/samber/lo"
 )
 
+const (
+	maxEmailLength          = 320 // RFC 5321 limit
+	maxLocalPartLength      = 64
+	maxDomainLength         = 255
+	maxDomainLabelLength    = 63
+	minTopLevelDomainLength = 2
+	minDomainLabels         = 2
+)
+
 type EmailModel struct {
 	value string
 }
@@ -30,7 +39,7 @@ func validateEmail(value string) error {
 	}
 
 	// Check overall length to prevent potential DoS attacks
-	if len(value) > 320 { // RFC 5321 limit
+	if len(value) > maxEmailLength {
 		return errors.New("email exceeds maximum length of 320 characters")
 	}
 
@@ -66,7 +75,7 @@ func validateLocalPart(localPart string) error {
 		return errors.New("email local part cannot be empty")
 	}
 
-	if len(localPart) > 64 {
+	if len(localPart) > maxLocalPartLength {
 		return errors.New("email local part exceeds maximum length of 64 characters")
 	}
 
@@ -95,10 +104,18 @@ func validateDomain(domain string) error {
 		return errors.New("email domain cannot be empty")
 	}
 
-	if len(domain) > 255 {
+	if len(domain) > maxDomainLength {
 		return errors.New("email domain exceeds maximum length of 255 characters")
 	}
 
+	if err := validateDomainFormat(domain); err != nil {
+		return err
+	}
+
+	return validateDomainLabels(domain)
+}
+
+func validateDomainFormat(domain string) error {
 	// Check if starts or ends with dot
 	if domain[0] == '.' || domain[len(domain)-1] == '.' {
 		return errors.New("email domain cannot start or end with a dot")
@@ -119,9 +136,13 @@ func validateDomain(domain string) error {
 		return errors.New("email domain cannot contain consecutive dots")
 	}
 
+	return nil
+}
+
+func validateDomainLabels(domain string) error {
 	// Split domain into labels and validate each
 	labels := strings.Split(domain, ".")
-	if len(labels) < 2 {
+	if len(labels) < minDomainLabels {
 		return errors.New("email domain must have at least two labels")
 	}
 
@@ -140,32 +161,41 @@ func validateDomainLabel(label string, isTopLevel bool) error {
 		return errors.New("email domain label cannot be empty")
 	}
 
-	if len(label) > 63 {
+	if len(label) > maxDomainLabelLength {
 		return errors.New("email domain label exceeds maximum length of 63 characters")
 	}
 
-	// Top-level domain should be at least 2 characters and contain only letters
 	if isTopLevel {
-		if len(label) < 2 {
-			return errors.New("email top-level domain must be at least 2 characters")
-		}
+		return validateTopLevelDomain(label)
+	}
 
-		// Check if all characters are letters (more restrictive for TLD)
-		if !lo.EveryBy([]rune(label), func(char rune) bool {
-			return unicode.IsLetter(char)
-		}) {
-			return errors.New("email top-level domain must contain only letters")
-		}
-	} else {
-		// Regular domain labels can contain letters, digits, and hyphens
-		// but cannot start or end with hyphen
-		if label[0] == '-' || label[len(label)-1] == '-' {
-			return errors.New("email domain label cannot start or end with hyphen")
-		}
+	return validateRegularDomainLabel(label)
+}
 
-		if !lo.EveryBy([]rune(label), isValidDomainChar) {
-			return errors.New("email domain label contains invalid characters")
-		}
+func validateTopLevelDomain(label string) error {
+	if len(label) < minTopLevelDomainLength {
+		return errors.New("email top-level domain must be at least 2 characters")
+	}
+
+	// Check if all characters are letters (more restrictive for TLD)
+	if !lo.EveryBy([]rune(label), func(char rune) bool {
+		return unicode.IsLetter(char)
+	}) {
+		return errors.New("email top-level domain must contain only letters")
+	}
+
+	return nil
+}
+
+func validateRegularDomainLabel(label string) error {
+	// Regular domain labels can contain letters, digits, and hyphens
+	// but cannot start or end with hyphen
+	if label[0] == '-' || label[len(label)-1] == '-' {
+		return errors.New("email domain label cannot start or end with hyphen")
+	}
+
+	if !lo.EveryBy([]rune(label), isValidDomainChar) {
+		return errors.New("email domain label contains invalid characters")
 	}
 
 	return nil
@@ -178,7 +208,28 @@ func isValidLocalPartChar(c rune) bool {
 	}
 
 	// Allow RFC 5322 special characters for local part
-	allowedSpecialChars := []rune{'!', '#', '$', '%', '&', '\'', '*', '+', '-', '/', '=', '?', '^', '_', '`', '{', '|', '}', '~', '.'}
+	allowedSpecialChars := []rune{
+		'!',
+		'#',
+		'$',
+		'%',
+		'&',
+		'\'',
+		'*',
+		'+',
+		'-',
+		'/',
+		'=',
+		'?',
+		'^',
+		'_',
+		'`',
+		'{',
+		'|',
+		'}',
+		'~',
+		'.',
+	}
 	return lo.Contains(allowedSpecialChars, c)
 }
 
