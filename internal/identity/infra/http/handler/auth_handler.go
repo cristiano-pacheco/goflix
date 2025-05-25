@@ -13,12 +13,12 @@ import (
 
 type AuthHandler struct {
 	errorMapper          errs.ErrorMapper
-	tokenGenerateUseCase usecase.TokenGenerateUseCase
+	tokenGenerateUseCase *usecase.TokenGenerateUseCase
 }
 
 func NewAuthHandler(
 	errorMapper errs.ErrorMapper,
-	tokenGenerateUseCase usecase.TokenGenerateUseCase,
+	tokenGenerateUseCase *usecase.TokenGenerateUseCase,
 ) *AuthHandler {
 	return &AuthHandler{errorMapper, tokenGenerateUseCase}
 }

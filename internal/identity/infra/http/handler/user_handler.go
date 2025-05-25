@@ -16,18 +16,18 @@ import (
 
 type UserHandler struct {
 	errorMapper         shared_errs.ErrorMapper
-	userCreateUseCase   usecase.UserCreateUseCase
-	userUpdateUseCase   usecase.UserUpdateUseCase
-	userFindUseCase     usecase.UserFindUseCase
-	userActivateUseCase usecase.UserActivateUseCase
+	userCreateUseCase   *usecase.UserCreateUseCase
+	userUpdateUseCase   *usecase.UserUpdateUseCase
+	userFindUseCase     *usecase.UserFindUseCase
+	userActivateUseCase *usecase.UserActivateUseCase
 }
 
 func NewUserHandler(
 	errorMapper shared_errs.ErrorMapper,
-	userCreateUseCase usecase.UserCreateUseCase,
-	userUpdateUseCase usecase.UserUpdateUseCase,
-	userFindUseCase usecase.UserFindUseCase,
-	userActivateUseCase usecase.UserActivateUseCase,
+	userCreateUseCase *usecase.UserCreateUseCase,
+	userUpdateUseCase *usecase.UserUpdateUseCase,
+	userFindUseCase *usecase.UserFindUseCase,
+	userActivateUseCase *usecase.UserActivateUseCase,
 ) *UserHandler {
 	return &UserHandler{
 		errorMapper,
