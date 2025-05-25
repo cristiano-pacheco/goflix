@@ -23,6 +23,7 @@ func Init(cfg config.Config) {
 
 func get() Otel {
 	if !_initialized {
+		//nolint:sloglint // this is a module
 		slog.Error("otel not initialized")
 		panic("otel not initialized")
 	}

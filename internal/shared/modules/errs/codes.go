@@ -1,42 +1,42 @@
 package errs
 
 const (
-	// Authentication & Authorization
+	// Authentication & Authorization.
 	codeUnauthorized = "UNAUTHORIZED" // Not authenticated
 	codeForbidden    = "FORBIDDEN"    // Not authorized
 	codeInvalidToken = "INVALID_TOKEN"
 	codeTokenExpired = "TOKEN_EXPIRED"
 
-	// Input & Validation
+	// Input & Validation.
 	codeInvalidArgument = "INVALID_ARGUMENT" // Generic validation codeor
 
-	// Resource Status
+	// Resource Status.
 	codeNotFound      = "NOT_FOUND"      // Resource doesn't exist
 	codeAlreadyExists = "ALREADY_EXISTS" // Duplicate resource
 	codeConflict      = "CONFLICT"       // Resource state conflict
 	codeGone          = "GONE"           // Resource no longer available
 
-	// Business Logic
+	// Business Logic.
 	codeEmailInUse  = "EMAIL_IN_USE"
 	codeRateLimited = "RATE_LIMITED"
 
-	// External Services
+	// External Services.
 	codeExternalService = "EXTERNAL_SERVICE_ERROR"
 	codeDatabaseError   = "DATABASE_ERROR"
 	codeNetworkError    = "NETWORK_ERROR"
 
-	// Server codeors
+	// Server codeors.
 	codeInternalError      = "INTERNAL_ERROR" // Generic server codeor
 	codeNotImplemented     = "NOT_IMPLEMENTED"
 	codeServiceUnavailable = "SERVICE_UNAVAILABLE"
 	codeTimeout            = "TIMEOUT"
 
-	// Data
+	// Data.
 	codeInvalidState = "INVALID_STATE"
 
-	// Bad Request
+	// Bad Request.
 	codeBadRequest = "BAD_REQUEST"
 
-	// Unknown
+	// Unknown.
 	codeUnknown = "UNKNOWN"
 )

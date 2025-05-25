@@ -38,16 +38,19 @@ var dbMigrateCmd = &cobra.Command{
 
 		m, err := migrate.New("file://migrations", dsn)
 		if err != nil {
+			//nolint:sloglint // this is a command
 			slog.Error("Failed to create migration instance", "error", err)
 			os.Exit(1)
 		}
 
 		err = m.Up()
 		if err != nil && !errors.Is(err, migrate.ErrNoChange) {
+			//nolint:sloglint // this is a command
 			slog.Error("Failed to run migrations", "error", err)
 			os.Exit(1)
 		}
 
+		//nolint:sloglint // this is a command
 		slog.Info("Migrations executed successfully")
 		os.Exit(0)
 	},

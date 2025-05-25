@@ -3,8 +3,9 @@ package service_test
 import (
 	"testing"
 
-	"github.com/cristiano-pacheco/goflix/internal/identity/domain/service"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/cristiano-pacheco/goflix/internal/identity/domain/service"
 )
 
 type HashServiceTestSuite struct {

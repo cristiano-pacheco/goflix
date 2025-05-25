@@ -1,6 +1,8 @@
 package modules
 
 import (
+	"go.uber.org/fx"
+
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/config"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/database"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/errs"
@@ -11,7 +13,6 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/registry"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/translator"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/validator"
-	"go.uber.org/fx"
 )
 
 var Module = fx.Module(

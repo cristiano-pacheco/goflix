@@ -34,6 +34,7 @@ func NewDBMock(t *testing.T) (*sql.DB, *database.ShoplistDB, sqlmock.Sqlmock) {
 
 func CloseWithErrorCheck(closer io.Closer) {
 	if err := closer.Close(); err != nil {
+		//nolint:sloglint // this is a test file
 		slog.Error("failed to close resource", "error", err)
 	}
 }

@@ -35,7 +35,7 @@ type CORS struct {
 	Debug bool `mapstructure:"CORS_DEBUG"`
 }
 
-// GetAllowedOrigins returns the allowed origins as a string slice
+// GetAllowedOrigins returns the allowed origins as a string slice.
 func (c *CORS) GetAllowedOrigins() []string {
 	if c.AllowedOrigins == "" {
 		return []string{"*"}
@@ -43,7 +43,7 @@ func (c *CORS) GetAllowedOrigins() []string {
 	return splitAndTrim(c.AllowedOrigins)
 }
 
-// GetAllowedMethods returns the allowed methods as a string slice
+// GetAllowedMethods returns the allowed methods as a string slice.
 func (c *CORS) GetAllowedMethods() []string {
 	if c.AllowedMethods == "" {
 		return []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
@@ -51,7 +51,7 @@ func (c *CORS) GetAllowedMethods() []string {
 	return splitAndTrim(c.AllowedMethods)
 }
 
-// GetAllowedHeaders returns the allowed headers as a string slice
+// GetAllowedHeaders returns the allowed headers as a string slice.
 func (c *CORS) GetAllowedHeaders() []string {
 	if c.AllowedHeaders == "" {
 		return []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"}
@@ -59,7 +59,7 @@ func (c *CORS) GetAllowedHeaders() []string {
 	return splitAndTrim(c.AllowedHeaders)
 }
 
-// GetExposedHeaders returns the exposed headers as a string slice
+// GetExposedHeaders returns the exposed headers as a string slice.
 func (c *CORS) GetExposedHeaders() []string {
 	if c.ExposedHeaders == "" {
 		return []string{"Link"}
@@ -67,7 +67,7 @@ func (c *CORS) GetExposedHeaders() []string {
 	return splitAndTrim(c.ExposedHeaders)
 }
 
-// Helper function to split comma-separated values and trim spaces
+// Helper function to split comma-separated values and trim spaces.
 func splitAndTrim(s string) []string {
 	if s == "" {
 		return []string{}

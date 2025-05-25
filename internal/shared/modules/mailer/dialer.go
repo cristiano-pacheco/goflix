@@ -1,8 +1,9 @@
 package mailer
 
 import (
-	"github.com/cristiano-pacheco/goflix/internal/shared/modules/config"
 	"github.com/go-mail/mail/v2"
+
+	"github.com/cristiano-pacheco/goflix/internal/shared/modules/config"
 )
 
 func NewDialer(cfg config.Config) *mail.Dialer {

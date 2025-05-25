@@ -43,10 +43,12 @@ func Init() {
 		panic(err)
 	}
 
+	//nolint:sloglint // this is a module
 	slog.Info("Using config file", "file", v.ConfigFileUsed())
 
 	// Unmarshal the config into our struct
 	if err := v.Unmarshal(&_global); err != nil {
+		//nolint:sloglint // this is a module
 		slog.Error("Failed to unmarshal config", "error", err)
 		panic(err)
 	}

@@ -23,6 +23,7 @@ func Error(w http.ResponseWriter, err error) {
 				"message": "Internal server error",
 			},
 		}); encodeErr != nil {
+			//nolint:sloglint // this is a response writer
 			slog.Error("Failed to encode error response", "error", encodeErr)
 		}
 		return
@@ -35,6 +36,7 @@ func Error(w http.ResponseWriter, err error) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(rError.Status)
 	if encodeErr := json.NewEncoder(w).Encode(rError); encodeErr != nil {
+		//nolint:sloglint // this is a response writer
 		slog.Error("Failed to encode error response", "error", encodeErr)
 	}
 }
@@ -52,6 +54,7 @@ func JSON(w http.ResponseWriter, status int, envelope Envelope, headers http.Hea
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	if _, writeErr := w.Write(js); writeErr != nil {
+		//nolint:sloglint // this is a response writer
 		slog.Error("Failed to write response", "error", writeErr)
 		return writeErr
 	}

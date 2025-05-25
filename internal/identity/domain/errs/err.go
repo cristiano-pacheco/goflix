@@ -8,7 +8,7 @@ var (
 	ErrNotFound = errors.New("not found")
 )
 
-// Password validation errors
+// Password validation errors.
 var (
 	ErrPasswordTooShort      = errors.New("password must be at least 8 characters long")
 	ErrPasswordNoUppercase   = errors.New("password must contain at least one uppercase letter")

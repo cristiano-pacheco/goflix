@@ -3,9 +3,10 @@ package validator_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/suite"
+
 	customerr "github.com/cristiano-pacheco/goflix/internal/identity/domain/errs"
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/validator"
-	"github.com/stretchr/testify/suite"
 )
 
 type PasswordValidatorTestSuite struct {
