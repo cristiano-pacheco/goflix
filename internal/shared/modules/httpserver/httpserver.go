@@ -3,11 +3,12 @@ package httpserver
 import (
 	"context"
 
-	_ "github.com/cristiano-pacheco/goflix/docs"
-	"github.com/cristiano-pacheco/goflix/internal/shared/modules/config"
-	"github.com/cristiano-pacheco/goflix/pkg/httpserver"
 	"github.com/julienschmidt/httprouter"
 	"go.uber.org/fx"
+
+	_ "github.com/cristiano-pacheco/goflix/docs" // imports swagger docs for API documentation
+	"github.com/cristiano-pacheco/goflix/internal/shared/modules/config"
+	"github.com/cristiano-pacheco/goflix/pkg/httpserver"
 )
 
 type HTTPServer struct {

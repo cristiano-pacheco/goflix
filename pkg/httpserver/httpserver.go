@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -41,7 +42,7 @@ func NewHTTPServer(
 					header.Set("Access-Control-Allow-Credentials", "true")
 				}
 				if corsConfig.MaxAge > 0 {
-					header.Set("Access-Control-Max-Age", fmt.Sprintf("%d", corsConfig.MaxAge))
+					header.Set("Access-Control-Max-Age", strconv.Itoa(corsConfig.MaxAge))
 				}
 			}
 			w.WriteHeader(http.StatusNoContent)
