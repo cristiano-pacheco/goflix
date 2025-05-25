@@ -85,8 +85,8 @@ func TestCreateUserModel(t *testing.T) {
 		user, err := model.CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, model.UserModel{}, user)
+		require.Error(t, err)
+		require.Equal(t, model.UserModel{}, user)
 	})
 
 	t.Run("empty password hash", func(t *testing.T) {
@@ -101,9 +101,9 @@ func TestCreateUserModel(t *testing.T) {
 		user, err := model.CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "password hash is required", err.Error())
-		assert.Equal(t, model.UserModel{}, user)
+		require.Error(t, err)
+		require.Equal(t, "password hash is required", err.Error())
+		require.Equal(t, model.UserModel{}, user)
 	})
 
 	t.Run("password hash too short", func(t *testing.T) {
@@ -118,9 +118,9 @@ func TestCreateUserModel(t *testing.T) {
 		user, err := model.CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "password hash appears to be too short (minimum 32 characters)", err.Error())
-		assert.Equal(t, model.UserModel{}, user)
+		require.Error(t, err)
+		require.Equal(t, "password hash appears to be too short (minimum 32 characters)", err.Error())
+		require.Equal(t, model.UserModel{}, user)
 	})
 
 	t.Run("password hash too long", func(t *testing.T) {
@@ -135,9 +135,9 @@ func TestCreateUserModel(t *testing.T) {
 		user, err := model.CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "password hash exceeds maximum length of 255 characters", err.Error())
-		assert.Equal(t, model.UserModel{}, user)
+		require.Error(t, err)
+		require.Equal(t, "password hash exceeds maximum length of 255 characters", err.Error())
+		require.Equal(t, model.UserModel{}, user)
 	})
 
 	t.Run("empty confirmation token", func(t *testing.T) {

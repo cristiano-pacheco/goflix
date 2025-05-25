@@ -7,6 +7,13 @@ import (
 	"time"
 )
 
+const (
+	minPasswordHashLength = 32
+	maxPasswordHashLength = 255
+	minTokenLength        = 16
+	maxTokenLength        = 255
+)
+
 type UserModel struct {
 	id                     uint64
 	name                   NameModel
@@ -118,7 +125,6 @@ func RestoreUserModel(
 	}, nil
 }
 
-// Getter methods
 func (u *UserModel) ID() uint64 {
 	return u.id
 }
@@ -167,7 +173,6 @@ func (u *UserModel) UpdatedAt() time.Time {
 	return u.updatedAt
 }
 
-// Business methods
 func (u *UserModel) Activate() {
 	u.isActivated = true
 	u.updatedAt = time.Now().UTC()
@@ -241,8 +246,10 @@ func (u *UserModel) UpdatePasswordHash(newPasswordHash string) error {
 	return nil
 }
 
-// Validation functions
-func validateUserCreationInputs(name, email, passwordHash, confirmationToken string, confirmationExpiresAt time.Time) error {
+func validateUserCreationInputs(
+	name, email, passwordHash, confirmationToken string,
+	confirmationExpiresAt time.Time,
+) error {
 	if err := validatePasswordHash(passwordHash); err != nil {
 		return err
 	}
@@ -258,7 +265,7 @@ func validateUserCreationInputs(name, email, passwordHash, confirmationToken str
 	return nil
 }
 
-func validateUserRestorationInputs(id uint64, name, email, passwordHash string, createdAt, updatedAt time.Time) error {
+func validateUserRestorationInputs(id uint64, email, passwordHash string, createdAt, updatedAt time.Time) error {
 	if id == 0 {
 		return errors.New("user ID is required and must be greater than zero")
 	}
@@ -280,11 +287,11 @@ func validatePasswordHash(passwordHash string) error {
 	}
 
 	// Basic validation for common hash formats (bcrypt, argon2, etc.)
-	if len(passwordHash) < 32 {
+	if len(passwordHash) < minPasswordHashLength {
 		return errors.New("password hash appears to be too short (minimum 32 characters)")
 	}
 
-	if len(passwordHash) > 255 {
+	if len(passwordHash) > maxPasswordHashLength {
 		return errors.New("password hash exceeds maximum length of 255 characters")
 	}
 
@@ -296,11 +303,11 @@ func validateConfirmationToken(token string) error {
 		return errors.New("confirmation token is required")
 	}
 
-	if len(token) < 16 {
+	if len(token) < minTokenLength {
 		return errors.New("confirmation token must be at least 16 characters long")
 	}
 
-	if len(token) > 255 {
+	if len(token) > maxTokenLength {
 		return errors.New("confirmation token exceeds maximum length of 255 characters")
 	}
 
@@ -324,11 +331,11 @@ func validateResetPasswordToken(token string, expiresAt time.Time) error {
 		return errors.New("reset password token is required")
 	}
 
-	if len(token) < 16 {
+	if len(token) < minTokenLength {
 		return errors.New("reset password token must be at least 16 characters long")
 	}
 
-	if len(token) > 255 {
+	if len(token) > maxTokenLength {
 		return errors.New("reset password token exceeds maximum length of 255 characters")
 	}
 

@@ -4,8 +4,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
 )
 
 func TestCreateAuthTokenModel(t *testing.T) {
@@ -19,7 +21,7 @@ func TestCreateAuthTokenModel(t *testing.T) {
 		result, err := model.CreateAuthTokenModel(userID, token, expiresAt)
 
 		// Assert
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, userID, result.UserID())
 		assert.Equal(t, token, result.Token())
 		assert.Equal(t, expiresAt, result.ExpiresAt())
@@ -146,7 +148,7 @@ func TestRestoreAuthTokenModel(t *testing.T) {
 		result, err := model.RestoreAuthTokenModel(id, userID, token, expiresAt, createdAt, updatedAt)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "token is required", err.Error())
 		assert.Equal(t, model.AuthTokenModel{}, result)
 	})
@@ -164,7 +166,7 @@ func TestRestoreAuthTokenModel(t *testing.T) {
 		result, err := model.RestoreAuthTokenModel(id, userID, token, expiresAt, createdAt, updatedAt)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "expiration time is required", err.Error())
 		assert.Equal(t, model.AuthTokenModel{}, result)
 	})
