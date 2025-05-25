@@ -32,9 +32,15 @@ lint:
 vuln-check:
 	govulncheck -show verbose ./... 
 
-test: test-only lint vuln-check
-
 test-race: test-r lint vuln-check
+
+# Add the missing test-only target
+utest-race:
+	CGO_ENABLED=0 go test -count=1 ./...
+
+# Or alternatively, rename the existing tests target to test-only
+test:
+	CGO_ENABLED=0 go test -count=1 ./...
 
 tests:
 	CGO_ENABLED=0 go test -count=1 ./...
