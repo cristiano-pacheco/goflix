@@ -14,7 +14,7 @@ var rootCmd = &cobra.Command{
 	Use:   "goflix",
 	Short: "GoFlix API",
 	Long:  `GoFlix API is a RESTful API for managing a video streaming platform.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		app := fx.New(
 			shared_modules.Module,
 			identity.Module,

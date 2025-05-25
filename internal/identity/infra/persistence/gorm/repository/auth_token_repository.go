@@ -32,26 +32,26 @@ func (r *authTokenRepository) Create(
 	ctx, span := otel.Trace().StartSpan(ctx, "AuthTokenRepository.Create")
 	defer span.End()
 
-	AuthTokenEntity := r.mapper.ToEntity(AuthTokenModel)
-	result := r.db.WithContext(ctx).Create(&AuthTokenEntity)
+	authTokenEntity := r.mapper.ToEntity(AuthTokenModel)
+	result := r.db.WithContext(ctx).Create(&authTokenEntity)
 	if result.Error != nil {
 		return model.AuthTokenModel{}, result.Error
 	}
 
-	AuthTokenModel, err := r.mapper.ToModel(AuthTokenEntity)
+	authTokenModel, err := r.mapper.ToModel(authTokenEntity)
 	if err != nil {
 		return model.AuthTokenModel{}, err
 	}
 
-	return AuthTokenModel, nil
+	return authTokenModel, nil
 }
 
 func (r *authTokenRepository) Update(ctx context.Context, AuthTokenModel model.AuthTokenModel) error {
 	ctx, span := otel.Trace().StartSpan(ctx, "AuthTokenRepository.Update")
 	defer span.End()
 
-	AuthTokenEntity := r.mapper.ToEntity(AuthTokenModel)
-	result := r.db.WithContext(ctx).Save(&AuthTokenEntity)
+	authTokenEntity := r.mapper.ToEntity(AuthTokenModel)
+	result := r.db.WithContext(ctx).Save(&authTokenEntity)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -79,21 +79,21 @@ func (r *authTokenRepository) FindByToken(ctx context.Context, token string) (mo
 	ctx, span := otel.Trace().StartSpan(ctx, "AuthTokenRepository.FindByToken")
 	defer span.End()
 
-	var AuthTokenEntity entity.AuthTokenEntity
-	result := r.db.WithContext(ctx).Where("token = ?", token).First(&AuthTokenEntity)
+	var authTokenEntity entity.AuthTokenEntity
+	result := r.db.WithContext(ctx).Where("token = ?", token).First(&authTokenEntity)
 
 	if result.Error != nil {
 		return model.AuthTokenModel{}, result.Error
 	}
 
-	if AuthTokenEntity.ID == 0 {
+	if authTokenEntity.ID == 0 {
 		return model.AuthTokenModel{}, errs.ErrNotFound
 	}
 
-	AuthTokenModel, err := r.mapper.ToModel(AuthTokenEntity)
+	authTokenModel, err := r.mapper.ToModel(authTokenEntity)
 	if err != nil {
 		return model.AuthTokenModel{}, err
 	}
 
-	return AuthTokenModel, nil
+	return authTokenModel, nil
 }

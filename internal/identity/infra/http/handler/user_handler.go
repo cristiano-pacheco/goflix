@@ -121,7 +121,8 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 		Name:   updateUserRequest.Name,
 	}
 
-	if err := h.userUpdateUseCase.Execute(ctx, input); err != nil {
+	err = h.userUpdateUseCase.Execute(ctx, input)
+	if err != nil {
 		response.Error(w, err)
 		return
 	}

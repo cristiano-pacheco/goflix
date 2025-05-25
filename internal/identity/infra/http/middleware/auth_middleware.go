@@ -55,7 +55,7 @@ func (m *AuthMiddleware) Middleware(next http.HandlerFunc) http.HandlerFunc {
 		jwtToken := strings.TrimSpace(bearerToken[7:])
 		pk := m.privateKeyRegistry.Get()
 
-		tokenKeyFunc := func(token *jwt.Token) (interface{}, error) {
+		tokenKeyFunc := func(_ *jwt.Token) (interface{}, error) {
 			return &pk.PublicKey, nil
 		}
 
