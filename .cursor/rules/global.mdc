@@ -34,6 +34,11 @@ Global rules
 * **3.4 Constant-time secrets.** Compare passwords, HMACs, and tokens with `subtle.ConstantTimeCompare`.
 * **3.5 Keep dependencies patched.** Run `go list -u -m -all` in CI and update promptly.
 
+### 4. Golang General Rules
+- Avoid magic numbers. Use named constants for durations, sizes, limits.
+- Name shows intent. Prefer readHeaderTimeout over 10 * time.Second.
+- Group related constants. Use const (...) for clarity.
+
 ---
 
 Keep it simple, explicit, and safe—your future self (and team) will thank you.
