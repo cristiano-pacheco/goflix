@@ -3,7 +3,7 @@ package dbtest
 import (
 	"database/sql"
 	"io"
-	"log"
+	"log/slog"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
@@ -33,6 +33,6 @@ func NewDBMock(t *testing.T) (*sql.DB, *database.ShoplistDB, sqlmock.Sqlmock) {
 
 func CloseWithErrorCheck(closer io.Closer) {
 	if err := closer.Close(); err != nil {
-		log.Printf("failed to close resource: %v", err)
+		slog.Error("failed to close resource", "error", err)
 	}
 }

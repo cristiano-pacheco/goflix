@@ -15,6 +15,8 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/validator"
 )
 
+const confirmationTokenExpiryHours = 24
+
 type UserCreateUseCase struct {
 	sendEmailConfirmationService service.SendEmailConfirmationService
 	hashService                  service.HashService
@@ -88,7 +90,7 @@ func (uc *UserCreateUseCase) Execute(ctx context.Context, input UserCreateInput)
 
 	// encode the token
 	confirmationToken := base64.StdEncoding.EncodeToString(token)
-	confirmationExpiresAt := time.Now().UTC().Add(time.Hour * 24)
+	confirmationExpiresAt := time.Now().UTC().Add(time.Hour * confirmationTokenExpiryHours)
 
 	userModel, err := model.CreateUserModel(
 		input.Name,

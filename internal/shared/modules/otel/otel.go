@@ -1,7 +1,7 @@
 package otel
 
 import (
-	"log"
+	"log/slog"
 
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/config"
 	"github.com/cristiano-pacheco/goflix/pkg/otel/trace"
@@ -23,7 +23,8 @@ func Init(cfg config.Config) {
 
 func get() Otel {
 	if !_initialized {
-		log.Fatalf("otel not initialized")
+		slog.Error("otel not initialized")
+		panic("otel not initialized")
 	}
 	return _global
 }

@@ -21,10 +21,10 @@ func (em *errorMapper) mapCustomError(status int, message string) error {
 }
 
 func (em *errorMapper) mapError(err error) error {
-	validationErrors, ok := err.(lib_validator.ValidationErrors)
+	var validationErrors lib_validator.ValidationErrors
 
 	// validation error flow
-	if ok {
+	if errors.As(err, &validationErrors) {
 		var details []detail
 		for _, e := range validationErrors {
 			details = append(details, detail{

@@ -1,7 +1,7 @@
 package config
 
 import (
-	"log"
+	"log/slog"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -43,11 +43,12 @@ func Init() {
 		panic(err)
 	}
 
-	log.Printf("Using config file: %s", v.ConfigFileUsed())
+	slog.Info("Using config file", "file", v.ConfigFileUsed())
 
 	// Unmarshal the config into our struct
 	if err := v.Unmarshal(&_global); err != nil {
-		log.Fatalf("Failed to unmarshal config: %+v", err)
+		slog.Error("Failed to unmarshal config", "error", err)
+		panic(err)
 	}
 }
 

@@ -1,24 +1,24 @@
 package cmd
 
 import (
-	"fmt"
-	"log"
+	"errors"
+	"log/slog"
 	"os"
 
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/config"
 	"github.com/cristiano-pacheco/goflix/pkg/database"
 	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres" // required for postgres driver
+	_ "github.com/golang-migrate/migrate/v4/source/file"       // required for file source
 	"github.com/spf13/cobra"
 )
 
-// dbMigrateCmd represents the migrate command
+// dbMigrateCmd represents the migrate command.
 var dbMigrateCmd = &cobra.Command{
 	Use:   "db:migrate",
 	Short: "Run database migrations",
 	Long:  `Run database migrations. This command will run all the migrations that have not been run yet.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		config.Init()
 		cfg := config.GetConfig()
 		dbConfig := database.Config{
@@ -37,14 +37,16 @@ var dbMigrateCmd = &cobra.Command{
 
 		m, err := migrate.New("file://migrations", dsn)
 		if err != nil {
-			log.Fatal(err)
+			slog.Error("Failed to create migration instance", "error", err)
+			os.Exit(1)
 		}
 
-		if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-			log.Fatal(err)
+		if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+			slog.Error("Failed to run migrations", "error", err)
+			os.Exit(1)
 		}
 
-		fmt.Println("Migrations executed successfully")
+		slog.Info("Migrations executed successfully")
 		os.Exit(0)
 	},
 }

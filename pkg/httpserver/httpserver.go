@@ -51,7 +51,10 @@ func NewHTTPServer(
 	// Health check
 	r.GET("/healthcheck", func(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
+		if _, err := w.Write([]byte("OK")); err != nil {
+			// Log error but don't return it since response has already started
+			w.WriteHeader(http.StatusInternalServerError)
+		}
 	})
 
 	// Metrics endpoint

@@ -2,6 +2,8 @@ package response
 
 import (
 	"encoding/json"
+	"errors"
+	"log/slog"
 	"maps"
 	"net/http"
 
@@ -9,18 +11,20 @@ import (
 )
 
 func Error(w http.ResponseWriter, err error) {
-	rError, ok := err.(*errs.Error)
-	if !ok {
+	var rError *errs.Error
+	if !errors.As(err, &rError) {
 		// If it's not our custom error type, convert it to a generic error
 		httpStatus := http.StatusInternalServerError
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(httpStatus)
-		json.NewEncoder(w).Encode(Envelope{
+		if encodeErr := json.NewEncoder(w).Encode(Envelope{
 			"error": map[string]string{
 				"code":    "internal_server_error",
 				"message": "Internal server error",
 			},
-		})
+		}); encodeErr != nil {
+			slog.Error("Failed to encode error response", "error", encodeErr)
+		}
 		return
 	}
 
@@ -30,7 +34,9 @@ func Error(w http.ResponseWriter, err error) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(rError.Status)
-	json.NewEncoder(w).Encode(rError)
+	if encodeErr := json.NewEncoder(w).Encode(rError); encodeErr != nil {
+		slog.Error("Failed to encode error response", "error", encodeErr)
+	}
 }
 
 func JSON(w http.ResponseWriter, status int, envelope Envelope, headers http.Header) error {
@@ -45,7 +51,10 @@ func JSON(w http.ResponseWriter, status int, envelope Envelope, headers http.Hea
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
-	w.Write(js)
+	if _, writeErr := w.Write(js); writeErr != nil {
+		slog.Error("Failed to write response", "error", writeErr)
+		return writeErr
+	}
 
 	return nil
 }
