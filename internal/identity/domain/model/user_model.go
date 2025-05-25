@@ -265,7 +265,7 @@ func validateUserCreationInputs(
 	return nil
 }
 
-func validateUserRestorationInputs(id uint64, email, passwordHash string, createdAt, updatedAt time.Time) error {
+func validateUserRestorationInputs(id uint64, name, email, passwordHash string, createdAt, updatedAt time.Time) error {
 	if id == 0 {
 		return errors.New("user ID is required and must be greater than zero")
 	}

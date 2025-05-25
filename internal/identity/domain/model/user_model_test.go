@@ -5,9 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
 )
 
 func TestCreateUserModel(t *testing.T) {
@@ -69,7 +70,7 @@ func TestCreateUserModel(t *testing.T) {
 		user, err := model.CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, model.UserModel{}, user)
 	})
 

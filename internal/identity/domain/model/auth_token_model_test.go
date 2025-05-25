@@ -40,7 +40,7 @@ func TestCreateAuthTokenModel(t *testing.T) {
 		result, err := model.CreateAuthTokenModel(userID, token, expiresAt)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "user ID is required", err.Error())
 		assert.Equal(t, model.AuthTokenModel{}, result)
 	})
@@ -55,7 +55,7 @@ func TestCreateAuthTokenModel(t *testing.T) {
 		result, err := model.CreateAuthTokenModel(userID, token, expiresAt)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "token is required", err.Error())
 		assert.Equal(t, model.AuthTokenModel{}, result)
 	})
@@ -70,7 +70,7 @@ func TestCreateAuthTokenModel(t *testing.T) {
 		result, err := model.CreateAuthTokenModel(userID, token, expiresAt)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "expiration time is required", err.Error())
 		assert.Equal(t, model.AuthTokenModel{}, result)
 	})
@@ -112,7 +112,7 @@ func TestRestoreAuthTokenModel(t *testing.T) {
 		result, err := model.RestoreAuthTokenModel(id, userID, token, expiresAt, createdAt, updatedAt)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "ID is required", err.Error())
 		assert.Equal(t, model.AuthTokenModel{}, result)
 	})
@@ -130,7 +130,7 @@ func TestRestoreAuthTokenModel(t *testing.T) {
 		result, err := model.RestoreAuthTokenModel(id, userID, token, expiresAt, createdAt, updatedAt)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "user ID is required", err.Error())
 		assert.Equal(t, model.AuthTokenModel{}, result)
 	})
