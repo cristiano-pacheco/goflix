@@ -11,16 +11,18 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-func OpenConnection(cfg DatabaseConfig) *gorm.DB {
+const defaultSlowQueryThreshold = 200 * time.Millisecond
+
+func OpenConnection(cfg Config) *gorm.DB {
 	dsn := generateGormDatabaseDSN(cfg)
 	gormConf := gorm.Config{}
 
 	loggerConfig := logger.Config{
-		SlowThreshold:             200 * time.Millisecond, // Slow SQL threshold
-		LogLevel:                  cfg.LogLevel,           // Log level
-		IgnoreRecordNotFoundError: true,                   // Ignore ErrRecordNotFound error for logger
-		ParameterizedQueries:      true,                   // Don't include params in the SQL log
-		Colorful:                  false,                  // Disable color
+		SlowThreshold:             defaultSlowQueryThreshold, // Slow SQL threshold
+		LogLevel:                  cfg.LogLevel,              // Log level
+		IgnoreRecordNotFoundError: true,                      // Ignore ErrRecordNotFound error for logger
+		ParameterizedQueries:      true,                      // Don't include params in the SQL log
+		Colorful:                  false,                     // Disable color
 	}
 
 	newLogger := logger.New(
@@ -41,7 +43,7 @@ func OpenConnection(cfg DatabaseConfig) *gorm.DB {
 	return db
 }
 
-func generateGormDatabaseDSN(cfg DatabaseConfig) string {
+func generateGormDatabaseDSN(cfg Config) string {
 	sslMode := "enabled"
 	if !cfg.SSLMode {
 		sslMode = "disable"
@@ -66,7 +68,7 @@ func generateGormDatabaseDSN(cfg DatabaseConfig) string {
 	return dsn
 }
 
-func GeneratePostgresDatabaseDSN(cfg DatabaseConfig) string {
+func GeneratePostgresDatabaseDSN(cfg Config) string {
 	return fmt.Sprintf(
 		"postgres://%s:%s@%s:%d/%s?sslmode=disable&TimeZone=UTC",
 		cfg.User,

@@ -2,7 +2,7 @@ package database
 
 import "gorm.io/gorm/logger"
 
-type DatabaseConfig struct {
+type Config struct {
 	Host               string
 	Name               string
 	User               string

@@ -21,7 +21,7 @@ var dbMigrateCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		config.Init()
 		cfg := config.GetConfig()
-		dbConfig := database.DatabaseConfig{
+		dbConfig := database.Config{
 			Host:               cfg.DB.Host,
 			User:               cfg.DB.User,
 			Password:           cfg.DB.Password,

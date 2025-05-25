@@ -11,7 +11,7 @@ type ShoplistDB struct {
 }
 
 func New(cfg config.Config) *ShoplistDB {
-	dbConfig := database.DatabaseConfig{
+	dbConfig := database.Config{
 		Host:               cfg.DB.Host,
 		User:               cfg.DB.User,
 		Password:           cfg.DB.Password,
