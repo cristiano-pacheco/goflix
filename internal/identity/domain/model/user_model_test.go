@@ -152,9 +152,9 @@ func TestCreateUserModel(t *testing.T) {
 		user, err := model.CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "confirmation token is required", err.Error())
-		assert.Equal(t, model.UserModel{}, user)
+		require.Error(t, err)
+		require.Equal(t, "confirmation token is required", err.Error())
+		require.Equal(t, model.UserModel{}, user)
 	})
 
 	t.Run("confirmation token too short", func(t *testing.T) {
@@ -169,9 +169,9 @@ func TestCreateUserModel(t *testing.T) {
 		user, err := model.CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "confirmation token must be at least 16 characters long", err.Error())
-		assert.Equal(t, model.UserModel{}, user)
+		require.Error(t, err)
+		require.Equal(t, "confirmation token must be at least 16 characters long", err.Error())
+		require.Equal(t, model.UserModel{}, user)
 	})
 
 	t.Run("confirmation expires in the past", func(t *testing.T) {
@@ -186,9 +186,9 @@ func TestCreateUserModel(t *testing.T) {
 		user, err := model.CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "confirmation expiration time must be in the future", err.Error())
-		assert.Equal(t, model.UserModel{}, user)
+		require.Error(t, err)
+		require.Equal(t, "confirmation expiration time must be in the future", err.Error())
+		require.Equal(t, model.UserModel{}, user)
 	})
 }
 
@@ -249,9 +249,9 @@ func TestRestoreUserModel(t *testing.T) {
 		)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "user ID is required and must be greater than zero", err.Error())
-		assert.Equal(t, model.UserModel{}, user)
+		require.Error(t, err)
+		require.Equal(t, "user ID is required and must be greater than zero", err.Error())
+		require.Equal(t, model.UserModel{}, user)
 	})
 
 	t.Run("updated at before created at", func(t *testing.T) {
@@ -271,9 +271,9 @@ func TestRestoreUserModel(t *testing.T) {
 		)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "updated at timestamp cannot be before created at timestamp", err.Error())
-		assert.Equal(t, model.UserModel{}, user)
+		require.Error(t, err)
+		require.Equal(t, "updated at timestamp cannot be before created at timestamp", err.Error())
+		require.Equal(t, model.UserModel{}, user)
 	})
 }
 
@@ -373,8 +373,8 @@ func TestUserModel_BusinessMethods(t *testing.T) {
 		err := user.SetResetPasswordDetails(token, expiresAt)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "reset password token must be at least 16 characters long", err.Error())
+		require.Error(t, err)
+		require.Equal(t, "reset password token must be at least 16 characters long", err.Error())
 	})
 
 	t.Run("ClearResetPasswordDetails", func(t *testing.T) {

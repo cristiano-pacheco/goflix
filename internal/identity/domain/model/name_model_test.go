@@ -6,6 +6,7 @@ import (
 
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestCreateNameModel(t *testing.T) {
@@ -47,8 +48,8 @@ func TestCreateNameModel(t *testing.T) {
 		result, err := model.CreateNameModel(nameWithSpaces)
 
 		// Assert
-		assert.NoError(t, err)
-		assert.Equal(t, expectedName, result.String())
+		require.NoError(t, err)
+		require.Equal(t, expectedName, result.String())
 	})
 
 	t.Run("empty name", func(t *testing.T) {
@@ -85,9 +86,9 @@ func TestCreateNameModel(t *testing.T) {
 		result, err := model.CreateNameModel(name)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "name must be at least 2 characters long", err.Error())
-		assert.Equal(t, model.NameModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "name must be at least 2 characters long", err.Error())
+		require.Equal(t, model.NameModel{}, result)
 	})
 
 	t.Run("unicode name too short", func(t *testing.T) {
@@ -98,9 +99,9 @@ func TestCreateNameModel(t *testing.T) {
 		result, err := model.CreateNameModel(name)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "name must be at least 2 characters long", err.Error())
-		assert.Equal(t, model.NameModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "name must be at least 2 characters long", err.Error())
+		require.Equal(t, model.NameModel{}, result)
 	})
 
 	t.Run("name exceeds maximum length", func(t *testing.T) {
@@ -111,9 +112,9 @@ func TestCreateNameModel(t *testing.T) {
 		result, err := model.CreateNameModel(longName)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "name cannot exceed 255 characters", err.Error())
-		assert.Equal(t, model.NameModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "name cannot exceed 255 characters", err.Error())
+		require.Equal(t, model.NameModel{}, result)
 	})
 
 	t.Run("unicode name exceeds maximum length", func(t *testing.T) {
@@ -124,9 +125,9 @@ func TestCreateNameModel(t *testing.T) {
 		result, err := model.CreateNameModel(longName)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "name cannot exceed 255 characters", err.Error())
-		assert.Equal(t, model.NameModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "name cannot exceed 255 characters", err.Error())
+		require.Equal(t, model.NameModel{}, result)
 	})
 
 	t.Run("name starts with number", func(t *testing.T) {
@@ -137,9 +138,9 @@ func TestCreateNameModel(t *testing.T) {
 		result, err := model.CreateNameModel(name)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "name must start with a letter", err.Error())
-		assert.Equal(t, model.NameModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "name must start with a letter", err.Error())
+		require.Equal(t, model.NameModel{}, result)
 	})
 
 	t.Run("name starts with hyphen", func(t *testing.T) {
@@ -150,9 +151,9 @@ func TestCreateNameModel(t *testing.T) {
 		result, err := model.CreateNameModel(name)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "name must start with a letter", err.Error())
-		assert.Equal(t, model.NameModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "name must start with a letter", err.Error())
+		require.Equal(t, model.NameModel{}, result)
 	})
 
 	t.Run("name ends with hyphen", func(t *testing.T) {
@@ -163,9 +164,9 @@ func TestCreateNameModel(t *testing.T) {
 		result, err := model.CreateNameModel(name)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "name must end with a letter or digit", err.Error())
-		assert.Equal(t, model.NameModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "name must end with a letter or digit", err.Error())
+		require.Equal(t, model.NameModel{}, result)
 	})
 
 	t.Run("name with consecutive spaces", func(t *testing.T) {
@@ -176,9 +177,9 @@ func TestCreateNameModel(t *testing.T) {
 		result, err := model.CreateNameModel(name)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "name cannot contain consecutive spaces", err.Error())
-		assert.Equal(t, model.NameModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "name cannot contain consecutive spaces", err.Error())
+		require.Equal(t, model.NameModel{}, result)
 	})
 
 	t.Run("name with invalid characters", func(t *testing.T) {
@@ -203,11 +204,11 @@ func TestCreateNameModel(t *testing.T) {
 			result, err := model.CreateNameModel(name)
 
 			// Assert
-			assert.Error(t, err)
+			require.Error(t, err)
 			expectedError := "name contains invalid characters (only letters, digits, spaces, " +
 				"hyphens, apostrophes, and periods are allowed)"
-			assert.Equal(t, expectedError, err.Error())
-			assert.Equal(t, model.NameModel{}, result)
+			require.Equal(t, expectedError, err.Error())
+			require.Equal(t, model.NameModel{}, result)
 		}
 	})
 
@@ -219,9 +220,9 @@ func TestCreateNameModel(t *testing.T) {
 		result, err := model.CreateNameModel(name)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "name cannot contain more than 3 consecutive punctuation marks", err.Error())
-		assert.Equal(t, model.NameModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "name cannot contain more than 3 consecutive punctuation marks", err.Error())
+		require.Equal(t, model.NameModel{}, result)
 	})
 
 	t.Run("name with leading spaces after trimming", func(t *testing.T) {
@@ -232,8 +233,8 @@ func TestCreateNameModel(t *testing.T) {
 		result, err := model.CreateNameModel(name)
 
 		// Assert
-		assert.NoError(t, err)
-		assert.Equal(t, "John", result.String())
+		require.NoError(t, err)
+		require.Equal(t, "John", result.String())
 	})
 
 	t.Run("name with trailing spaces after trimming", func(t *testing.T) {
@@ -244,8 +245,8 @@ func TestCreateNameModel(t *testing.T) {
 		result, err := model.CreateNameModel(name)
 
 		// Assert
-		assert.NoError(t, err)
-		assert.Equal(t, "John", result.String())
+		require.NoError(t, err)
+		require.Equal(t, "John", result.String())
 	})
 }
 
@@ -259,8 +260,8 @@ func TestNameModel_String(t *testing.T) {
 		result := nameModel.String()
 
 		// Assert
-		assert.NoError(t, err)
-		assert.Equal(t, expectedName, result)
+		require.NoError(t, err)
+		require.Equal(t, expectedName, result)
 	})
 
 	t.Run("returns unicode name value", func(t *testing.T) {
@@ -272,7 +273,7 @@ func TestNameModel_String(t *testing.T) {
 		result := nameModel.String()
 
 		// Assert
-		assert.NoError(t, err)
-		assert.Equal(t, expectedName, result)
+		require.NoError(t, err)
+		require.Equal(t, expectedName, result)
 	})
 }

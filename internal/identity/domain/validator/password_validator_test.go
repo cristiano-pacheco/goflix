@@ -1,12 +1,10 @@
 package validator_test
 
 import (
-	"errors"
 	"testing"
 
 	customerr "github.com/cristiano-pacheco/goflix/internal/identity/domain/errs"
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/validator"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -31,7 +29,7 @@ func (suite *PasswordValidatorTestSuite) TestValidate_ValidPassword() {
 	err := suite.validator.Validate(validPassword)
 
 	// Assert
-	assert.NoError(suite.T(), err)
+	suite.NoError(err)
 }
 
 func (suite *PasswordValidatorTestSuite) TestValidate_TooShort() {
@@ -42,8 +40,8 @@ func (suite *PasswordValidatorTestSuite) TestValidate_TooShort() {
 	err := suite.validator.Validate(shortPassword)
 
 	// Assert
-	assert.Error(suite.T(), err)
-	assert.True(suite.T(), errors.Is(err, customerr.ErrPasswordTooShort))
+	suite.Require().Error(err)
+	suite.Require().ErrorIs(err, customerr.ErrPasswordTooShort)
 }
 
 func (suite *PasswordValidatorTestSuite) TestValidate_NoUppercase() {
@@ -54,8 +52,8 @@ func (suite *PasswordValidatorTestSuite) TestValidate_NoUppercase() {
 	err := suite.validator.Validate(noUppercasePassword)
 
 	// Assert
-	assert.Error(suite.T(), err)
-	assert.True(suite.T(), errors.Is(err, customerr.ErrPasswordNoUppercase))
+	suite.Require().Error(err)
+	suite.Require().ErrorIs(err, customerr.ErrPasswordNoUppercase)
 }
 
 func (suite *PasswordValidatorTestSuite) TestValidate_NoLowercase() {
@@ -66,8 +64,8 @@ func (suite *PasswordValidatorTestSuite) TestValidate_NoLowercase() {
 	err := suite.validator.Validate(noLowercasePassword)
 
 	// Assert
-	assert.Error(suite.T(), err)
-	assert.True(suite.T(), errors.Is(err, customerr.ErrPasswordNoLowercase))
+	suite.Require().Error(err)
+	suite.Require().ErrorIs(err, customerr.ErrPasswordNoLowercase)
 }
 
 func (suite *PasswordValidatorTestSuite) TestValidate_NoNumber() {
@@ -78,8 +76,8 @@ func (suite *PasswordValidatorTestSuite) TestValidate_NoNumber() {
 	err := suite.validator.Validate(noNumberPassword)
 
 	// Assert
-	assert.Error(suite.T(), err)
-	assert.True(suite.T(), errors.Is(err, customerr.ErrPasswordNoNumber))
+	suite.Require().Error(err)
+	suite.Require().ErrorIs(err, customerr.ErrPasswordNoNumber)
 }
 
 func (suite *PasswordValidatorTestSuite) TestValidate_NoSpecialCharacter() {
@@ -90,8 +88,8 @@ func (suite *PasswordValidatorTestSuite) TestValidate_NoSpecialCharacter() {
 	err := suite.validator.Validate(noSpecialCharPassword)
 
 	// Assert
-	assert.Error(suite.T(), err)
-	assert.True(suite.T(), errors.Is(err, customerr.ErrPasswordNoSpecialChar))
+	suite.Require().Error(err)
+	suite.Require().ErrorIs(err, customerr.ErrPasswordNoSpecialChar)
 }
 
 func (suite *PasswordValidatorTestSuite) TestValidate_UTF8Support() {
@@ -103,7 +101,7 @@ func (suite *PasswordValidatorTestSuite) TestValidate_UTF8Support() {
 	err := suite.validator.Validate(utf8Password)
 
 	// Assert
-	assert.NoError(suite.T(), err)
+	suite.NoError(err)
 }
 
 func (suite *PasswordValidatorTestSuite) TestValidate_UTF8Length() {
@@ -115,8 +113,8 @@ func (suite *PasswordValidatorTestSuite) TestValidate_UTF8Length() {
 	err := suite.validator.Validate(shortUtf8Password)
 
 	// Assert
-	assert.Error(suite.T(), err)
-	assert.True(suite.T(), errors.Is(err, customerr.ErrPasswordTooShort))
+	suite.Require().Error(err)
+	suite.Require().ErrorIs(err, customerr.ErrPasswordTooShort)
 }
 
 func (suite *PasswordValidatorTestSuite) TestValidate_EmptyPassword() {
@@ -127,8 +125,8 @@ func (suite *PasswordValidatorTestSuite) TestValidate_EmptyPassword() {
 	err := suite.validator.Validate(emptyPassword)
 
 	// Assert
-	assert.Error(suite.T(), err)
-	assert.True(suite.T(), errors.Is(err, customerr.ErrPasswordTooShort))
+	suite.Require().Error(err)
+	suite.Require().ErrorIs(err, customerr.ErrPasswordTooShort)
 }
 
 func (suite *PasswordValidatorTestSuite) TestValidate_ComplexUTF8Password() {
@@ -140,7 +138,7 @@ func (suite *PasswordValidatorTestSuite) TestValidate_ComplexUTF8Password() {
 	err := suite.validator.Validate(complexPassword)
 
 	// Assert
-	assert.NoError(suite.T(), err)
+	suite.NoError(err)
 }
 
 func (suite *PasswordValidatorTestSuite) TestValidate_EmojiPassword() {
@@ -152,5 +150,5 @@ func (suite *PasswordValidatorTestSuite) TestValidate_EmojiPassword() {
 	err := suite.validator.Validate(emojiPassword)
 
 	// Assert
-	assert.NoError(suite.T(), err)
+	suite.NoError(err)
 }

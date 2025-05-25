@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/service"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -29,10 +28,10 @@ func (suite *HashServiceTestSuite) TestGenerateFromPassword() {
 	hash, err := suite.hashService.GenerateFromPassword(password)
 
 	// Assert
-	assert.NoError(suite.T(), err)
-	assert.NotNil(suite.T(), hash)
-	assert.NotEqual(suite.T(), password, hash)
-	assert.Greater(suite.T(), len(hash), len(password))
+	suite.Require().NoError(err)
+	suite.NotNil(hash)
+	suite.NotEqual(password, hash)
+	suite.Greater(len(hash), len(password))
 }
 
 func (suite *HashServiceTestSuite) TestCompareHashAndPassword_ValidPassword() {
@@ -44,7 +43,7 @@ func (suite *HashServiceTestSuite) TestCompareHashAndPassword_ValidPassword() {
 	err := suite.hashService.CompareHashAndPassword(hash, password)
 
 	// Assert
-	assert.NoError(suite.T(), err)
+	suite.NoError(err)
 }
 
 func (suite *HashServiceTestSuite) TestCompareHashAndPassword_InvalidPassword() {
@@ -57,7 +56,7 @@ func (suite *HashServiceTestSuite) TestCompareHashAndPassword_InvalidPassword() 
 	err := suite.hashService.CompareHashAndPassword(hash, wrongPassword)
 
 	// Assert
-	assert.Error(suite.T(), err)
+	suite.Error(err)
 }
 
 func (suite *HashServiceTestSuite) TestGenerateRandomBytes() {
@@ -66,13 +65,13 @@ func (suite *HashServiceTestSuite) TestGenerateRandomBytes() {
 	randomBytes2, err2 := suite.hashService.GenerateRandomBytes()
 
 	// Assert
-	assert.NoError(suite.T(), err1)
-	assert.NoError(suite.T(), err2)
-	assert.NotNil(suite.T(), randomBytes1)
-	assert.NotNil(suite.T(), randomBytes2)
-	assert.Equal(suite.T(), 128, len(randomBytes1))        // Check default size
-	assert.Equal(suite.T(), 128, len(randomBytes2))        // Check default size
-	assert.NotEqual(suite.T(), randomBytes1, randomBytes2) // Should be different random values
+	suite.NoError(err1)
+	suite.NoError(err2)
+	suite.NotNil(randomBytes1)
+	suite.NotNil(randomBytes2)
+	suite.Len(randomBytes1, 128)               // Check default size
+	suite.Len(randomBytes2, 128)               // Check default size
+	suite.NotEqual(randomBytes1, randomBytes2) // Should be different random values
 }
 
 func (suite *HashServiceTestSuite) TestGenerateFromPassword_EmptyPassword() {
@@ -84,12 +83,12 @@ func (suite *HashServiceTestSuite) TestGenerateFromPassword_EmptyPassword() {
 
 	// Assert
 	// Note: bcrypt actually allows empty passwords, so we expect no error
-	assert.NoError(suite.T(), err)
-	assert.NotNil(suite.T(), hash)
+	suite.Require().NoError(err)
+	suite.NotNil(hash)
 
 	// Verify we can compare the empty password with its hash
 	compareErr := suite.hashService.CompareHashAndPassword(hash, emptyPassword)
-	assert.NoError(suite.T(), compareErr)
+	suite.Require().NoError(compareErr)
 }
 
 func (suite *HashServiceTestSuite) TestCompareHashAndPassword_EmptyHash() {
@@ -101,5 +100,5 @@ func (suite *HashServiceTestSuite) TestCompareHashAndPassword_EmptyHash() {
 	err := suite.hashService.CompareHashAndPassword(emptyHash, password)
 
 	// Assert
-	assert.Error(suite.T(), err)
+	suite.Error(err)
 }

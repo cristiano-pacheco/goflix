@@ -5,6 +5,7 @@ import (
 
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestCreateEmailModel(t *testing.T) {
@@ -24,8 +25,8 @@ func TestCreateEmailModel(t *testing.T) {
 			result, err := model.CreateEmailModel(email)
 
 			// Assert
-			assert.NoError(t, err)
-			assert.Equal(t, email, result.String())
+			require.NoError(t, err)
+			require.Equal(t, email, result.String())
 		}
 	})
 
@@ -38,8 +39,8 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(emailWithSpaces)
 
 		// Assert
-		assert.NoError(t, err)
-		assert.Equal(t, expectedEmail, result.String())
+		require.NoError(t, err)
+		require.Equal(t, expectedEmail, result.String())
 	})
 
 	t.Run("empty email", func(t *testing.T) {
@@ -50,9 +51,9 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "email is required", err.Error())
-		assert.Equal(t, model.EmailModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "email is required", err.Error())
+		require.Equal(t, model.EmailModel{}, result)
 	})
 
 	t.Run("whitespace only email", func(t *testing.T) {
@@ -63,9 +64,9 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "email is required", err.Error())
-		assert.Equal(t, model.EmailModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "email is required", err.Error())
+		require.Equal(t, model.EmailModel{}, result)
 	})
 
 	t.Run("email exceeds maximum length", func(t *testing.T) {
@@ -79,9 +80,9 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(longEmail)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "email exceeds maximum length of 320 characters", err.Error())
-		assert.Equal(t, model.EmailModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "email exceeds maximum length of 320 characters", err.Error())
+		require.Equal(t, model.EmailModel{}, result)
 	})
 
 	t.Run("missing @ symbol", func(t *testing.T) {
@@ -92,9 +93,9 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "invalid email format: missing @ symbol or invalid position", err.Error())
-		assert.Equal(t, model.EmailModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "invalid email format: missing @ symbol or invalid position", err.Error())
+		require.Equal(t, model.EmailModel{}, result)
 	})
 
 	t.Run("@ symbol at beginning", func(t *testing.T) {
@@ -105,9 +106,9 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "invalid email format: missing @ symbol or invalid position", err.Error())
-		assert.Equal(t, model.EmailModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "invalid email format: missing @ symbol or invalid position", err.Error())
+		require.Equal(t, model.EmailModel{}, result)
 	})
 
 	t.Run("@ symbol at end", func(t *testing.T) {
@@ -118,7 +119,7 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "invalid email format: missing @ symbol or invalid position", err.Error())
 		assert.Equal(t, model.EmailModel{}, result)
 	})
@@ -131,7 +132,7 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "invalid email format: multiple @ symbols found", err.Error())
 		assert.Equal(t, model.EmailModel{}, result)
 	})
@@ -148,7 +149,7 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "email local part exceeds maximum length of 64 characters", err.Error())
 		assert.Equal(t, model.EmailModel{}, result)
 	})
@@ -161,7 +162,7 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "email local part cannot contain consecutive dots", err.Error())
 		assert.Equal(t, model.EmailModel{}, result)
 	})
@@ -174,7 +175,7 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "email local part cannot start or end with a dot", err.Error())
 		assert.Equal(t, model.EmailModel{}, result)
 	})
@@ -187,9 +188,9 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "email local part cannot start or end with a dot", err.Error())
-		assert.Equal(t, model.EmailModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "email local part cannot start or end with a dot", err.Error())
+		require.Equal(t, model.EmailModel{}, result)
 	})
 
 	t.Run("local part with invalid characters", func(t *testing.T) {
@@ -200,7 +201,7 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "invalid email format: multiple @ symbols found", err.Error())
 		assert.Equal(t, model.EmailModel{}, result)
 	})
@@ -218,7 +219,7 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "email domain exceeds maximum length of 255 characters", err.Error())
 		assert.Equal(t, model.EmailModel{}, result)
 	})
@@ -231,7 +232,7 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "email domain cannot start or end with a dot", err.Error())
 		assert.Equal(t, model.EmailModel{}, result)
 	})
@@ -244,7 +245,7 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "email domain cannot start or end with a dot", err.Error())
 		assert.Equal(t, model.EmailModel{}, result)
 	})
@@ -257,7 +258,7 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "email domain cannot start or end with a hyphen", err.Error())
 		assert.Equal(t, model.EmailModel{}, result)
 	})
@@ -270,7 +271,7 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "email domain label cannot start or end with hyphen", err.Error())
 		assert.Equal(t, model.EmailModel{}, result)
 	})
@@ -283,9 +284,9 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "email domain must contain at least one dot", err.Error())
-		assert.Equal(t, model.EmailModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "email domain must contain at least one dot", err.Error())
+		require.Equal(t, model.EmailModel{}, result)
 	})
 
 	t.Run("domain with consecutive dots", func(t *testing.T) {
@@ -296,9 +297,9 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "email domain cannot contain consecutive dots", err.Error())
-		assert.Equal(t, model.EmailModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "email domain cannot contain consecutive dots", err.Error())
+		require.Equal(t, model.EmailModel{}, result)
 	})
 
 	t.Run("domain label too long", func(t *testing.T) {
@@ -313,9 +314,9 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "email domain label exceeds maximum length of 63 characters", err.Error())
-		assert.Equal(t, model.EmailModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "email domain label exceeds maximum length of 63 characters", err.Error())
+		require.Equal(t, model.EmailModel{}, result)
 	})
 
 	t.Run("top level domain too short", func(t *testing.T) {
@@ -326,9 +327,9 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "email top-level domain must be at least 2 characters", err.Error())
-		assert.Equal(t, model.EmailModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "email top-level domain must be at least 2 characters", err.Error())
+		require.Equal(t, model.EmailModel{}, result)
 	})
 
 	t.Run("top level domain with numbers", func(t *testing.T) {
@@ -339,9 +340,9 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "email top-level domain must contain only letters", err.Error())
-		assert.Equal(t, model.EmailModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "email top-level domain must contain only letters", err.Error())
+		require.Equal(t, model.EmailModel{}, result)
 	})
 
 	t.Run("domain label starts with hyphen", func(t *testing.T) {
@@ -352,9 +353,9 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "email domain cannot start or end with a hyphen", err.Error())
-		assert.Equal(t, model.EmailModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "email domain cannot start or end with a hyphen", err.Error())
+		require.Equal(t, model.EmailModel{}, result)
 	})
 
 	t.Run("domain label ends with hyphen", func(t *testing.T) {
@@ -365,9 +366,9 @@ func TestCreateEmailModel(t *testing.T) {
 		result, err := model.CreateEmailModel(email)
 
 		// Assert
-		assert.Error(t, err)
-		assert.Equal(t, "email domain label cannot start or end with hyphen", err.Error())
-		assert.Equal(t, model.EmailModel{}, result)
+		require.Error(t, err)
+		require.Equal(t, "email domain label cannot start or end with hyphen", err.Error())
+		require.Equal(t, model.EmailModel{}, result)
 	})
 }
 
@@ -381,7 +382,7 @@ func TestEmailModel_String(t *testing.T) {
 		result := emailModel.String()
 
 		// Assert
-		assert.NoError(t, err)
-		assert.Equal(t, expectedEmail, result)
+		require.NoError(t, err)
+		require.Equal(t, expectedEmail, result)
 	})
 }
