@@ -5,12 +5,13 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/cristiano-pacheco/goflix/internal/shared/modules/config"
-	"github.com/cristiano-pacheco/goflix/pkg/database"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres" // required for postgres driver
 	_ "github.com/golang-migrate/migrate/v4/source/file"       // required for file source
 	"github.com/spf13/cobra"
+
+	"github.com/cristiano-pacheco/goflix/internal/shared/modules/config"
+	"github.com/cristiano-pacheco/goflix/pkg/database"
 )
 
 // dbMigrateCmd represents the migrate command.
