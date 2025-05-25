@@ -1,8 +1,9 @@
 package errs
 
 import (
-	"github.com/cristiano-pacheco/goflix/internal/shared/modules/validator"
 	ut "github.com/go-playground/universal-translator"
+
+	"github.com/cristiano-pacheco/goflix/internal/shared/modules/validator"
 )
 
 type ErrorMapper interface {

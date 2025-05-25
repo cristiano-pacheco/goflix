@@ -15,6 +15,13 @@ import (
 	_ "github.com/cristiano-pacheco/goflix/docs" // imports swagger docs for API documentation
 )
 
+const (
+	readHeaderTimeout = 10 * time.Second
+	readTimeout       = 30 * time.Second
+	writeTimeout      = 30 * time.Second
+	idleTimeout       = 60 * time.Second
+)
+
 type HTTPServer struct {
 	router *httprouter.Router
 	server *http.Server
@@ -52,10 +59,10 @@ func NewHTTPServer(
 		server: &http.Server{
 			Addr:              fmt.Sprintf(":%d", httpPort),
 			Handler:           r,
-			ReadHeaderTimeout: 10 * time.Second,
-			ReadTimeout:       30 * time.Second,
-			WriteTimeout:      30 * time.Second,
-			IdleTimeout:       60 * time.Second,
+			ReadHeaderTimeout: readHeaderTimeout,
+			ReadTimeout:       readTimeout,
+			WriteTimeout:      writeTimeout,
+			IdleTimeout:       idleTimeout,
 		},
 	}
 

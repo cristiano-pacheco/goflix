@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"log/slog"
+	"math"
 	"net"
 	"os"
 	"strconv"
@@ -79,6 +80,9 @@ func generateGormDatabaseDSN(cfg Config) string {
 }
 
 func GeneratePostgresDatabaseDSN(cfg Config) string {
+	if cfg.Port > math.MaxInt {
+		panic(fmt.Sprintf("port value %d exceeds maximum int value", cfg.Port))
+	}
 	hostPort := net.JoinHostPort(cfg.Host, strconv.Itoa(int(cfg.Port)))
 	return fmt.Sprintf(
 		"postgres://%s:%s@%s/%s?sslmode=disable&TimeZone=UTC",

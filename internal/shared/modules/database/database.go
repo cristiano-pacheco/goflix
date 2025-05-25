@@ -1,9 +1,10 @@
 package database
 
 import (
+	"gorm.io/gorm"
+
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/config"
 	"github.com/cristiano-pacheco/goflix/pkg/database"
-	"gorm.io/gorm"
 )
 
 type ShoplistDB struct {
