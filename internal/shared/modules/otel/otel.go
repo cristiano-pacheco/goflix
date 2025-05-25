@@ -17,7 +17,7 @@ type Otel struct {
 }
 
 func Init(cfg config.Config) {
-	_global = new(cfg)
+	_global = newOtel(cfg)
 	_initialized = true
 }
 
@@ -32,7 +32,7 @@ func Trace() trace.Trace {
 	return get().Trace
 }
 
-func new(config config.Config) Otel {
+func newOtel(config config.Config) Otel {
 	tc := trace.TracerConfig{
 		AppName:      config.App.Name,
 		AppVersion:   config.App.Version,
