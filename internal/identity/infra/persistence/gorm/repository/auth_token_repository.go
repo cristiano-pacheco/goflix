@@ -27,12 +27,12 @@ func NewAuthTokenRepository(db *database.GoflixDB, mapper mapper.AuthTokenMapper
 
 func (r *authTokenRepository) Create(
 	ctx context.Context,
-	AuthTokenModel model.AuthTokenModel,
+	authTokenModel model.AuthTokenModel,
 ) (model.AuthTokenModel, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "AuthTokenRepository.Create")
 	defer span.End()
 
-	authTokenEntity := r.mapper.ToEntity(AuthTokenModel)
+	authTokenEntity := r.mapper.ToEntity(authTokenModel)
 	result := r.db.WithContext(ctx).Create(&authTokenEntity)
 	if result.Error != nil {
 		return model.AuthTokenModel{}, result.Error
@@ -46,11 +46,11 @@ func (r *authTokenRepository) Create(
 	return authTokenModel, nil
 }
 
-func (r *authTokenRepository) Update(ctx context.Context, AuthTokenModel model.AuthTokenModel) error {
+func (r *authTokenRepository) Update(ctx context.Context, authTokenModel model.AuthTokenModel) error {
 	ctx, span := otel.Trace().StartSpan(ctx, "AuthTokenRepository.Update")
 	defer span.End()
 
-	authTokenEntity := r.mapper.ToEntity(AuthTokenModel)
+	authTokenEntity := r.mapper.ToEntity(authTokenModel)
 	result := r.db.WithContext(ctx).Save(&authTokenEntity)
 	if result.Error != nil {
 		return result.Error
