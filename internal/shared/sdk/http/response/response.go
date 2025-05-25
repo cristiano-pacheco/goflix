@@ -41,10 +41,13 @@ func Error(w http.ResponseWriter, err error) {
 	}
 }
 
-func JSON(w http.ResponseWriter, status int, envelope Envelope, headers http.Header) error {
+func JSON(w http.ResponseWriter, status int, envelope Envelope, headers http.Header) {
 	js, err := json.MarshalIndent(envelope, "", "\t")
 	if err != nil {
-		return err
+		//nolint:sloglint // it's ok to have a global logger here
+		slog.Error("Failed to marshal response", "error", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	js = append(js, '\n')
@@ -54,10 +57,8 @@ func JSON(w http.ResponseWriter, status int, envelope Envelope, headers http.Hea
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	if _, writeErr := w.Write(js); writeErr != nil {
-		//nolint:sloglint // this is a response writer
+		//nolint:sloglint // it's ok to have a global logger here
 		slog.Error("Failed to write response", "error", writeErr)
-		return writeErr
+		w.WriteHeader(http.StatusInternalServerError)
 	}
-
-	return nil
 }
