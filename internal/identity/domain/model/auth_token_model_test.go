@@ -1,9 +1,10 @@
-package model
+package model_test
 
 import (
 	"testing"
 	"time"
 
+	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,7 +16,7 @@ func TestCreateAuthTokenModel(t *testing.T) {
 		expiresAt := time.Now().UTC().Add(time.Hour)
 
 		// Act
-		result, err := CreateAuthTokenModel(userID, token, expiresAt)
+		result, err := model.CreateAuthTokenModel(userID, token, expiresAt)
 
 		// Assert
 		assert.NoError(t, err)
@@ -34,12 +35,12 @@ func TestCreateAuthTokenModel(t *testing.T) {
 		expiresAt := time.Now().UTC().Add(time.Hour)
 
 		// Act
-		result, err := CreateAuthTokenModel(userID, token, expiresAt)
+		result, err := model.CreateAuthTokenModel(userID, token, expiresAt)
 
 		// Assert
 		assert.Error(t, err)
 		assert.Equal(t, "user ID is required", err.Error())
-		assert.Equal(t, AuthTokenModel{}, result)
+		assert.Equal(t, model.AuthTokenModel{}, result)
 	})
 
 	t.Run("empty token returns error", func(t *testing.T) {
@@ -49,12 +50,12 @@ func TestCreateAuthTokenModel(t *testing.T) {
 		expiresAt := time.Now().UTC().Add(time.Hour)
 
 		// Act
-		result, err := CreateAuthTokenModel(userID, token, expiresAt)
+		result, err := model.CreateAuthTokenModel(userID, token, expiresAt)
 
 		// Assert
 		assert.Error(t, err)
 		assert.Equal(t, "token is required", err.Error())
-		assert.Equal(t, AuthTokenModel{}, result)
+		assert.Equal(t, model.AuthTokenModel{}, result)
 	})
 
 	t.Run("zero expiration time returns error", func(t *testing.T) {
@@ -64,12 +65,12 @@ func TestCreateAuthTokenModel(t *testing.T) {
 		expiresAt := time.Time{}
 
 		// Act
-		result, err := CreateAuthTokenModel(userID, token, expiresAt)
+		result, err := model.CreateAuthTokenModel(userID, token, expiresAt)
 
 		// Assert
 		assert.Error(t, err)
 		assert.Equal(t, "expiration time is required", err.Error())
-		assert.Equal(t, AuthTokenModel{}, result)
+		assert.Equal(t, model.AuthTokenModel{}, result)
 	})
 }
 
@@ -84,7 +85,7 @@ func TestRestoreAuthTokenModel(t *testing.T) {
 		updatedAt := time.Now().UTC()
 
 		// Act
-		result, err := RestoreAuthTokenModel(id, userID, token, expiresAt, createdAt, updatedAt)
+		result, err := model.RestoreAuthTokenModel(id, userID, token, expiresAt, createdAt, updatedAt)
 
 		// Assert
 		assert.NoError(t, err)
@@ -106,12 +107,12 @@ func TestRestoreAuthTokenModel(t *testing.T) {
 		updatedAt := time.Now().UTC()
 
 		// Act
-		result, err := RestoreAuthTokenModel(id, userID, token, expiresAt, createdAt, updatedAt)
+		result, err := model.RestoreAuthTokenModel(id, userID, token, expiresAt, createdAt, updatedAt)
 
 		// Assert
 		assert.Error(t, err)
 		assert.Equal(t, "ID is required", err.Error())
-		assert.Equal(t, AuthTokenModel{}, result)
+		assert.Equal(t, model.AuthTokenModel{}, result)
 	})
 
 	t.Run("zero user ID returns error", func(t *testing.T) {
@@ -124,12 +125,12 @@ func TestRestoreAuthTokenModel(t *testing.T) {
 		updatedAt := time.Now().UTC()
 
 		// Act
-		result, err := RestoreAuthTokenModel(id, userID, token, expiresAt, createdAt, updatedAt)
+		result, err := model.RestoreAuthTokenModel(id, userID, token, expiresAt, createdAt, updatedAt)
 
 		// Assert
 		assert.Error(t, err)
 		assert.Equal(t, "user ID is required", err.Error())
-		assert.Equal(t, AuthTokenModel{}, result)
+		assert.Equal(t, model.AuthTokenModel{}, result)
 	})
 
 	t.Run("empty token returns error", func(t *testing.T) {
@@ -142,12 +143,12 @@ func TestRestoreAuthTokenModel(t *testing.T) {
 		updatedAt := time.Now().UTC()
 
 		// Act
-		result, err := RestoreAuthTokenModel(id, userID, token, expiresAt, createdAt, updatedAt)
+		result, err := model.RestoreAuthTokenModel(id, userID, token, expiresAt, createdAt, updatedAt)
 
 		// Assert
 		assert.Error(t, err)
 		assert.Equal(t, "token is required", err.Error())
-		assert.Equal(t, AuthTokenModel{}, result)
+		assert.Equal(t, model.AuthTokenModel{}, result)
 	})
 
 	t.Run("zero expiration time returns error", func(t *testing.T) {
@@ -160,12 +161,12 @@ func TestRestoreAuthTokenModel(t *testing.T) {
 		updatedAt := time.Now().UTC()
 
 		// Act
-		result, err := RestoreAuthTokenModel(id, userID, token, expiresAt, createdAt, updatedAt)
+		result, err := model.RestoreAuthTokenModel(id, userID, token, expiresAt, createdAt, updatedAt)
 
 		// Assert
 		assert.Error(t, err)
 		assert.Equal(t, "expiration time is required", err.Error())
-		assert.Equal(t, AuthTokenModel{}, result)
+		assert.Equal(t, model.AuthTokenModel{}, result)
 	})
 }
 
@@ -175,7 +176,7 @@ func TestAuthTokenModel_IsExpired(t *testing.T) {
 		userID := uint64(123)
 		token := "valid-token"
 		expiresAt := time.Now().UTC().Add(time.Hour)
-		authToken, _ := CreateAuthTokenModel(userID, token, expiresAt)
+		authToken, _ := model.CreateAuthTokenModel(userID, token, expiresAt)
 
 		// Act
 		result := authToken.IsExpired()
@@ -189,7 +190,7 @@ func TestAuthTokenModel_IsExpired(t *testing.T) {
 		userID := uint64(123)
 		token := "valid-token"
 		expiresAt := time.Now().UTC().Add(-time.Hour)
-		authToken, _ := CreateAuthTokenModel(userID, token, expiresAt)
+		authToken, _ := model.CreateAuthTokenModel(userID, token, expiresAt)
 
 		// Act
 		result := authToken.IsExpired()
@@ -205,7 +206,7 @@ func TestAuthTokenModel_IsValid(t *testing.T) {
 		userID := uint64(123)
 		token := "valid-token"
 		expiresAt := time.Now().UTC().Add(time.Hour)
-		authToken, _ := CreateAuthTokenModel(userID, token, expiresAt)
+		authToken, _ := model.CreateAuthTokenModel(userID, token, expiresAt)
 
 		// Act
 		result := authToken.IsValid()
@@ -219,7 +220,7 @@ func TestAuthTokenModel_IsValid(t *testing.T) {
 		userID := uint64(123)
 		token := "valid-token"
 		expiresAt := time.Now().UTC().Add(-time.Hour)
-		authToken, _ := CreateAuthTokenModel(userID, token, expiresAt)
+		authToken, _ := model.CreateAuthTokenModel(userID, token, expiresAt)
 
 		// Act
 		result := authToken.IsValid()
@@ -238,7 +239,7 @@ func TestAuthTokenModel_Getters(t *testing.T) {
 		expiresAt := time.Now().UTC().Add(time.Hour)
 		createdAt := time.Now().UTC().Add(-time.Hour)
 		updatedAt := time.Now().UTC()
-		authToken, _ := RestoreAuthTokenModel(id, userID, token, expiresAt, createdAt, updatedAt)
+		authToken, _ := model.RestoreAuthTokenModel(id, userID, token, expiresAt, createdAt, updatedAt)
 
 		// Act & Assert
 		assert.Equal(t, id, authToken.ID())

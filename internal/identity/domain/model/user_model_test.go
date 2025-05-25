@@ -1,10 +1,11 @@
-package model
+package model_test
 
 import (
 	"strings"
 	"testing"
 	"time"
 
+	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -19,7 +20,7 @@ func TestCreateUserModel(t *testing.T) {
 		confirmationExpiresAt := time.Now().UTC().Add(24 * time.Hour)
 
 		// Act
-		user, err := CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
+		user, err := model.CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
 
 		// Assert
 		require.NoError(t, err)
@@ -46,7 +47,7 @@ func TestCreateUserModel(t *testing.T) {
 		confirmationExpiresAt := time.Now().UTC().Add(24 * time.Hour)
 
 		// Act
-		user, err := CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
+		user, err := model.CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
 
 		// Assert
 		require.NoError(t, err)
@@ -65,11 +66,11 @@ func TestCreateUserModel(t *testing.T) {
 		confirmationExpiresAt := time.Now().UTC().Add(24 * time.Hour)
 
 		// Act
-		user, err := CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
+		user, err := model.CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
 
 		// Assert
 		assert.Error(t, err)
-		assert.Equal(t, UserModel{}, user)
+		assert.Equal(t, model.UserModel{}, user)
 	})
 
 	t.Run("invalid email", func(t *testing.T) {
@@ -81,11 +82,11 @@ func TestCreateUserModel(t *testing.T) {
 		confirmationExpiresAt := time.Now().UTC().Add(24 * time.Hour)
 
 		// Act
-		user, err := CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
+		user, err := model.CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
 
 		// Assert
 		assert.Error(t, err)
-		assert.Equal(t, UserModel{}, user)
+		assert.Equal(t, model.UserModel{}, user)
 	})
 
 	t.Run("empty password hash", func(t *testing.T) {
@@ -97,12 +98,12 @@ func TestCreateUserModel(t *testing.T) {
 		confirmationExpiresAt := time.Now().UTC().Add(24 * time.Hour)
 
 		// Act
-		user, err := CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
+		user, err := model.CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
 
 		// Assert
 		assert.Error(t, err)
 		assert.Equal(t, "password hash is required", err.Error())
-		assert.Equal(t, UserModel{}, user)
+		assert.Equal(t, model.UserModel{}, user)
 	})
 
 	t.Run("password hash too short", func(t *testing.T) {
@@ -114,12 +115,12 @@ func TestCreateUserModel(t *testing.T) {
 		confirmationExpiresAt := time.Now().UTC().Add(24 * time.Hour)
 
 		// Act
-		user, err := CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
+		user, err := model.CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
 
 		// Assert
 		assert.Error(t, err)
 		assert.Equal(t, "password hash appears to be too short (minimum 32 characters)", err.Error())
-		assert.Equal(t, UserModel{}, user)
+		assert.Equal(t, model.UserModel{}, user)
 	})
 
 	t.Run("password hash too long", func(t *testing.T) {
@@ -131,12 +132,12 @@ func TestCreateUserModel(t *testing.T) {
 		confirmationExpiresAt := time.Now().UTC().Add(24 * time.Hour)
 
 		// Act
-		user, err := CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
+		user, err := model.CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
 
 		// Assert
 		assert.Error(t, err)
 		assert.Equal(t, "password hash exceeds maximum length of 255 characters", err.Error())
-		assert.Equal(t, UserModel{}, user)
+		assert.Equal(t, model.UserModel{}, user)
 	})
 
 	t.Run("empty confirmation token", func(t *testing.T) {
@@ -148,12 +149,12 @@ func TestCreateUserModel(t *testing.T) {
 		confirmationExpiresAt := time.Now().UTC().Add(24 * time.Hour)
 
 		// Act
-		user, err := CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
+		user, err := model.CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
 
 		// Assert
 		assert.Error(t, err)
 		assert.Equal(t, "confirmation token is required", err.Error())
-		assert.Equal(t, UserModel{}, user)
+		assert.Equal(t, model.UserModel{}, user)
 	})
 
 	t.Run("confirmation token too short", func(t *testing.T) {
@@ -165,12 +166,12 @@ func TestCreateUserModel(t *testing.T) {
 		confirmationExpiresAt := time.Now().UTC().Add(24 * time.Hour)
 
 		// Act
-		user, err := CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
+		user, err := model.CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
 
 		// Assert
 		assert.Error(t, err)
 		assert.Equal(t, "confirmation token must be at least 16 characters long", err.Error())
-		assert.Equal(t, UserModel{}, user)
+		assert.Equal(t, model.UserModel{}, user)
 	})
 
 	t.Run("confirmation expires in the past", func(t *testing.T) {
@@ -182,12 +183,12 @@ func TestCreateUserModel(t *testing.T) {
 		confirmationExpiresAt := time.Now().UTC().Add(-1 * time.Hour) // past time
 
 		// Act
-		user, err := CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
+		user, err := model.CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
 
 		// Assert
 		assert.Error(t, err)
 		assert.Equal(t, "confirmation expiration time must be in the future", err.Error())
-		assert.Equal(t, UserModel{}, user)
+		assert.Equal(t, model.UserModel{}, user)
 	})
 }
 
@@ -208,7 +209,7 @@ func TestRestoreUserModel(t *testing.T) {
 		updatedAt := time.Now().UTC()
 
 		// Act
-		user, err := RestoreUserModel(
+		user, err := model.RestoreUserModel(
 			id, name, email, passwordHash, isActivated,
 			confirmationToken, confirmationExpiresAt, confirmedAt,
 			resetPasswordToken, resetPasswordExpiresAt,
@@ -241,7 +242,7 @@ func TestRestoreUserModel(t *testing.T) {
 		updatedAt := time.Now().UTC()
 
 		// Act
-		user, err := RestoreUserModel(
+		user, err := model.RestoreUserModel(
 			id, name, email, passwordHash, false,
 			nil, nil, nil, nil, nil,
 			createdAt, updatedAt,
@@ -250,7 +251,7 @@ func TestRestoreUserModel(t *testing.T) {
 		// Assert
 		assert.Error(t, err)
 		assert.Equal(t, "user ID is required and must be greater than zero", err.Error())
-		assert.Equal(t, UserModel{}, user)
+		assert.Equal(t, model.UserModel{}, user)
 	})
 
 	t.Run("updated at before created at", func(t *testing.T) {
@@ -263,7 +264,7 @@ func TestRestoreUserModel(t *testing.T) {
 		updatedAt := time.Now().UTC().Add(-1 * time.Hour) // before created at
 
 		// Act
-		user, err := RestoreUserModel(
+		user, err := model.RestoreUserModel(
 			id, name, email, passwordHash, false,
 			nil, nil, nil, nil, nil,
 			createdAt, updatedAt,
@@ -272,7 +273,7 @@ func TestRestoreUserModel(t *testing.T) {
 		// Assert
 		assert.Error(t, err)
 		assert.Equal(t, "updated at timestamp cannot be before created at timestamp", err.Error())
-		assert.Equal(t, UserModel{}, user)
+		assert.Equal(t, model.UserModel{}, user)
 	})
 }
 
@@ -467,7 +468,7 @@ func TestUserModel_BusinessMethods(t *testing.T) {
 }
 
 // Helper function to create a valid user for testing
-func createValidUser(t *testing.T) UserModel {
+func createValidUser(t *testing.T) model.UserModel {
 	t.Helper()
 
 	name := "John Doe"
@@ -476,7 +477,7 @@ func createValidUser(t *testing.T) UserModel {
 	confirmationToken := "abc123def456ghi789jkl012"
 	confirmationExpiresAt := time.Now().UTC().Add(24 * time.Hour)
 
-	user, err := CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
+	user, err := model.CreateUserModel(name, email, passwordHash, confirmationToken, confirmationExpiresAt)
 	require.NoError(t, err)
 
 	return user
