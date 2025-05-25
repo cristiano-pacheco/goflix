@@ -61,7 +61,7 @@ func TestCreateNameModel(t *testing.T) {
 		result, err := model.CreateNameModel(name)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "name is required", err.Error())
 		assert.Equal(t, model.NameModel{}, result)
 	})
@@ -74,7 +74,7 @@ func TestCreateNameModel(t *testing.T) {
 		result, err := model.CreateNameModel(name)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "name is required", err.Error())
 		assert.Equal(t, model.NameModel{}, result)
 	})

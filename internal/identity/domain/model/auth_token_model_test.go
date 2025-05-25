@@ -90,7 +90,7 @@ func TestRestoreAuthTokenModel(t *testing.T) {
 		result, err := model.RestoreAuthTokenModel(id, userID, token, expiresAt, createdAt, updatedAt)
 
 		// Assert
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, id, result.ID())
 		assert.Equal(t, userID, result.UserID())
 		assert.Equal(t, token, result.Token())

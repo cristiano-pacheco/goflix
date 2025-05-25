@@ -463,7 +463,7 @@ func TestUserModel_BusinessMethods(t *testing.T) {
 		err := user.UpdatePasswordHash(newPasswordHash)
 
 		// Assert
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, "password hash appears to be too short (minimum 32 characters)", err.Error())
 	})
 }
