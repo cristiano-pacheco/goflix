@@ -194,7 +194,7 @@ func (u *UserModel) IsConfirmationTokenValid(token string) bool {
 	}
 
 	// Check if token has expired
-	if !(*u.confirmationExpiresAt).After(time.Now().UTC()) {
+	if !u.confirmationExpiresAt.After(time.Now().UTC()) {
 		return false
 	}
 
@@ -227,7 +227,7 @@ func (u *UserModel) IsResetPasswordTokenValid(token string) bool {
 	}
 
 	// Check if token has expired
-	if !(*u.resetPasswordExpiresAt).After(time.Now().UTC()) {
+	if !u.resetPasswordExpiresAt.After(time.Now().UTC()) {
 		return false
 	}
 

@@ -2,7 +2,7 @@ package trace
 
 import (
 	"context"
-	"log"
+	"log/slog"
 
 	"go.opentelemetry.io/otel"
 
@@ -82,7 +82,9 @@ func newExporter(config TracerConfig) sdktrace.SpanExporter {
 		otlptracehttp.WithInsecure(),
 	)
 	if err != nil {
-		log.Fatal(err)
+		//nolint:sloglint // this is a trace exporter
+		slog.Error("Failed to create trace exporter", "error", err)
+		panic(err)
 	}
 	return exporter
 }

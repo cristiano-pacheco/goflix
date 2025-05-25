@@ -178,9 +178,7 @@ func validateTopLevelDomain(label string) error {
 	}
 
 	// Check if all characters are letters (more restrictive for TLD)
-	if !lo.EveryBy([]rune(label), func(char rune) bool {
-		return unicode.IsLetter(char)
-	}) {
+	if !lo.EveryBy([]rune(label), unicode.IsLetter) {
 		return errors.New("email top-level domain must contain only letters")
 	}
 
