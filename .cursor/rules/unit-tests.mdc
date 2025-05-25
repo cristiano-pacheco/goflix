@@ -29,8 +29,19 @@ Unit tests
   - Do not use .AssertExpectations(s.T()).
   - Identify the constructor for the type and use it. Generally the name is NewTypeName, example NewAccountValidator(deps...)
   - Always use _test suffix for the package name in the tests
-  - example:
-  - Example test suite:
+  - for test suite always use suite instead of assert, example: 
+    example:
+     - suite.Equals(v, 10)
+  - for error assertion on the suite tests, always use suite.Require(). 
+    example:
+    - suite.Require().ErrorIs
+    - suite.Require().Error 
+  - for error assertion on the non suite tests, always use require. 
+     example:  
+     - require.ErrorIs
+     - require.Error
+
+- test suite example:
 ```go
 package mypackage_test
 
@@ -50,7 +61,6 @@ type MyStructTestSuite struct {
 func (s *MyStructTestSuite) SetupTest() {
 	// Initialize sut and dependencies
 	s.sut = mypackage.New()
-        logger.Init()
 }
 
 func TestMyStructSuite(t *testing.T) {
@@ -68,7 +78,7 @@ func (s *MyStructTestSuite) TestSomeMethod() {
 For example: 
 s.recurringPaymentRepoMock.On("Update", mock.Anything, payment).Return(nil)
 
-2. Tests for Functions Without Instances:
+1. Tests for Functions Without Instances:
   
   - Create individual test functions using func TestXxx(t *testing.T).
   - Use t.Run for subtests covering different scenarios.
