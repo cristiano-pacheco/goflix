@@ -15,7 +15,7 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/database"
 )
 
-func NewDBMock(t *testing.T) (*sql.DB, *database.ShoplistDB, sqlmock.Sqlmock) {
+func NewDBMock(t *testing.T) (*sql.DB, *database.GoflixDB, sqlmock.Sqlmock) {
 	sqldb, mock, err := sqlmock.New()
 	require.NoError(t, err)
 

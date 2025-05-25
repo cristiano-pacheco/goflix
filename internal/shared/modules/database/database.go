@@ -7,11 +7,11 @@ import (
 	"github.com/cristiano-pacheco/goflix/pkg/database"
 )
 
-type ShoplistDB struct {
+type GoflixDB struct {
 	*gorm.DB
 }
 
-func New(cfg config.Config) *ShoplistDB {
+func New(cfg config.Config) *GoflixDB {
 	dbConfig := database.Config{
 		Host:               cfg.DB.Host,
 		User:               cfg.DB.User,
@@ -27,9 +27,9 @@ func New(cfg config.Config) *ShoplistDB {
 
 	db := database.OpenConnection(dbConfig)
 
-	return &ShoplistDB{DB: db}
+	return &GoflixDB{DB: db}
 }
 
-func NewFromGorm(db *gorm.DB) *ShoplistDB {
-	return &ShoplistDB{db}
+func NewFromGorm(db *gorm.DB) *GoflixDB {
+	return &GoflixDB{db}
 }
