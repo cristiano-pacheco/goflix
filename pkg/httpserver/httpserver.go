@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -49,8 +50,12 @@ func NewHTTPServer(
 	server := &HTTPServer{
 		router: r,
 		server: &http.Server{
-			Addr:    fmt.Sprintf(":%d", httpPort),
-			Handler: r,
+			Addr:              fmt.Sprintf(":%d", httpPort),
+			Handler:           r,
+			ReadHeaderTimeout: 10 * time.Second,
+			ReadTimeout:       30 * time.Second,
+			WriteTimeout:      30 * time.Second,
+			IdleTimeout:       60 * time.Second,
 		},
 	}
 

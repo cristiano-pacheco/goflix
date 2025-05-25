@@ -51,10 +51,10 @@ func New(config TracerConfig) Trace {
 	// Set up propagator.
 	otel.SetTextMapPropagator(newPropagator())
 	t := tp.Tracer(config.AppName)
-	trace := trace{
+	traceInstance := trace{
 		tracer: t,
 	}
-	return &trace
+	return &traceInstance
 }
 
 func newPropagator() propagation.TextMapPropagator {

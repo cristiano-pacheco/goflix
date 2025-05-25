@@ -42,7 +42,8 @@ var dbMigrateCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+		err = m.Up()
+		if err != nil && !errors.Is(err, migrate.ErrNoChange) {
 			slog.Error("Failed to run migrations", "error", err)
 			os.Exit(1)
 		}

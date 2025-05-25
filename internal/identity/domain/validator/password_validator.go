@@ -7,6 +7,8 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/errs"
 )
 
+const minPasswordLength = 8
+
 type PasswordValidator interface {
 	Validate(password string) error
 }
@@ -45,7 +47,7 @@ func (s *passwordValidator) checkRequirements(password string) passwordRequireme
 }
 
 func (s *passwordValidator) Validate(password string) error {
-	if utf8.RuneCountInString(password) < 8 {
+	if utf8.RuneCountInString(password) < minPasswordLength {
 		return errs.ErrPasswordTooShort
 	}
 
