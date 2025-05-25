@@ -27,26 +27,8 @@ func NewHTTPServer(
 ) *HTTPServer {
 	r := httprouter.New()
 
-	// CORS configuration
 	if len(corsConfig.AllowedOrigins) > 0 {
-		r.GlobalOPTIONS = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.Header.Get("Access-Control-Request-Method") != "" {
-				// Set CORS headers
-				header := w.Header()
-				header.Set("Access-Control-Allow-Methods", header.Get("Allow"))
-				header.Set("Access-Control-Allow-Origin", corsConfig.AllowedOrigins[0])
-				if len(corsConfig.AllowedHeaders) > 0 {
-					header.Set("Access-Control-Allow-Headers", join(corsConfig.AllowedHeaders, ", "))
-				}
-				if corsConfig.AllowCredentials {
-					header.Set("Access-Control-Allow-Credentials", "true")
-				}
-				if corsConfig.MaxAge > 0 {
-					header.Set("Access-Control-Max-Age", strconv.Itoa(corsConfig.MaxAge))
-				}
-			}
-			w.WriteHeader(http.StatusNoContent)
-		})
+		r.GlobalOPTIONS = createCORSHandler(corsConfig)
 	}
 
 	// Health check
@@ -94,6 +76,27 @@ func (s *HTTPServer) Run() {
 
 func (s *HTTPServer) Shutdown(ctx context.Context) error {
 	return s.server.Shutdown(ctx)
+}
+
+func createCORSHandler(corsConfig CorsConfig) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Header.Get("Access-Control-Request-Method") != "" {
+			// Set CORS headers
+			header := w.Header()
+			header.Set("Access-Control-Allow-Methods", header.Get("Allow"))
+			header.Set("Access-Control-Allow-Origin", corsConfig.AllowedOrigins[0])
+			if len(corsConfig.AllowedHeaders) > 0 {
+				header.Set("Access-Control-Allow-Headers", join(corsConfig.AllowedHeaders, ", "))
+			}
+			if corsConfig.AllowCredentials {
+				header.Set("Access-Control-Allow-Credentials", "true")
+			}
+			if corsConfig.MaxAge > 0 {
+				header.Set("Access-Control-Max-Age", strconv.Itoa(corsConfig.MaxAge))
+			}
+		}
+		w.WriteHeader(http.StatusNoContent)
+	}
 }
 
 func join(s []string, sep string) string {
