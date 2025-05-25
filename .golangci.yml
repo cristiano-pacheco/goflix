@@ -436,6 +436,9 @@ linters:
       - text: 'comment on exported \S+ \S+ should be of the form ".+"'
         source: '// ?(nolint|TODO)'
         linters: [ revive, staticcheck ]
+      - text: 'comment on exported \S+ \S+ should be of the form ".+"'
+        source: '// @Summary'
+        linters: [ revive, staticcheck ]
       - path: '_test\.go'
         linters:
           - bodyclose
