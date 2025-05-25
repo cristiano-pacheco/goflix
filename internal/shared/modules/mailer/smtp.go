@@ -8,7 +8,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-type SmtpMailer interface {
+type SMTPMailer interface {
 	Send(ctx context.Context, md MailData) error
 }
 
@@ -16,7 +16,7 @@ type smtpMailer struct {
 	dialer *mail.Dialer
 }
 
-func NewSmtpMailer(dialer *mail.Dialer) SmtpMailer {
+func NewSMTPMailer(dialer *mail.Dialer) SMTPMailer {
 	return &smtpMailer{dialer}
 }
 

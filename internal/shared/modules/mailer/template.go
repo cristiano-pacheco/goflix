@@ -9,7 +9,7 @@ import (
 //go:embed "templates"
 var templateFS embed.FS
 
-type MailerTemplate interface {
+type Template interface {
 	CompileTemplate(templateName string, data any) (string, error)
 	CompileBlankTemplate(templateName string, data any) (string, error)
 }
@@ -17,7 +17,7 @@ type MailerTemplate interface {
 type mailerTemplate struct {
 }
 
-func NewMailerTemplate() MailerTemplate {
+func NewMailerTemplate() Template {
 	return &mailerTemplate{}
 }
 
