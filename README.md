@@ -24,7 +24,7 @@ General Tasks
   - [ ] send email confirmation
   - [ ] send reset password email
 - Add Redis
-  [ ] - Add redis cache for the user
+  - [ ] Add redis cache for the user
 
 - [ ] Improve cursor rules
   - application
