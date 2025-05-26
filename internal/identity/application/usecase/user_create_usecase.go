@@ -10,6 +10,7 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/repository"
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/service"
+	shared_errs "github.com/cristiano-pacheco/goflix/internal/shared/modules/errs"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/logger"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/validator"
@@ -65,7 +66,7 @@ func (uc *UserCreateUseCase) Execute(ctx context.Context, input UserCreateInput)
 	}
 
 	user, err := uc.userRepository.FindByEmail(ctx, input.Email)
-	if err != nil && !errors.Is(err, errs.ErrNotFound) {
+	if err != nil && !errors.Is(err, shared_errs.ErrNotFound) {
 		uc.logger.Error("error finding user by email", "error", err)
 		return output, err
 	}
