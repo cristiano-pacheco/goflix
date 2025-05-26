@@ -8,6 +8,8 @@ SHELL = $(if $(wildcard $(SHELL_PATH)),/bin/ash,/bin/bash)
 install-libs:
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 	go install golang.org/x/vuln/cmd/govulncheck@latest
+	go install github.com/vektra/mockery/v2@latest
+	go install github.com/swaggo/swag/cmd/swag@latest
 
 # ==============================================================================
 # Administration
