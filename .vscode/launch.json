@@ -1,0 +1,33 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "GoFlix",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto", // Auto-detect if the program should run with debugging
+            "program": "${workspaceFolder}/main.go", // Entry point of your application
+            "args": [
+                ""
+            ], // Add command-line arguments if needed
+            "env": {}, // You can add environment variables if necessary
+            "buildFlags": "", // Add any build flags if needed
+            "cwd": "${workspaceFolder}", // Set current working directory
+        },
+        {
+            "name": "Start Consumer",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto", // Auto-detect if the program should run with debugging
+            "program": "${workspaceFolder}/main.go", // Entry point of your application
+            "args": [
+                "queue:consumer:start",
+                "--queue-name",
+                "user-confirmation-email",
+            ], // Add command-line arguments if needed
+            "env": {}, // You can add environment variables if necessary
+            "buildFlags": "", // Add any build flags if needed
+            "cwd": "${workspaceFolder}", // Set current working directory
+        }
+    ]
+}
