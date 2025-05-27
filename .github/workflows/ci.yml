@@ -2,13 +2,12 @@ name: CI
 
 on:
   push:
-    # Runs on every push to any branch (change to [main] if you want only main)
     branches: [ "**" ]
   pull_request:
 
 jobs:
-  build-and-test:
-    name: Lint, Vulnerability Check, Test, Codecov
+  static-checks:
+    name: Static Checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -37,8 +36,39 @@ jobs:
       - name: Lint (golangci-lint)
         run: make lint
 
-      - name: Vulnerability Check
+      - name: Install govulncheck
+        run: go install golang.org/x/vuln/cmd/govulncheck@latest
+
+      - name: Vulnerability Check (govulncheck)
         run: make vuln-check
+
+      - name: Install nilaway
+        run: go install go.uber.org/nilaway/cmd/nilaway@latest
+
+      - name: NilAway
+        run: make nilaway
+
+  unit-tests:
+    name: Unit Tests & Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: false
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+      - name: Download dependencies
+        run: go mod download
 
       - name: Test and generate coverage report
         run: make cover
