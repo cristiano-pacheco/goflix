@@ -2,59 +2,68 @@
 SHELL_PATH = /bin/ash
 SHELL = $(if $(wildcard $(SHELL_PATH)),/bin/ash,/bin/bash)
 
+.PHONY: all
+all: install-libs lint test cover
+
 # ==============================================================================
 # Install dependencies
 
+.PHONY: install-libs
 install-libs:
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 	go install golang.org/x/vuln/cmd/govulncheck@latest
 	go install github.com/vektra/mockery/v2@latest
 	go install github.com/swaggo/swag/cmd/swag@latest
+	go install go.uber.org/nilaway/cmd/nilaway@latest
 
 # ==============================================================================
 # Administration
 
+.PHONY: ping
 ping:
 	curl -il http://localhost:4000/api/v1/ping
 
+.PHONY: run
 run:
 	go run .
 
+.PHONY: migrate
 migrate:
 	go run ./main.go db:migrate
 
 # ==============================================================================
 # Running tests within the local computer
 
-static-checks: lint vuln-check field-alignment
+.PHONY: static
+static: lint vuln-check nilaway
 
+.PHONY: lint
 lint:
 	golangci-lint run ./... --allow-parallel-runners
 
+.PHONY: vuln-check
 vuln-check:
 	govulncheck -show verbose ./... 
 
-test-race: test-r lint vuln-check
+.PHONY: nilaway
+nilaway:
+	nilaway ./...
 
-# Add the missing test-only target
-utest-race:
-	CGO_ENABLED=0 go test -count=1 ./...
-
-# Or alternatively, rename the existing tests target to test-only
+.PHONY: test
 test:
-	CGO_ENABLED=0 go test -count=1 ./...
+	CGO_ENABLED=0 go test ./...
 
-tests:
-	CGO_ENABLED=0 go test -count=1 ./...
+.PHONY: cover
+cover:
+	mkdir -p reports
+	go test -race -coverprofile=reports/cover.out -coverpkg=./... ./... && \
+	go tool cover -html=reports/cover.out -o reports/cover.html
 
-tests-coverage:
-	CGO_ENABLED=0 go test -v -coverprofile cover.out ./...
-	CGO_ENABLED=0 go tool cover -html cover.out -o cover.html
-	open cover.html
-
+.PHONY: mocks
 mocks:
 	mockery
 
+.PHONY: cover
 update-swagger:
 	swag fmt -d docs
 	swag i --parseDependency
