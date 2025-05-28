@@ -53,6 +53,10 @@ nilaway:
 test:
 	CGO_ENABLED=0 go test ./...
 
+.PHONY: test-integration
+test-integration:
+	CGO_ENABLED=0 go test -v ./test/integration/...
+
 .PHONY: cover
 cover:
 	mkdir -p reports
