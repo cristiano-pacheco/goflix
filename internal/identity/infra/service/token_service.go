@@ -48,7 +48,11 @@ func (s *tokenService) Generate(ctx context.Context, user model.UserModel) (stri
 		Subject:   strconv.FormatUint(user.ID(), 10),
 	}
 
-	method := jwt.GetSigningMethod(jwt.SigningMethodRS256.Name)
+	signingMethod := "RS256"
+	if jwt.SigningMethodRS256 != nil {
+		signingMethod = jwt.SigningMethodRS256.Name
+	}
+	method := jwt.GetSigningMethod(signingMethod)
 	token := jwt.NewWithClaims(method, claims)
 
 	pk := s.privateKeyRegistry.Get()

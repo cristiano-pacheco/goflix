@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/repository"
@@ -54,12 +55,20 @@ func (s *sendEmailConfirmationService) Execute(ctx context.Context, userID uint6
 		return err
 	}
 
+	if user.ConfirmationToken() == nil {
+		message := "confirmation token is nil"
+		s.logger.Error(message)
+		return errors.New(message)
+	}
+
+	confirmationToken := *user.ConfirmationToken()
+
 	// generate the account confirmation link
 	accountConfLink := fmt.Sprintf(
 		"%s/user/confirmation?id=%d&token=%s",
 		s.cfg.App.BaseURL,
 		user.ID(),
-		*user.ConfirmationToken(),
+		confirmationToken,
 	)
 
 	// compile the template
