@@ -15,6 +15,6 @@ func SetupUserRoutes(
 	router := r.Router()
 	router.HandlerFunc(http.MethodPost, "/api/v1/users", userHandler.Create)
 	router.HandlerFunc(http.MethodPost, "/api/v1/users/activate", userHandler.Activate)
-	router.HandlerFunc(http.MethodGet, "/api/v1/users/:id", authMiddleware.Middleware(userHandler.FindByID))
-	router.HandlerFunc(http.MethodPut, "/api/v1/users/:id", authMiddleware.Middleware(userHandler.Update))
+	router.HandlerFunc(http.MethodGet, "/api/v1/users/me", authMiddleware.Middleware(userHandler.FindByID))
+	router.HandlerFunc(http.MethodPut, "/api/v1/users/me", authMiddleware.Middleware(userHandler.Update))
 }

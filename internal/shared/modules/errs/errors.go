@@ -11,7 +11,8 @@ var (
 	ErrInvalidToken                    = errors.New("invalid token")
 	ErrInvalidAccountConfirmationToken = errors.New("invalid account confirmation token")
 
-	ErrNotFound = errors.New("not found")
+	ErrNotFound     = errors.New("not found")
+	ErrUnauthorized = errors.New("unauthorized")
 
 	ErrKeyMustBePEMEncoded = errors.New("invalid key: Key must be a PEM encoded PKCS1 or PKCS8 key")
 	ErrNotRSAPrivateKey    = errors.New("key is not a valid RSA private key")

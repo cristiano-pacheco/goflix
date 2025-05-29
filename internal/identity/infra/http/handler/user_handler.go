@@ -3,7 +3,6 @@ package handler
 import (
 	"errors"
 	"net/http"
-	"strconv"
 
 	"github.com/cristiano-pacheco/goflix/internal/identity/application/usecase"
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/errs"
@@ -98,7 +97,7 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 // @Failure		401	{object}	errs.Error	"Invalid credentials"
 // @Failure		404	{object}	errs.Error	"User not found"
 // @Failure		500	{object}	errs.Error	"Internal server error"
-// @Router		/api/v1/users/{id} [put]
+// @Router		/api/v1/users/me [put]
 func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	ctx, span := otel.Trace().StartSpan(r.Context(), "UserHandler.Update")
 	defer span.End()
@@ -109,19 +108,18 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id := request.Param(r, "id")
-	idUser, err := strconv.ParseUint(id, 10, 64)
-	if err != nil {
-		response.Error(w, err)
+	userID, ok := r.Context().Value("user_id").(uint64)
+	if !ok {
+		response.JSON(w, http.StatusUnauthorized, nil, nil)
 		return
 	}
 
 	input := usecase.UserUpdateInput{
-		UserID: idUser,
+		UserID: userID,
 		Name:   updateUserRequest.Name,
 	}
 
-	err = h.userUpdateUseCase.Execute(ctx, input)
+	err := h.userUpdateUseCase.Execute(ctx, input)
 	if err != nil {
 		response.Error(w, err)
 		return
@@ -141,19 +139,18 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 // @Failure		401	{object}	errs.Error	"Invalid credentials"
 // @Failure		404	{object}	errs.Error	"User not found"
 // @Failure		500	{object}	errs.Error	"Internal server error"
-// @Router		/api/v1/users/{id} [get]
+// @Router		/api/v1/users/me [get]
 func (h *UserHandler) FindByID(w http.ResponseWriter, r *http.Request) {
 	ctx, span := otel.Trace().StartSpan(r.Context(), "UserHandler.FindByID")
 	defer span.End()
 
-	id := request.Param(r, "id")
-	idUser, err := strconv.ParseUint(id, 10, 64)
-	if err != nil {
-		response.Error(w, err)
+	userID, ok := r.Context().Value("user_id").(uint64)
+	if !ok {
+		response.JSON(w, http.StatusUnauthorized, nil, nil)
 		return
 	}
 
-	input := usecase.UserFindInput{UserID: idUser}
+	input := usecase.UserFindInput{UserID: userID}
 	output, err := h.userFindUseCase.Execute(ctx, input)
 	if err != nil {
 		response.Error(w, err)
