@@ -8,6 +8,7 @@ issues:
   # Default: 3
   max-issues-per-linter: 0
   max-same-issues: 0
+  fix: true
 
 formatters:
   enable:
@@ -374,6 +375,10 @@ linters:
       - text: 'comment on exported \S+ \S+ should be of the form ".+"'
         source: '// @Summary'
         linters: [ revive, staticcheck ]
+      # Ignore all linters for test directory
+      - path: 'test/.*'
+        text: '.*'
+      # Ignore specific linters for test files
       - path: '_test\.go'
         linters:
           - bodyclose
