@@ -1,9 +1,6 @@
 package main
 
 import (
-	"context"
-	"log"
-
 	"github.com/cristiano-pacheco/goflix/cmd"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/config"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
@@ -21,15 +18,7 @@ import (
 // @BasePath  /
 func main() {
 	config.Init()
-
 	cfg := config.GetConfig()
 	otel.Init(cfg)
-
-	defer func() {
-		if err := otel.Trace().Shutdown(context.Background()); err != nil {
-			log.Printf("Error shutting down tracer provider: %v", err)
-		}
-	}()
-
 	cmd.Execute()
 }
