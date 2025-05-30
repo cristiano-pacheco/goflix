@@ -145,8 +145,8 @@ func (h *UserHandler) FindByID(w http.ResponseWriter, r *http.Request) {
 	ctx, span := otel.Trace().StartSpan(r.Context(), "UserHandler.FindByID")
 	defer span.End()
 
-	userID, ok := r.Context().Value("user_id").(uint64)
-	if !ok {
+	userID := request.GetUserID(r)
+	if userID == 0 {
 		response.JSON(w, http.StatusUnauthorized, nil, nil)
 		return
 	}

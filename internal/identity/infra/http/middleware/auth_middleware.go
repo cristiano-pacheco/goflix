@@ -12,6 +12,7 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/errs"
 	shared_jwt "github.com/cristiano-pacheco/goflix/internal/shared/modules/jwt"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/registry"
+	"github.com/cristiano-pacheco/goflix/internal/shared/sdk/http/request"
 	"github.com/cristiano-pacheco/goflix/internal/shared/sdk/http/response"
 )
 
@@ -29,17 +30,6 @@ func NewAuthMiddleware(
 	userRepository repository.UserRepository,
 ) *AuthMiddleware {
 	return &AuthMiddleware{jwtParser, errorMapper, privateKeyRegistry, userRepository}
-}
-
-// UserIDKey is the key used to store the user ID in the request context
-type contextKey string
-
-const UserIDKey contextKey = "user_id"
-
-// GetUserID extracts the user ID from the request context
-func GetUserID(r *http.Request) (uint64, bool) {
-	userID, ok := r.Context().Value(UserIDKey).(uint64)
-	return userID, ok
 }
 
 // Middleware returns a Chi middleware function for authentication
@@ -90,7 +80,7 @@ func (m *AuthMiddleware) Middleware(next http.HandlerFunc) http.HandlerFunc {
 		}
 
 		// Store user ID in context
-		ctx = context.WithValue(ctx, UserIDKey, userID)
+		ctx = context.WithValue(ctx, request.UserIDKey, userID)
 
 		// Call next handler with updated context
 		next(w, r.WithContext(ctx))
