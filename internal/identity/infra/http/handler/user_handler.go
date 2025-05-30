@@ -121,7 +121,8 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 	err := h.userUpdateUseCase.Execute(ctx, input)
 	if err != nil {
-		response.Error(w, err)
+		rError := h.errorMapper.Map(err)
+		response.Error(w, rError)
 		return
 	}
 
@@ -153,7 +154,8 @@ func (h *UserHandler) FindByID(w http.ResponseWriter, r *http.Request) {
 	input := usecase.UserFindInput{UserID: userID}
 	output, err := h.userFindUseCase.Execute(ctx, input)
 	if err != nil {
-		response.Error(w, err)
+		rError := h.errorMapper.Map(err)
+		response.Error(w, rError)
 		return
 	}
 
@@ -187,8 +189,10 @@ func (h *UserHandler) Activate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	input := usecase.UserActivateInput{Token: req.Token}
-	if err := h.userActivateUseCase.Execute(ctx, input); err != nil {
-		response.Error(w, err)
+	err := h.userActivateUseCase.Execute(ctx, input)
+	if err != nil {
+		rError := h.errorMapper.Map(err)
+		response.Error(w, rError)
 		return
 	}
 

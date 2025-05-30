@@ -68,6 +68,9 @@ func (em *errorMapper) mapError(err error) error {
 	case errors.Is(err, ErrBadRequest):
 		status = http.StatusBadRequest
 		code = codeBadRequest
+	case errors.Is(err, ErrNotFound):
+		status = http.StatusNotFound
+		code = codeNotFound
 	default:
 		// Default: internal server error
 		code = codeUnknown
