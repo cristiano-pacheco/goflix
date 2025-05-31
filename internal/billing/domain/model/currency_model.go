@@ -24,12 +24,7 @@ func CreateCurrencyModel(code string) (CurrencyModel, error) {
 	}
 
 	currencyInfo := getCurrencyInfo(code)
-	return CurrencyModel{
-		country:  currencyInfo.country,
-		currency: currencyInfo.currency,
-		code:     currencyInfo.code,
-		number:   currencyInfo.number,
-	}, nil
+	return CurrencyModel(currencyInfo), nil
 }
 
 func (c *CurrencyModel) Country() string {

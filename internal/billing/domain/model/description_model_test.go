@@ -31,7 +31,7 @@ func TestCreateDescriptionModel(t *testing.T) {
 
 		// Assert
 		require.NoError(t, err)
-		require.Equal(t, "", result.String())
+		require.Empty(t, result.String())
 	})
 
 	t.Run("description with leading and trailing spaces gets trimmed", func(t *testing.T) {
@@ -171,6 +171,6 @@ func TestDescriptionModel_String(t *testing.T) {
 		result := description.String()
 
 		// Assert
-		require.Equal(t, "", result)
+		require.Empty(t, result)
 	})
 }
