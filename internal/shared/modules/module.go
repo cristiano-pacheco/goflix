@@ -10,6 +10,7 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/jwt"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/logger"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/mailer"
+	"github.com/cristiano-pacheco/goflix/internal/shared/modules/redis"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/registry"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/translator"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/validator"
@@ -27,4 +28,5 @@ var Module = fx.Module(
 	jwt.Module,
 	mailer.Module,
 	errs.Module,
+	redis.Module,
 )
