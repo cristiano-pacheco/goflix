@@ -17,7 +17,6 @@ type CurrencyModel struct {
 	number   string
 }
 
-// CreateCurrencyModel creates a new CurrencyModel with ISO 4217 validation
 func CreateCurrencyModel(code string) (CurrencyModel, error) {
 	code = strings.TrimSpace(code)
 	if err := validateCurrencyCode(code); err != nil {
@@ -33,7 +32,6 @@ func CreateCurrencyModel(code string) (CurrencyModel, error) {
 	}, nil
 }
 
-// Getter methods
 func (c *CurrencyModel) Country() string {
 	return c.country
 }
@@ -50,12 +48,6 @@ func (c *CurrencyModel) Number() string {
 	return c.number
 }
 
-// String returns the currency code as a string
-func (c *CurrencyModel) String() string {
-	return c.code
-}
-
-// currencyInfo holds complete currency information
 type currencyInfo struct {
 	country  string
 	currency string
@@ -64,7 +56,7 @@ type currencyInfo struct {
 }
 
 // getCurrencyInfo returns complete currency information for a given code
-func getCurrencyInfo(code string) currencyInfo {
+func getCurrencyInfo(code string) currencyInfo { //nolint:funlen
 	currencyData := map[string]currencyInfo{
 		"AFN": {"AFGHANISTAN", "Afghani", "AFN", "971"},
 		"EUR": {"ÅLAND ISLANDS", "Euro", "EUR", "978"},

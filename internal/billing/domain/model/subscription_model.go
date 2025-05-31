@@ -21,7 +21,7 @@ type SubscriptionModel struct {
 
 func CreateSubscriptionModel(
 	userID, planID uint64,
-	status enum.SubscriptionStatusEnum,
+	status string,
 	startDate time.Time,
 	endDate *time.Time,
 	autoRenew bool,
@@ -30,10 +30,15 @@ func CreateSubscriptionModel(
 		return SubscriptionModel{}, err
 	}
 
+	statusEnum, err := enum.NewSubscriptionStatusEnum(status)
+	if err != nil {
+		return SubscriptionModel{}, err
+	}
+
 	return SubscriptionModel{
 		userID:    userID,
 		planID:    planID,
-		status:    status,
+		status:    statusEnum,
 		startDate: startDate,
 		endDate:   endDate,
 		autoRenew: autoRenew,
@@ -44,7 +49,7 @@ func CreateSubscriptionModel(
 
 func RestoreSubscriptionModel(
 	id, userID, planID uint64,
-	status enum.SubscriptionStatusEnum,
+	status string,
 	startDate time.Time,
 	endDate *time.Time,
 	autoRenew bool,
@@ -54,11 +59,16 @@ func RestoreSubscriptionModel(
 		return SubscriptionModel{}, err
 	}
 
+	statusEnum, err := enum.NewSubscriptionStatusEnum(status)
+	if err != nil {
+		return SubscriptionModel{}, err
+	}
+
 	return SubscriptionModel{
 		id:        id,
 		userID:    userID,
 		planID:    planID,
-		status:    status,
+		status:    statusEnum,
 		startDate: startDate,
 		endDate:   endDate,
 		autoRenew: autoRenew,

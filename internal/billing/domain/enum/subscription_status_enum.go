@@ -16,7 +16,7 @@ type SubscriptionStatusEnum struct {
 
 func NewSubscriptionStatusEnum(value string) (SubscriptionStatusEnum, error) {
 	if err := validateSubscriptionStatusEnum(value); err != nil {
-		panic(err)
+		return SubscriptionStatusEnum{}, err
 	}
 
 	return SubscriptionStatusEnum{value: value}, nil
