@@ -16,24 +16,22 @@ func TestCreateSubscriptionModel(t *testing.T) {
 		// Arrange
 		userID := uint64(1)
 		planID := uint64(2)
-		status := enum.EnumSubscriptionStatusActive
 		startDate := time.Now().UTC()
 		endDate := &time.Time{}
 		*endDate = startDate.Add(30 * 24 * time.Hour)
-		autoRenew := true
 
 		// Act
-		subscription, err := model.CreateSubscriptionModel(userID, planID, status, startDate, endDate, autoRenew)
+		subscription, err := model.CreateSubscriptionModel(userID, planID, startDate, endDate)
 
 		// Assert
 		require.NoError(t, err)
 		assert.Equal(t, userID, subscription.UserID())
 		assert.Equal(t, planID, subscription.PlanID())
 		statusEnum := subscription.Status()
-		assert.Equal(t, status, (&statusEnum).String())
+		assert.Equal(t, enum.EnumSubscriptionStatusActive, (&statusEnum).String())
 		assert.Equal(t, startDate, subscription.StartDate())
 		assert.Equal(t, endDate, subscription.EndDate())
-		assert.Equal(t, autoRenew, subscription.AutoRenew())
+		assert.True(t, subscription.AutoRenew()) // auto-renew is true by default
 		assert.NotZero(t, subscription.CreatedAt())
 		assert.NotZero(t, subscription.UpdatedAt())
 		assert.Zero(t, subscription.ID())
@@ -43,34 +41,30 @@ func TestCreateSubscriptionModel(t *testing.T) {
 		// Arrange
 		userID := uint64(1)
 		planID := uint64(2)
-		status := enum.EnumSubscriptionStatusActive
 		startDate := time.Now().UTC()
-		autoRenew := false
 
 		// Act
-		subscription, err := model.CreateSubscriptionModel(userID, planID, status, startDate, nil, autoRenew)
+		subscription, err := model.CreateSubscriptionModel(userID, planID, startDate, nil)
 
 		// Assert
 		require.NoError(t, err)
 		assert.Equal(t, userID, subscription.UserID())
 		assert.Equal(t, planID, subscription.PlanID())
 		statusEnum := subscription.Status()
-		assert.Equal(t, status, (&statusEnum).String())
+		assert.Equal(t, enum.EnumSubscriptionStatusActive, (&statusEnum).String())
 		assert.Equal(t, startDate, subscription.StartDate())
 		assert.Nil(t, subscription.EndDate())
-		assert.Equal(t, autoRenew, subscription.AutoRenew())
+		assert.True(t, subscription.AutoRenew()) // auto-renew is true by default
 	})
 
 	t.Run("zero user ID returns error", func(t *testing.T) {
 		// Arrange
 		userID := uint64(0)
 		planID := uint64(2)
-		status := enum.EnumSubscriptionStatusActive
 		startDate := time.Now().UTC()
-		autoRenew := true
 
 		// Act
-		subscription, err := model.CreateSubscriptionModel(userID, planID, status, startDate, nil, autoRenew)
+		subscription, err := model.CreateSubscriptionModel(userID, planID, startDate, nil)
 
 		// Assert
 		require.Error(t, err)
@@ -82,12 +76,10 @@ func TestCreateSubscriptionModel(t *testing.T) {
 		// Arrange
 		userID := uint64(1)
 		planID := uint64(0)
-		status := enum.EnumSubscriptionStatusActive
 		startDate := time.Now().UTC()
-		autoRenew := true
 
 		// Act
-		subscription, err := model.CreateSubscriptionModel(userID, planID, status, startDate, nil, autoRenew)
+		subscription, err := model.CreateSubscriptionModel(userID, planID, startDate, nil)
 
 		// Assert
 		require.Error(t, err)
@@ -99,12 +91,10 @@ func TestCreateSubscriptionModel(t *testing.T) {
 		// Arrange
 		userID := uint64(1)
 		planID := uint64(2)
-		status := enum.EnumSubscriptionStatusActive
 		startDate := time.Time{}
-		autoRenew := true
 
 		// Act
-		subscription, err := model.CreateSubscriptionModel(userID, planID, status, startDate, nil, autoRenew)
+		subscription, err := model.CreateSubscriptionModel(userID, planID, startDate, nil)
 
 		// Assert
 		require.Error(t, err)
@@ -116,34 +106,16 @@ func TestCreateSubscriptionModel(t *testing.T) {
 		// Arrange
 		userID := uint64(1)
 		planID := uint64(2)
-		status := enum.EnumSubscriptionStatusActive
 		startDate := time.Now().UTC()
 		endDate := &time.Time{}
 		*endDate = startDate.Add(-24 * time.Hour)
-		autoRenew := true
 
 		// Act
-		subscription, err := model.CreateSubscriptionModel(userID, planID, status, startDate, endDate, autoRenew)
+		subscription, err := model.CreateSubscriptionModel(userID, planID, startDate, endDate)
 
 		// Assert
 		require.Error(t, err)
 		assert.Equal(t, "end date cannot be before start date", err.Error())
-		assert.Zero(t, subscription)
-	})
-
-	t.Run("invalid status returns error", func(t *testing.T) {
-		// Arrange
-		userID := uint64(1)
-		planID := uint64(2)
-		status := "invalid_status"
-		startDate := time.Now().UTC()
-		autoRenew := true
-
-		// Act
-		subscription, err := model.CreateSubscriptionModel(userID, planID, status, startDate, nil, autoRenew)
-
-		// Assert
-		require.Error(t, err)
 		assert.Zero(t, subscription)
 	})
 }
@@ -229,7 +201,7 @@ func TestSubscriptionModel_UpdateStatus(t *testing.T) {
 	t.Run("valid status updates successfully", func(t *testing.T) {
 		// Arrange
 		subscription, err := model.CreateSubscriptionModel(
-			1, 2, enum.EnumSubscriptionStatusActive, time.Now().UTC(), nil, true,
+			1, 2, time.Now().UTC(), nil,
 		)
 		require.NoError(t, err)
 		originalUpdatedAt := subscription.UpdatedAt()
@@ -248,7 +220,7 @@ func TestSubscriptionModel_UpdateStatus(t *testing.T) {
 	t.Run("invalid status returns error", func(t *testing.T) {
 		// Arrange
 		subscription, err := model.CreateSubscriptionModel(
-			1, 2, enum.EnumSubscriptionStatusActive, time.Now().UTC(), nil, true,
+			1, 2, time.Now().UTC(), nil,
 		)
 		require.NoError(t, err)
 		originalStatus := subscription.Status()
@@ -269,7 +241,7 @@ func TestSubscriptionModel_UpdateEndDate(t *testing.T) {
 		// Arrange
 		startDate := time.Now().UTC()
 		subscription, err := model.CreateSubscriptionModel(
-			1, 2, enum.EnumSubscriptionStatusActive, startDate, nil, true,
+			1, 2, startDate, nil,
 		)
 		require.NoError(t, err)
 		originalUpdatedAt := subscription.UpdatedAt()
@@ -292,7 +264,7 @@ func TestSubscriptionModel_UpdateEndDate(t *testing.T) {
 		endDate := &time.Time{}
 		*endDate = startDate.Add(30 * 24 * time.Hour)
 		subscription, err := model.CreateSubscriptionModel(
-			1, 2, enum.EnumSubscriptionStatusActive, startDate, endDate, true,
+			1, 2, startDate, endDate,
 		)
 		require.NoError(t, err)
 		originalUpdatedAt := subscription.UpdatedAt()
@@ -311,7 +283,7 @@ func TestSubscriptionModel_UpdateEndDate(t *testing.T) {
 		// Arrange
 		startDate := time.Now().UTC()
 		subscription, err := model.CreateSubscriptionModel(
-			1, 2, enum.EnumSubscriptionStatusActive, startDate, nil, true,
+			1, 2, startDate, nil,
 		)
 		require.NoError(t, err)
 		originalEndDate := subscription.EndDate()
@@ -334,7 +306,7 @@ func TestSubscriptionModel_SetAutoRenew(t *testing.T) {
 	t.Run("sets auto renew to true", func(t *testing.T) {
 		// Arrange
 		subscription, err := model.CreateSubscriptionModel(
-			1, 2, enum.EnumSubscriptionStatusActive, time.Now().UTC(), nil, false,
+			1, 2, time.Now().UTC(), nil,
 		)
 		require.NoError(t, err)
 		originalUpdatedAt := subscription.UpdatedAt()
@@ -351,7 +323,7 @@ func TestSubscriptionModel_SetAutoRenew(t *testing.T) {
 	t.Run("sets auto renew to false", func(t *testing.T) {
 		// Arrange
 		subscription, err := model.CreateSubscriptionModel(
-			1, 2, enum.EnumSubscriptionStatusActive, time.Now().UTC(), nil, true,
+			1, 2, time.Now().UTC(), nil,
 		)
 		require.NoError(t, err)
 		originalUpdatedAt := subscription.UpdatedAt()

@@ -21,16 +21,14 @@ type SubscriptionModel struct {
 
 func CreateSubscriptionModel(
 	userID, planID uint64,
-	status string,
 	startDate time.Time,
 	endDate *time.Time,
-	autoRenew bool,
 ) (SubscriptionModel, error) {
 	if err := validateSubscription(userID, planID, startDate, endDate); err != nil {
 		return SubscriptionModel{}, err
 	}
 
-	statusEnum, err := enum.NewSubscriptionStatusEnum(status)
+	statusEnum, err := enum.NewSubscriptionStatusEnum(enum.EnumSubscriptionStatusActive)
 	if err != nil {
 		return SubscriptionModel{}, err
 	}
@@ -41,7 +39,7 @@ func CreateSubscriptionModel(
 		status:    statusEnum,
 		startDate: startDate,
 		endDate:   endDate,
-		autoRenew: autoRenew,
+		autoRenew: true, // auto-renew enabled by default
 		createdAt: time.Now().UTC(),
 		updatedAt: time.Now().UTC(),
 	}, nil
