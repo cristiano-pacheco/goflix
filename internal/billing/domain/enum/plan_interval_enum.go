@@ -10,12 +10,10 @@ const (
 	EnumPlanIntervalYear  string = "Year"
 )
 
-// Struct type: {EnumName}Enum
 type PlanIntervalEnum struct {
 	value string
 }
 
-// Constructor: New{EnumName}Enum
 func NewPlanIntervalEnum(value string) (PlanIntervalEnum, error) {
 	if err := validatePlanIntervalEnum(value); err != nil {
 		return PlanIntervalEnum{}, err
@@ -24,12 +22,10 @@ func NewPlanIntervalEnum(value string) (PlanIntervalEnum, error) {
 	return PlanIntervalEnum{value: value}, nil
 }
 
-// String method
 func (e *PlanIntervalEnum) String() string {
 	return e.value
 }
 
-// Validation function
 func validatePlanIntervalEnum(value string) error {
 	allowedValues := map[string]struct{}{
 		EnumPlanIntervalDay:   {},

@@ -35,9 +35,9 @@ func CreatePlanModel(
 
 	var descriptionModel *DescriptionModel
 	if description != "" {
-		desc, err := CreateDescriptionModel(description)
-		if err != nil {
-			return PlanModel{}, err
+		desc, errDescription := CreateDescriptionModel(description)
+		if errDescription != nil {
+			return PlanModel{}, errDescription
 		}
 		descriptionModel = &desc
 	}
@@ -54,9 +54,9 @@ func CreatePlanModel(
 
 	var trialPeriodModel *TrialPeriodModel
 	if trialPeriod != nil {
-		trial, err := CreateTrialPeriodModel(*trialPeriod)
-		if err != nil {
-			return PlanModel{}, err
+		trial, errTrialPeriod := CreateTrialPeriodModel(*trialPeriod)
+		if errTrialPeriod != nil {
+			return PlanModel{}, errTrialPeriod
 		}
 		trialPeriodModel = &trial
 	}
@@ -92,9 +92,9 @@ func RestorePlanModel(
 
 	var descriptionModel *DescriptionModel
 	if description != "" {
-		desc, err := CreateDescriptionModel(description)
-		if err != nil {
-			return PlanModel{}, err
+		desc, errDescription := CreateDescriptionModel(description)
+		if errDescription != nil {
+			return PlanModel{}, errDescription
 		}
 		descriptionModel = &desc
 	}
@@ -111,9 +111,9 @@ func RestorePlanModel(
 
 	var trialPeriodModel *TrialPeriodModel
 	if trialPeriod != nil {
-		trial, err := CreateTrialPeriodModel(*trialPeriod)
-		if err != nil {
-			return PlanModel{}, err
+		trial, errTrialPeriod := CreateTrialPeriodModel(*trialPeriod)
+		if errTrialPeriod != nil {
+			return PlanModel{}, errTrialPeriod
 		}
 		trialPeriodModel = &trial
 	}
@@ -136,38 +136,38 @@ func RestorePlanModel(
 	}, nil
 }
 
-func (p PlanModel) ID() uint64 {
+func (p *PlanModel) ID() uint64 {
 	return p.id
 }
 
-func (p PlanModel) Name() NameModel {
+func (p *PlanModel) Name() NameModel {
 	return p.name
 }
 
-func (p PlanModel) Description() *DescriptionModel {
+func (p *PlanModel) Description() *DescriptionModel {
 	return p.description
 }
 
-func (p PlanModel) Amount() AmountModel {
+func (p *PlanModel) Amount() AmountModel {
 	return p.amount
 }
 
-func (p PlanModel) Currency() CurrencyModel {
+func (p *PlanModel) Currency() CurrencyModel {
 	return p.currency
 }
 
-func (p PlanModel) Interval() enum.PlanIntervalEnum {
+func (p *PlanModel) Interval() enum.PlanIntervalEnum {
 	return p.interval
 }
 
-func (p PlanModel) TrialPeriod() *TrialPeriodModel {
+func (p *PlanModel) TrialPeriod() *TrialPeriodModel {
 	return p.trialPeriod
 }
 
-func (p PlanModel) CreatedAt() time.Time {
+func (p *PlanModel) CreatedAt() time.Time {
 	return p.createdAt
 }
 
-func (p PlanModel) UpdatedAt() time.Time {
+func (p *PlanModel) UpdatedAt() time.Time {
 	return p.updatedAt
 }

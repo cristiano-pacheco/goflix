@@ -75,39 +75,39 @@ func RestoreSubscriptionModel(
 	}, nil
 }
 
-func (s SubscriptionModel) ID() uint64 {
+func (s *SubscriptionModel) ID() uint64 {
 	return s.id
 }
 
-func (s SubscriptionModel) UserID() uint64 {
+func (s *SubscriptionModel) UserID() uint64 {
 	return s.userID
 }
 
-func (s SubscriptionModel) PlanID() uint64 {
+func (s *SubscriptionModel) PlanID() uint64 {
 	return s.planID
 }
 
-func (s SubscriptionModel) Status() enum.SubscriptionStatusEnum {
+func (s *SubscriptionModel) Status() enum.SubscriptionStatusEnum {
 	return s.status
 }
 
-func (s SubscriptionModel) StartDate() time.Time {
+func (s *SubscriptionModel) StartDate() time.Time {
 	return s.startDate
 }
 
-func (s SubscriptionModel) EndDate() *time.Time {
+func (s *SubscriptionModel) EndDate() *time.Time {
 	return s.endDate
 }
 
-func (s SubscriptionModel) AutoRenew() bool {
+func (s *SubscriptionModel) AutoRenew() bool {
 	return s.autoRenew
 }
 
-func (s SubscriptionModel) CreatedAt() time.Time {
+func (s *SubscriptionModel) CreatedAt() time.Time {
 	return s.createdAt
 }
 
-func (s SubscriptionModel) UpdatedAt() time.Time {
+func (s *SubscriptionModel) UpdatedAt() time.Time {
 	return s.updatedAt
 }
 
@@ -154,7 +154,7 @@ func validateSubscription(
 		return errors.New("start date is required")
 	}
 
-	if endDate != nil && endDate.Before(startDate) {
+	if endDate != nil && !startDate.IsZero() && endDate.Before(startDate) {
 		return errors.New("end date cannot be before start date")
 	}
 

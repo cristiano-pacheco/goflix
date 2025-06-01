@@ -26,13 +26,13 @@ func NewRedis(addr string, password string, db int) Redis {
 
 	err := errors.Join(redisotel.InstrumentTracing(rdb), redisotel.InstrumentMetrics(rdb))
 	if err != nil {
-		slog.Error("failed to instrument tracing", "error", err)
+		slog.Error("failed to instrument tracing", "error", err) //nolint:sloglint // no lint is required here
 		panic(err)
 	}
 
 	_, err = rdb.Ping(context.Background()).Result()
 	if err != nil {
-		slog.Error("failed to ping redis", "error", err)
+		slog.Error("failed to ping redis", "error", err) //nolint:sloglint // no lint is required here
 		panic(err)
 	}
 

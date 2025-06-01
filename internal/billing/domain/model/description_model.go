@@ -25,7 +25,7 @@ func CreateDescriptionModel(value string) (DescriptionModel, error) {
 	return DescriptionModel{value: value}, nil
 }
 
-func (d DescriptionModel) String() string {
+func (d *DescriptionModel) String() string {
 	return d.value
 }
 

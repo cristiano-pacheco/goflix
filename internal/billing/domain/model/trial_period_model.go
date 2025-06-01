@@ -20,7 +20,7 @@ func CreateTrialPeriodModel(value uint) (TrialPeriodModel, error) {
 	return TrialPeriodModel{value: value}, nil
 }
 
-func (t TrialPeriodModel) Days() uint {
+func (t *TrialPeriodModel) Days() uint {
 	return t.value
 }
 

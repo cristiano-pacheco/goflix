@@ -27,11 +27,27 @@ func CreateNameModel(value string) (NameModel, error) {
 	return NameModel{value: value}, nil
 }
 
-func (n NameModel) String() string {
+func (n *NameModel) String() string {
 	return n.value
 }
 
 func validatePlanName(value string) error {
+	if err := validatePlanNameLength(value); err != nil {
+		return err
+	}
+
+	if err := validatePlanNameCharacters(value); err != nil {
+		return err
+	}
+
+	if err := validatePlanNameFormat(value); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func validatePlanNameLength(value string) error {
 	charCount := utf8.RuneCountInString(value)
 
 	if charCount == 0 {
@@ -46,14 +62,19 @@ func validatePlanName(value string) error {
 		return errors.New("plan name cannot exceed 100 characters")
 	}
 
+	return nil
+}
+
+func validatePlanNameCharacters(value string) error {
+	runes := []rune(value)
+
 	// Check if name starts with a letter or digit
-	firstRune := []rune(value)[0]
-	if !unicode.IsLetter(firstRune) && !unicode.IsDigit(firstRune) {
+	if !unicode.IsLetter(runes[0]) && !unicode.IsDigit(runes[0]) {
 		return errors.New("plan name must start with a letter or digit")
 	}
 
 	// Check if name ends with a letter or digit (not punctuation)
-	lastRune := []rune(value)[len([]rune(value))-1]
+	lastRune := runes[len(runes)-1]
 	if !unicode.IsLetter(lastRune) && !unicode.IsDigit(lastRune) {
 		return errors.New("plan name must end with a letter or digit")
 	}
@@ -64,16 +85,10 @@ func validatePlanName(value string) error {
 	}
 
 	// Check for invalid characters using functional approach
-	runes := []rune(value)
 	if !lo.EveryBy(runes, isValidPlanNameChar) {
 		return errors.New(
 			"plan name contains invalid characters (only letters, digits, spaces, hyphens, underscores, and periods are allowed)",
 		)
-	}
-
-	// Additional format validations
-	if err := validatePlanNameFormat(value); err != nil {
-		return err
 	}
 
 	return nil

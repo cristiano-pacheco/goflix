@@ -19,7 +19,7 @@ func CreateAmountModel(value uint) (AmountModel, error) {
 	return AmountModel{value: value}, nil
 }
 
-func (a AmountModel) Cents() uint {
+func (a *AmountModel) Cents() uint {
 	return a.value
 }
 

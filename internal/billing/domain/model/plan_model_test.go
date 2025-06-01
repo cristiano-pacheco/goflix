@@ -24,10 +24,12 @@ func TestCreatePlanModel(t *testing.T) {
 
 		// Assert
 		require.NoError(t, err)
-		require.Equal(t, name, result.Name().String())
+		nameModel := result.Name()
+		require.Equal(t, name, (&nameModel).String())
 		require.NotNil(t, result.Description())
 		require.Equal(t, description, result.Description().String())
-		require.Equal(t, amountCents, result.Amount().Cents())
+		amountModel := result.Amount()
+		require.Equal(t, amountCents, (&amountModel).Cents())
 		currencyModel := result.Currency()
 		require.Equal(t, currency, currencyModel.Code())
 		intervalModel := result.Interval()
@@ -53,9 +55,11 @@ func TestCreatePlanModel(t *testing.T) {
 
 		// Assert
 		require.NoError(t, err)
-		require.Equal(t, name, result.Name().String())
+		nameModel := result.Name()
+		require.Equal(t, name, (&nameModel).String())
 		require.Nil(t, result.Description())
-		require.Equal(t, amountCents, result.Amount().Cents())
+		amountModel := result.Amount()
+		require.Equal(t, amountCents, (&amountModel).Cents())
 		currencyModel := result.Currency()
 		require.Equal(t, currency, currencyModel.Code())
 		intervalModel := result.Interval()
@@ -77,10 +81,12 @@ func TestCreatePlanModel(t *testing.T) {
 
 		// Assert
 		require.NoError(t, err)
-		require.Equal(t, name, result.Name().String())
+		nameModel := result.Name()
+		require.Equal(t, name, (&nameModel).String())
 		require.NotNil(t, result.Description())
 		require.Equal(t, description, result.Description().String())
-		require.Equal(t, amountCents, result.Amount().Cents())
+		amountModel := result.Amount()
+		require.Equal(t, amountCents, (&amountModel).Cents())
 		currencyModel := result.Currency()
 		require.Equal(t, currency, currencyModel.Code())
 		intervalModel := result.Interval()
@@ -101,7 +107,8 @@ func TestCreatePlanModel(t *testing.T) {
 
 		// Assert
 		require.NoError(t, err)
-		require.Equal(t, "Trimmed Plan", result.Name().String())
+		nameModel := result.Name()
+		require.Equal(t, "Trimmed Plan", (&nameModel).String())
 		require.Equal(t, "Trimmed description", result.Description().String())
 		currencyModel := result.Currency()
 		require.Equal(t, "USD", currencyModel.Code())
@@ -262,10 +269,12 @@ func TestRestorePlanModel(t *testing.T) {
 		// Assert
 		require.NoError(t, err)
 		require.Equal(t, id, result.ID())
-		require.Equal(t, name, result.Name().String())
+		nameModel := result.Name()
+		require.Equal(t, name, (&nameModel).String())
 		require.NotNil(t, result.Description())
 		require.Equal(t, description, result.Description().String())
-		require.Equal(t, amountCents, result.Amount().Cents())
+		amountModel := result.Amount()
+		require.Equal(t, amountCents, (&amountModel).Cents())
 		currencyModel := result.Currency()
 		require.Equal(t, currency, currencyModel.Code())
 		intervalModel := result.Interval()
@@ -303,9 +312,11 @@ func TestRestorePlanModel(t *testing.T) {
 		// Assert
 		require.NoError(t, err)
 		require.Equal(t, id, result.ID())
-		require.Equal(t, name, result.Name().String())
+		nameModel := result.Name()
+		require.Equal(t, name, (&nameModel).String())
 		require.Nil(t, result.Description())
-		require.Equal(t, amountCents, result.Amount().Cents())
+		amountModel := result.Amount()
+		require.Equal(t, amountCents, (&amountModel).Cents())
 		currencyModel := result.Currency()
 		require.Equal(t, currency, currencyModel.Code())
 		intervalModel := result.Interval()
@@ -374,10 +385,12 @@ func TestPlanModel_Getters(t *testing.T) {
 
 		// Act & Assert
 		require.Equal(t, id, plan.ID())
-		require.Equal(t, name, plan.Name().String())
+		nameModel := plan.Name()
+		require.Equal(t, name, (&nameModel).String())
 		require.NotNil(t, plan.Description())
 		require.Equal(t, description, plan.Description().String())
-		require.Equal(t, amountCents, plan.Amount().Cents())
+		amountModel := plan.Amount()
+		require.Equal(t, amountCents, (&amountModel).Cents())
 		currencyModel := plan.Currency()
 		require.Equal(t, currency, currencyModel.Code())
 		intervalModel := plan.Interval()
@@ -400,9 +413,11 @@ func TestPlanModel_Getters(t *testing.T) {
 
 		// Act & Assert
 		require.Equal(t, uint64(0), plan.ID())
-		require.Equal(t, name, plan.Name().String())
+		nameModel := plan.Name()
+		require.Equal(t, name, (&nameModel).String())
 		require.Nil(t, plan.Description())
-		require.Equal(t, amountCents, plan.Amount().Cents())
+		amountModel := plan.Amount()
+		require.Equal(t, amountCents, (&amountModel).Cents())
 		currencyModel := plan.Currency()
 		require.Equal(t, currency, currencyModel.Code())
 		intervalModel := plan.Interval()
