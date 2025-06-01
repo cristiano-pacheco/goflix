@@ -12,4 +12,5 @@ type SubscriptionRepository interface {
 	Delete(ctx context.Context, id uint64) error
 	FindByID(ctx context.Context, id uint64) (model.SubscriptionModel, error)
 	FindByUserID(ctx context.Context, userID uint64) ([]model.SubscriptionModel, error)
+	FindActiveSubscriptionByUserID(ctx context.Context, userID uint64) (model.SubscriptionModel, error)
 }
