@@ -6,10 +6,11 @@ import (
 	"time"
 
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/enum"
+	"github.com/cristiano-pacheco/goflix/internal/billing/domain/errs"
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/mapper"
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/model"
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/repository"
-	"github.com/cristiano-pacheco/goflix/internal/shared/modules/errs"
+	sharedErrs "github.com/cristiano-pacheco/goflix/internal/shared/modules/errs"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/logger"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/validator"
@@ -71,10 +72,10 @@ func (uc *CreateSubscriptionUseCase) Execute(
 	// Verify the plan exists
 	planModel, err := uc.planRepository.FindByID(ctx, input.PlanID)
 	if err != nil {
-		if errors.Is(err, errs.ErrNotFound) {
+		if errors.Is(err, errs.ErrPlanNotFound) {
 			message := "plan not found with id %d"
 			uc.logger.Error(message, "error", err, "planID", input.PlanID)
-			return output, errors.New("plan not found")
+			return output, errs.ErrPlanNotFound
 		}
 		message := "error finding plan by id %d"
 		uc.logger.Error(message, "error", err, "planID", input.PlanID)
@@ -83,7 +84,7 @@ func (uc *CreateSubscriptionUseCase) Execute(
 
 	// Check if user already has an active subscription
 	existingSubscriptions, err := uc.subscriptionRepository.FindByUserID(ctx, input.UserID)
-	if err != nil && !errors.Is(err, errs.ErrNotFound) {
+	if err != nil && !errors.Is(err, sharedErrs.ErrNotFound) {
 		message := "error finding existing subscriptions for user %d"
 		uc.logger.Error(message, "error", err, "userID", input.UserID)
 		return output, err
@@ -93,7 +94,7 @@ func (uc *CreateSubscriptionUseCase) Execute(
 	for _, subscription := range existingSubscriptions {
 		status := subscription.Status()
 		if status.String() == enum.EnumSubscriptionStatusActive {
-			return output, errors.New("user already has an active subscription")
+			return output, errs.ErrUserAlreadyHasActiveSubscription
 		}
 	}
 
