@@ -17,45 +17,34 @@ import (
 var Module = fx.Module(
 	"identity",
 	fx.Provide(
-		// #################### APPLICATION ####################################
-		// usecases
 		usecase.NewUserCreateUseCase,
 		usecase.NewUserActivateUseCase,
 		usecase.NewUserUpdateUseCase,
 		usecase.NewUserFindUseCase,
 		usecase.NewTokenGenerateUseCase,
 
-		// #################### DOMAIN #########################################
 		domain_service.NewHashService,
 		validator.NewPasswordValidator,
 
-		// #################### INFRA ##########################################
-
-		// handlers
 		handler.NewAuthHandler,
 		handler.NewUserHandler,
 
-		// mappers
 		mapper.NewUserMapper,
 		mapper.NewAuthTokenMapper,
 
-		// repositories
 		fx.Annotate(
 			repository.NewUserRepository,
 			fx.As(new(domain_repository.UserRepository)),
 		),
-
 		fx.Annotate(
 			repository.NewAuthTokenRepository,
 			fx.As(new(domain_repository.AuthTokenRepository)),
 		),
 
-		// services
 		fx.Annotate(
 			service.NewSendEmailConfirmationService,
 			fx.As(new(domain_service.SendEmailConfirmationService)),
 		),
-
 		fx.Annotate(
 			service.NewTokenService,
 			fx.As(new(domain_service.TokenService)),
