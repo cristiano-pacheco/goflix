@@ -1,4 +1,4 @@
-CREATE TABLE auth_tokens (
+CREATE TABLE auth_token (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     token TEXT NOT NULL UNIQUE,

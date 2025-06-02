@@ -12,5 +12,5 @@ type AuthTokenEntity struct {
 }
 
 func (*AuthTokenEntity) TableName() string {
-	return "login_tokens"
+	return "login_token"
 }
