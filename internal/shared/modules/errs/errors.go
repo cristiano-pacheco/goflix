@@ -18,6 +18,8 @@ var (
 	ErrNotRSAPrivateKey    = errors.New("key is not a valid RSA private key")
 
 	ErrBadRequest = errors.New("bad request")
+
+	ErrInternalServer = errors.New("internal server error")
 )
 
 func NewBadRequestError(message string) error {
