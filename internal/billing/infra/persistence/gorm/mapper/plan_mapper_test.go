@@ -291,7 +291,7 @@ func (s *PlanMapperTestSuite) TestToEntity_ValidPlanModelWithoutDescription_Retu
 	// Assert
 	s.Equal(uint64(456), planEntity.ID)
 	s.Equal("Basic Plan", planEntity.Name)
-	s.Equal("", planEntity.Description)
+	s.Empty(planEntity.Description)
 	s.Equal(uint(999), planEntity.AmountCents)
 	s.Equal("EUR", planEntity.Currency)
 	s.Equal("Year", planEntity.Interval)
