@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"encoding/base64"
 
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/repository"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/errs"
@@ -37,12 +38,18 @@ func (uc *UserActivateUseCase) Execute(ctx context.Context, input UserActivateIn
 		return err
 	}
 
-	user, err := uc.userRepository.FindByConfirmationToken(ctx, input.Token)
+	token, err := base64.StdEncoding.DecodeString(input.Token)
 	if err != nil {
 		return err
 	}
 
-	if !user.IsConfirmationTokenValid(input.Token) {
+	tokenStr := string(token)
+	user, err := uc.userRepository.FindByConfirmationToken(ctx, tokenStr)
+	if err != nil {
+		return err
+	}
+
+	if !user.IsConfirmationTokenValid(tokenStr) {
 		return errs.ErrInvalidAccountConfirmationToken
 	}
 

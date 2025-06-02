@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/errs"
@@ -62,13 +63,14 @@ func (s *sendEmailConfirmationService) Execute(ctx context.Context, userID uint6
 	}
 
 	confirmationToken := *user.ConfirmationToken()
+	base64Token := base64.StdEncoding.EncodeToString([]byte(confirmationToken))
 
 	// generate the account confirmation link
 	accountConfLink := fmt.Sprintf(
 		"%s/user/confirmation?id=%d&token=%s",
 		s.cfg.App.BaseURL,
 		user.ID(),
-		confirmationToken,
+		base64Token,
 	)
 
 	// compile the template
