@@ -3,9 +3,10 @@ package enum_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/enum"
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/errs"
-	"github.com/stretchr/testify/require"
 )
 
 func TestNewSubscriptionStatusEnum(t *testing.T) {
@@ -78,7 +79,7 @@ func TestNewSubscriptionStatusEnum(t *testing.T) {
 
 		// Assert
 		require.ErrorIs(t, err, errs.ErrInvalidSubscriptionStatus)
-		require.Equal(t, "", result.String())
+		require.Empty(t, result.String())
 	})
 
 	t.Run("empty string returns error", func(t *testing.T) {
@@ -90,7 +91,7 @@ func TestNewSubscriptionStatusEnum(t *testing.T) {
 
 		// Assert
 		require.ErrorIs(t, err, errs.ErrInvalidSubscriptionStatus)
-		require.Equal(t, "", result.String())
+		require.Empty(t, result.String())
 	})
 
 	t.Run("case sensitive validation returns error for lowercase", func(t *testing.T) {
@@ -102,7 +103,7 @@ func TestNewSubscriptionStatusEnum(t *testing.T) {
 
 		// Assert
 		require.ErrorIs(t, err, errs.ErrInvalidSubscriptionStatus)
-		require.Equal(t, "", result.String())
+		require.Empty(t, result.String())
 	})
 }
 
@@ -130,4 +131,4 @@ func TestSubscriptionStatusEnum_String(t *testing.T) {
 		// Assert
 		require.Equal(t, enum.EnumSubscriptionStatusCancelled, result)
 	})
-} 
+}
