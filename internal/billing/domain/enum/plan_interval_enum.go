@@ -6,7 +6,6 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/errs"
 )
 
-// Constants with pattern: Enum{EnumName}{Value}
 const (
 	EnumPlanIntervalDay   string = "Day"
 	EnumPlanIntervalWeek  string = "Week"
