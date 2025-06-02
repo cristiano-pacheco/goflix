@@ -4,10 +4,11 @@ import (
 	"net/http"
 
 	"github.com/cristiano-pacheco/goflix/internal/billing/infra/http/handler"
+	"github.com/cristiano-pacheco/goflix/internal/shared/modules/http/router"
 )
 
 func SetupSubscriptionRoutes(
-	r *Router,
+	r *router.Router,
 	subscriptionHandler *handler.SubscriptionHandler,
 ) {
 	router := r.Router()

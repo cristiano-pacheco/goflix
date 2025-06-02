@@ -4,11 +4,12 @@ import (
 	"net/http"
 
 	"github.com/cristiano-pacheco/goflix/internal/identity/infra/http/handler"
-	"github.com/cristiano-pacheco/goflix/internal/identity/infra/http/middleware"
+	"github.com/cristiano-pacheco/goflix/internal/shared/modules/http/middleware"
+	"github.com/cristiano-pacheco/goflix/internal/shared/modules/http/router"
 )
 
 func SetupUserRoutes(
-	r *Router,
+	r *router.Router,
 	userHandler *handler.UserHandler,
 	authMiddleware *middleware.AuthMiddleware,
 ) {

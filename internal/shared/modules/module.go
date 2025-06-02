@@ -6,7 +6,9 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/config"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/database"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/errs"
-	"github.com/cristiano-pacheco/goflix/internal/shared/modules/httpserver"
+	"github.com/cristiano-pacheco/goflix/internal/shared/modules/http/httpserver"
+	"github.com/cristiano-pacheco/goflix/internal/shared/modules/http/middleware"
+	"github.com/cristiano-pacheco/goflix/internal/shared/modules/http/router"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/jwt"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/logger"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/mailer"
@@ -22,11 +24,13 @@ var Module = fx.Module(
 	database.Module,
 	validator.Module,
 	translator.Module,
-	httpserver.Module,
 	logger.Module,
 	registry.Module,
 	jwt.Module,
 	mailer.Module,
 	errs.Module,
 	redis.Module,
+	router.Module,
+	middleware.Module,
+	httpserver.Module,
 )

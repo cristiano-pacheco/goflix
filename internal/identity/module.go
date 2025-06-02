@@ -8,7 +8,6 @@ import (
 	domain_service "github.com/cristiano-pacheco/goflix/internal/identity/domain/service"
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/validator"
 	"github.com/cristiano-pacheco/goflix/internal/identity/infra/http/handler"
-	"github.com/cristiano-pacheco/goflix/internal/identity/infra/http/middleware"
 	"github.com/cristiano-pacheco/goflix/internal/identity/infra/http/router"
 	"github.com/cristiano-pacheco/goflix/internal/identity/infra/persistence/gorm/mapper"
 	"github.com/cristiano-pacheco/goflix/internal/identity/infra/persistence/gorm/repository"
@@ -31,14 +30,10 @@ var Module = fx.Module(
 		validator.NewPasswordValidator,
 
 		// #################### INFRA ##########################################
-		router.NewRouter,
 
 		// handlers
 		handler.NewAuthHandler,
 		handler.NewUserHandler,
-
-		// middlewares
-		middleware.NewAuthMiddleware,
 
 		// mappers
 		mapper.NewUserMapper,
