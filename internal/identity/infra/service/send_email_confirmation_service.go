@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
+	"github.com/cristiano-pacheco/goflix/internal/identity/domain/errs"
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/repository"
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/service"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/config"
@@ -58,7 +58,7 @@ func (s *sendEmailConfirmationService) Execute(ctx context.Context, userID uint6
 	if user.ConfirmationToken() == nil {
 		message := "confirmation token is nil"
 		s.logger.Error(message)
-		return errors.New(message)
+		return errs.ErrConfirmationTokenIsNil
 	}
 
 	confirmationToken := *user.ConfirmationToken()

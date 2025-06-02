@@ -1,11 +1,12 @@
 package model
 
 import (
-	"errors"
 	"strings"
 	"unicode"
 
 	"github.com/samber/lo"
+
+	"github.com/cristiano-pacheco/goflix/internal/identity/domain/errs"
 )
 
 const (
@@ -35,23 +36,23 @@ func (e EmailModel) String() string {
 
 func validateEmail(value string) error {
 	if len(value) == 0 {
-		return errors.New("email is required")
+		return errs.ErrEmailRequired
 	}
 
 	// Check overall length to prevent potential DoS attacks
 	if len(value) > maxEmailLength {
-		return errors.New("email exceeds maximum length of 320 characters")
+		return errs.ErrEmailTooLong
 	}
 
 	// Find @ symbol
 	atIndex := strings.Index(value, "@")
 	if atIndex <= 0 || atIndex == len(value)-1 {
-		return errors.New("invalid email format: missing @ symbol or invalid position")
+		return errs.ErrEmailInvalidFormat
 	}
 
 	// Check for multiple @ symbols
 	if strings.Count(value, "@") != 1 {
-		return errors.New("invalid email format: multiple @ symbols found")
+		return errs.ErrEmailMultipleAtSymbols
 	}
 
 	localPart := value[:atIndex]
@@ -72,27 +73,27 @@ func validateEmail(value string) error {
 
 func validateLocalPart(localPart string) error {
 	if len(localPart) == 0 {
-		return errors.New("email local part cannot be empty")
+		return errs.ErrEmailLocalPartEmpty
 	}
 
 	if len(localPart) > maxLocalPartLength {
-		return errors.New("email local part exceeds maximum length of 64 characters")
+		return errs.ErrEmailLocalPartTooLong
 	}
 
 	// Check for consecutive dots
 	if strings.Contains(localPart, "..") {
-		return errors.New("email local part cannot contain consecutive dots")
+		return errs.ErrEmailLocalPartConsecutiveDots
 	}
 
 	// Check if starts or ends with dot
 	if localPart[0] == '.' || localPart[len(localPart)-1] == '.' {
-		return errors.New("email local part cannot start or end with a dot")
+		return errs.ErrEmailLocalPartStartEndDot
 	}
 
 	// Validate characters
 	for _, char := range localPart {
 		if !isValidLocalPartChar(char) {
-			return errors.New("email local part contains invalid characters")
+			return errs.ErrEmailLocalPartInvalidCharacters
 		}
 	}
 
@@ -101,11 +102,11 @@ func validateLocalPart(localPart string) error {
 
 func validateDomain(domain string) error {
 	if len(domain) == 0 {
-		return errors.New("email domain cannot be empty")
+		return errs.ErrEmailDomainEmpty
 	}
 
 	if len(domain) > maxDomainLength {
-		return errors.New("email domain exceeds maximum length of 255 characters")
+		return errs.ErrEmailDomainTooLong
 	}
 
 	if err := validateDomainFormat(domain); err != nil {
@@ -118,22 +119,22 @@ func validateDomain(domain string) error {
 func validateDomainFormat(domain string) error {
 	// Check if starts or ends with dot
 	if domain[0] == '.' || domain[len(domain)-1] == '.' {
-		return errors.New("email domain cannot start or end with a dot")
+		return errs.ErrEmailDomainStartEndDot
 	}
 
 	// Check if starts or ends with hyphen
 	if domain[0] == '-' || domain[len(domain)-1] == '-' {
-		return errors.New("email domain cannot start or end with a hyphen")
+		return errs.ErrEmailDomainStartEndHyphen
 	}
 
 	// Must contain at least one dot
 	if !strings.Contains(domain, ".") {
-		return errors.New("email domain must contain at least one dot")
+		return errs.ErrEmailDomainMustContainDot
 	}
 
 	// Check for consecutive dots
 	if strings.Contains(domain, "..") {
-		return errors.New("email domain cannot contain consecutive dots")
+		return errs.ErrEmailDomainConsecutiveDots
 	}
 
 	return nil
@@ -143,7 +144,7 @@ func validateDomainLabels(domain string) error {
 	// Split domain into labels and validate each
 	labels := strings.Split(domain, ".")
 	if len(labels) < minDomainLabels {
-		return errors.New("email domain must have at least two labels")
+		return errs.ErrEmailDomainMinimumLabels
 	}
 
 	// Validate each label
@@ -158,11 +159,11 @@ func validateDomainLabels(domain string) error {
 
 func validateDomainLabel(label string, isTopLevel bool) error {
 	if len(label) == 0 {
-		return errors.New("email domain label cannot be empty")
+		return errs.ErrEmailDomainLabelEmpty
 	}
 
 	if len(label) > maxDomainLabelLength {
-		return errors.New("email domain label exceeds maximum length of 63 characters")
+		return errs.ErrEmailDomainLabelTooLong
 	}
 
 	if isTopLevel {
@@ -174,12 +175,12 @@ func validateDomainLabel(label string, isTopLevel bool) error {
 
 func validateTopLevelDomain(label string) error {
 	if len(label) < minTopLevelDomainLength {
-		return errors.New("email top-level domain must be at least 2 characters")
+		return errs.ErrEmailTopLevelDomainTooShort
 	}
 
 	// Check if all characters are letters (more restrictive for TLD)
 	if !lo.EveryBy([]rune(label), unicode.IsLetter) {
-		return errors.New("email top-level domain must contain only letters")
+		return errs.ErrEmailTopLevelDomainInvalidCharacters
 	}
 
 	return nil
@@ -189,11 +190,11 @@ func validateRegularDomainLabel(label string) error {
 	// Regular domain labels can contain letters, digits, and hyphens
 	// but cannot start or end with hyphen
 	if label[0] == '-' || label[len(label)-1] == '-' {
-		return errors.New("email domain label cannot start or end with hyphen")
+		return errs.ErrEmailDomainLabelStartEndHyphen
 	}
 
 	if !lo.EveryBy([]rune(label), isValidDomainChar) {
-		return errors.New("email domain label contains invalid characters")
+		return errs.ErrEmailDomainLabelInvalidCharacters
 	}
 
 	return nil

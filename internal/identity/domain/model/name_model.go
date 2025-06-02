@@ -1,12 +1,13 @@
 package model
 
 import (
-	"errors"
 	"strings"
 	"unicode"
 	"unicode/utf8"
 
 	"github.com/samber/lo"
+
+	"github.com/cristiano-pacheco/goflix/internal/identity/domain/errs"
 )
 
 const (
@@ -35,40 +36,38 @@ func validateName(value string) error {
 	charCount := utf8.RuneCountInString(value)
 
 	if charCount == 0 {
-		return errors.New("name is required")
+		return errs.ErrNameRequired
 	}
 
 	if charCount < minNameLength {
-		return errors.New("name must be at least 2 characters long")
+		return errs.ErrNameTooShort
 	}
 
 	if charCount > maxNameLength {
-		return errors.New("name cannot exceed 255 characters")
+		return errs.ErrNameTooLong
 	}
 
 	// Check if name starts with a letter
 	firstRune := []rune(value)[0]
 	if !unicode.IsLetter(firstRune) {
-		return errors.New("name must start with a letter")
+		return errs.ErrNameMustStartWithLetter
 	}
 
 	// Check if name ends with a letter or digit (not punctuation)
 	lastRune := []rune(value)[len([]rune(value))-1]
 	if !unicode.IsLetter(lastRune) && !unicode.IsDigit(lastRune) {
-		return errors.New("name must end with a letter or digit")
+		return errs.ErrNameMustEndWithLetterOrDigit
 	}
 
 	// Check for consecutive spaces
 	if strings.Contains(value, "  ") {
-		return errors.New("name cannot contain consecutive spaces")
+		return errs.ErrNameConsecutiveSpaces
 	}
 
 	// Check for invalid characters using functional approach
 	runes := []rune(value)
 	if !lo.EveryBy(runes, isValidNameChar) {
-		return errors.New(
-			"name contains invalid characters (only letters, digits, spaces, hyphens, apostrophes, and periods are allowed)",
-		)
+		return errs.ErrNameInvalidCharacters
 	}
 
 	// Additional format validations
@@ -90,16 +89,16 @@ func validateNameFormat(value string) error {
 func validateNameBoundaries(value string) error {
 	// Check for leading or trailing spaces (should be trimmed already, but double-check)
 	if strings.HasPrefix(value, " ") || strings.HasSuffix(value, " ") {
-		return errors.New("name cannot start or end with spaces")
+		return errs.ErrNameCannotStartOrEndWithSpaces
 	}
 
 	// Check for leading or trailing punctuation (except for titles like "Dr.")
 	if strings.HasPrefix(value, "-") || strings.HasPrefix(value, "'") {
-		return errors.New("name cannot start with punctuation")
+		return errs.ErrNameCannotStartWithPunctuation
 	}
 
 	if strings.HasSuffix(value, "-") || strings.HasSuffix(value, "'") {
-		return errors.New("name cannot end with punctuation")
+		return errs.ErrNameCannotEndWithPunctuation
 	}
 
 	return nil
@@ -112,7 +111,7 @@ func validatePunctuationRules(value string) error {
 		if r == '-' || r == '\'' || r == '.' {
 			punctuationCount++
 			if punctuationCount > maxConsecutivePunctuation {
-				return errors.New("name cannot contain more than 3 consecutive punctuation marks")
+				return errs.ErrNameExcessiveConsecutivePunctuation
 			}
 		} else {
 			punctuationCount = 0

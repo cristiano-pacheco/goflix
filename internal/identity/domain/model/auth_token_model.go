@@ -1,10 +1,11 @@
 package model
 
 import (
-	"errors"
 	"time"
 
 	"github.com/samber/lo"
+
+	"github.com/cristiano-pacheco/goflix/internal/identity/domain/errs"
 )
 
 type AuthTokenModel struct {
@@ -18,15 +19,15 @@ type AuthTokenModel struct {
 
 func CreateAuthTokenModel(userID uint64, token string, expiresAt time.Time) (AuthTokenModel, error) {
 	if userID == 0 {
-		return AuthTokenModel{}, errors.New("user ID is required")
+		return AuthTokenModel{}, errs.ErrAuthTokenUserIDRequired
 	}
 
 	if lo.IsEmpty(token) {
-		return AuthTokenModel{}, errors.New("token is required")
+		return AuthTokenModel{}, errs.ErrAuthTokenTokenRequired
 	}
 
 	if expiresAt.IsZero() {
-		return AuthTokenModel{}, errors.New("expiration time is required")
+		return AuthTokenModel{}, errs.ErrAuthTokenExpirationRequired
 	}
 
 	return AuthTokenModel{
@@ -47,19 +48,19 @@ func RestoreAuthTokenModel(
 	updatedAt time.Time,
 ) (AuthTokenModel, error) {
 	if id == 0 {
-		return AuthTokenModel{}, errors.New("ID is required")
+		return AuthTokenModel{}, errs.ErrAuthTokenIDRequired
 	}
 
 	if userID == 0 {
-		return AuthTokenModel{}, errors.New("user ID is required")
+		return AuthTokenModel{}, errs.ErrAuthTokenUserIDRequired
 	}
 
 	if lo.IsEmpty(token) {
-		return AuthTokenModel{}, errors.New("token is required")
+		return AuthTokenModel{}, errs.ErrAuthTokenTokenRequired
 	}
 
 	if expiresAt.IsZero() {
-		return AuthTokenModel{}, errors.New("expiration time is required")
+		return AuthTokenModel{}, errs.ErrAuthTokenExpirationRequired
 	}
 
 	return AuthTokenModel{

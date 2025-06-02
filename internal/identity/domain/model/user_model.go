@@ -2,9 +2,10 @@ package model
 
 import (
 	"crypto/subtle"
-	"errors"
 	"strings"
 	"time"
+
+	"github.com/cristiano-pacheco/goflix/internal/identity/domain/errs"
 )
 
 const (
@@ -267,7 +268,7 @@ func validateUserCreationInputs(
 
 func validateUserRestorationInputs(id uint64, passwordHash string, createdAt, updatedAt time.Time) error {
 	if id == 0 {
-		return errors.New("user ID is required and must be greater than zero")
+		return errs.ErrUserIDRequired
 	}
 
 	if err := validatePasswordHash(passwordHash); err != nil {
@@ -283,16 +284,16 @@ func validateUserRestorationInputs(id uint64, passwordHash string, createdAt, up
 
 func validatePasswordHash(passwordHash string) error {
 	if len(passwordHash) == 0 {
-		return errors.New("password hash is required")
+		return errs.ErrPasswordHashRequired
 	}
 
 	// Basic validation for common hash formats (bcrypt, argon2, etc.)
 	if len(passwordHash) < minPasswordHashLength {
-		return errors.New("password hash appears to be too short (minimum 32 characters)")
+		return errs.ErrPasswordHashTooShort
 	}
 
 	if len(passwordHash) > maxPasswordHashLength {
-		return errors.New("password hash exceeds maximum length of 255 characters")
+		return errs.ErrPasswordHashTooLong
 	}
 
 	return nil
@@ -300,15 +301,15 @@ func validatePasswordHash(passwordHash string) error {
 
 func validateConfirmationToken(token string) error {
 	if len(token) == 0 {
-		return errors.New("confirmation token is required")
+		return errs.ErrConfirmationTokenRequired
 	}
 
 	if len(token) < minTokenLength {
-		return errors.New("confirmation token must be at least 16 characters long")
+		return errs.ErrConfirmationTokenTooShort
 	}
 
 	if len(token) > maxTokenLength {
-		return errors.New("confirmation token exceeds maximum length of 255 characters")
+		return errs.ErrConfirmationTokenTooLong
 	}
 
 	return nil
@@ -316,11 +317,11 @@ func validateConfirmationToken(token string) error {
 
 func validateConfirmationExpiresAt(expiresAt time.Time) error {
 	if expiresAt.IsZero() {
-		return errors.New("confirmation expiration time is required")
+		return errs.ErrConfirmationExpirationRequired
 	}
 
 	if !expiresAt.After(time.Now().UTC()) {
-		return errors.New("confirmation expiration time must be in the future")
+		return errs.ErrConfirmationExpirationMustBeFuture
 	}
 
 	return nil
@@ -328,23 +329,23 @@ func validateConfirmationExpiresAt(expiresAt time.Time) error {
 
 func validateResetPasswordToken(token string, expiresAt time.Time) error {
 	if len(token) == 0 {
-		return errors.New("reset password token is required")
+		return errs.ErrResetPasswordTokenRequired
 	}
 
 	if len(token) < minTokenLength {
-		return errors.New("reset password token must be at least 16 characters long")
+		return errs.ErrResetPasswordTokenTooShort
 	}
 
 	if len(token) > maxTokenLength {
-		return errors.New("reset password token exceeds maximum length of 255 characters")
+		return errs.ErrResetPasswordTokenTooLong
 	}
 
 	if expiresAt.IsZero() {
-		return errors.New("reset password expiration time is required")
+		return errs.ErrResetPasswordExpirationRequired
 	}
 
 	if !expiresAt.After(time.Now().UTC()) {
-		return errors.New("reset password expiration time must be in the future")
+		return errs.ErrResetPasswordExpirationMustBeFuture
 	}
 
 	return nil
@@ -352,15 +353,15 @@ func validateResetPasswordToken(token string, expiresAt time.Time) error {
 
 func validateTimestamps(createdAt, updatedAt time.Time) error {
 	if createdAt.IsZero() {
-		return errors.New("created at timestamp is required")
+		return errs.ErrCreatedAtRequired
 	}
 
 	if updatedAt.IsZero() {
-		return errors.New("updated at timestamp is required")
+		return errs.ErrUpdatedAtRequired
 	}
 
 	if updatedAt.Before(createdAt) {
-		return errors.New("updated at timestamp cannot be before created at timestamp")
+		return errs.ErrUpdatedAtBeforeCreatedAt
 	}
 
 	return nil
