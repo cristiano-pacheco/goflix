@@ -1,8 +1,10 @@
 package model
 
 import (
-	"errors"
+	"fmt"
 	"strings"
+
+	"github.com/cristiano-pacheco/goflix/internal/billing/domain/errs"
 )
 
 const (
@@ -240,11 +242,11 @@ func getCurrencyInfo(code string) currencyInfo { //nolint:funlen
 // validateCurrencyCode validates against ISO 4217 currency codes
 func validateCurrencyCode(code string) error {
 	if code == "" {
-		return errors.New("currency code cannot be empty")
+		return errs.ErrCurrencyCodeEmpty
 	}
 
 	if len(code) != currencyCodeLength {
-		return errors.New("currency code must be exactly 3 characters")
+		return errs.ErrCurrencyCodeInvalidLength
 	}
 
 	validCurrencies := map[string]struct{}{
@@ -273,7 +275,7 @@ func validateCurrencyCode(code string) error {
 	}
 
 	if _, ok := validCurrencies[code]; !ok {
-		return errors.New("invalid currency code: " + code)
+		return fmt.Errorf("%w: %s", errs.ErrCurrencyCodeInvalid, code)
 	}
 
 	return nil

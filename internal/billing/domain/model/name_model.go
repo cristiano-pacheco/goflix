@@ -1,12 +1,13 @@
 package model
 
 import (
-	"errors"
 	"strings"
 	"unicode"
 	"unicode/utf8"
 
 	"github.com/samber/lo"
+
+	"github.com/cristiano-pacheco/goflix/internal/billing/domain/errs"
 )
 
 const (
@@ -51,15 +52,15 @@ func validatePlanNameLength(value string) error {
 	charCount := utf8.RuneCountInString(value)
 
 	if charCount == 0 {
-		return errors.New("plan name is required")
+		return errs.ErrNameRequired
 	}
 
 	if charCount < minNameModelLength {
-		return errors.New("plan name must be at least 2 characters long")
+		return errs.ErrNameTooShort
 	}
 
 	if charCount > maxNameModelLength {
-		return errors.New("plan name cannot exceed 100 characters")
+		return errs.ErrNameTooLong
 	}
 
 	return nil
@@ -70,25 +71,23 @@ func validatePlanNameCharacters(value string) error {
 
 	// Check if name starts with a letter or digit
 	if !unicode.IsLetter(runes[0]) && !unicode.IsDigit(runes[0]) {
-		return errors.New("plan name must start with a letter or digit")
+		return errs.ErrNameMustStartWithLetterOrDigit
 	}
 
 	// Check if name ends with a letter or digit (not punctuation)
 	lastRune := runes[len(runes)-1]
 	if !unicode.IsLetter(lastRune) && !unicode.IsDigit(lastRune) {
-		return errors.New("plan name must end with a letter or digit")
+		return errs.ErrNameMustEndWithLetterOrDigit
 	}
 
 	// Check for consecutive spaces
 	if strings.Contains(value, "  ") {
-		return errors.New("plan name cannot contain consecutive spaces")
+		return errs.ErrNameConsecutiveSpaces
 	}
 
 	// Check for invalid characters using functional approach
 	if !lo.EveryBy(runes, isValidPlanNameChar) {
-		return errors.New(
-			"plan name contains invalid characters (only letters, digits, spaces, hyphens, underscores, and periods are allowed)",
-		)
+		return errs.ErrNameInvalidCharacters
 	}
 
 	return nil
@@ -105,16 +104,16 @@ func validatePlanNameFormat(value string) error {
 func validatePlanNameBoundaries(value string) error {
 	// Check for leading or trailing spaces (should be trimmed already, but double-check)
 	if strings.HasPrefix(value, " ") || strings.HasSuffix(value, " ") {
-		return errors.New("plan name cannot start or end with spaces")
+		return errs.ErrNameCannotStartOrEndWithSpaces
 	}
 
 	// Check for leading or trailing punctuation
 	if strings.HasPrefix(value, "-") || strings.HasPrefix(value, "_") || strings.HasPrefix(value, ".") {
-		return errors.New("plan name cannot start with punctuation")
+		return errs.ErrNameCannotStartWithPunctuation
 	}
 
 	if strings.HasSuffix(value, "-") || strings.HasSuffix(value, "_") || strings.HasSuffix(value, ".") {
-		return errors.New("plan name cannot end with punctuation")
+		return errs.ErrNameCannotEndWithPunctuation
 	}
 
 	return nil
@@ -127,7 +126,7 @@ func validatePlanNamePunctuationRules(value string) error {
 		if r == '-' || r == '_' || r == '.' {
 			punctuationCount++
 			if punctuationCount > maxNameConsecutivePunctuation {
-				return errors.New("plan name cannot contain more than 2 consecutive punctuation marks")
+				return errs.ErrNameExcessiveConsecutivePunctuation
 			}
 		} else {
 			punctuationCount = 0

@@ -3,12 +3,12 @@ package repository
 import (
 	"context"
 
+	"github.com/cristiano-pacheco/goflix/internal/billing/domain/errs"
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/model"
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/repository"
 	"github.com/cristiano-pacheco/goflix/internal/billing/infra/persistence/gorm/entity"
 	"github.com/cristiano-pacheco/goflix/internal/billing/infra/persistence/gorm/mapper"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/database"
-	"github.com/cristiano-pacheco/goflix/internal/shared/modules/errs"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
 )
 
@@ -25,7 +25,10 @@ func NewSubscriptionRepository(db *database.GoflixDB, mapper mapper.Subscription
 	return &subscriptionRepository{db, mapper}
 }
 
-func (r *subscriptionRepository) Create(ctx context.Context, subscriptionModel model.SubscriptionModel) (model.SubscriptionModel, error) {
+func (r *subscriptionRepository) Create(
+	ctx context.Context,
+	subscriptionModel model.SubscriptionModel,
+) (model.SubscriptionModel, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "SubscriptionRepository.Create")
 	defer span.End()
 
@@ -64,10 +67,6 @@ func (r *subscriptionRepository) Delete(ctx context.Context, id uint64) error {
 		return result.Error
 	}
 
-	if result.RowsAffected == 0 {
-		return errs.ErrNotFound
-	}
-
 	return nil
 }
 
@@ -78,7 +77,7 @@ func (r *subscriptionRepository) FindByID(ctx context.Context, id uint64) (model
 	var subscriptionEntity entity.SubscriptionEntity
 	r.db.WithContext(ctx).First(&subscriptionEntity, id)
 	if subscriptionEntity.ID == 0 {
-		return model.SubscriptionModel{}, errs.ErrNotFound
+		return model.SubscriptionModel{}, errs.ErrSubscriptionNotFound
 	}
 
 	subscriptionModel, err := r.mapper.ToModel(subscriptionEntity)
@@ -111,7 +110,10 @@ func (r *subscriptionRepository) FindByUserID(ctx context.Context, userID uint64
 	return subscriptionModels, nil
 }
 
-func (r *subscriptionRepository) FindActiveSubscriptionByUserID(ctx context.Context, userID uint64) (model.SubscriptionModel, error) {
+func (r *subscriptionRepository) FindActiveSubscriptionByUserID(
+	ctx context.Context,
+	userID uint64,
+) (model.SubscriptionModel, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "SubscriptionRepository.FindActiveSubscriptionByUserID")
 	defer span.End()
 
@@ -122,7 +124,7 @@ func (r *subscriptionRepository) FindActiveSubscriptionByUserID(ctx context.Cont
 	}
 
 	if subscriptionEntity.ID == 0 {
-		return model.SubscriptionModel{}, errs.ErrNotFound
+		return model.SubscriptionModel{}, errs.ErrSubscriptionNotFound
 	}
 
 	subscriptionModel, err := r.mapper.ToModel(subscriptionEntity)
@@ -131,4 +133,4 @@ func (r *subscriptionRepository) FindActiveSubscriptionByUserID(ctx context.Cont
 	}
 
 	return subscriptionModel, nil
-} 
+}

@@ -1,6 +1,10 @@
 package enum
 
-import "errors"
+import (
+	"fmt"
+
+	"github.com/cristiano-pacheco/goflix/internal/billing/domain/errs"
+)
 
 // Constants with pattern: Enum{EnumName}{Value}
 const (
@@ -35,7 +39,7 @@ func validatePlanIntervalEnum(value string) error {
 	}
 
 	if _, ok := allowedValues[value]; !ok {
-		return errors.New("invalid plan interval: " + value)
+		return fmt.Errorf("%w: %s", errs.ErrInvalidPlanInterval, value)
 	}
 
 	return nil

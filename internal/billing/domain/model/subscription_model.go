@@ -1,10 +1,10 @@
 package model
 
 import (
-	"errors"
 	"time"
 
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/enum"
+	"github.com/cristiano-pacheco/goflix/internal/billing/domain/errs"
 )
 
 type SubscriptionModel struct {
@@ -124,7 +124,7 @@ func (s *SubscriptionModel) UpdateStatus(statusValue string) error {
 
 func (s *SubscriptionModel) UpdateEndDate(endDate *time.Time) error {
 	if endDate != nil && endDate.Before(s.startDate) {
-		return errors.New("end date cannot be before start date")
+		return errs.ErrEndDateBeforeStartDate
 	}
 
 	s.endDate = endDate
@@ -143,19 +143,19 @@ func validateSubscription(
 	endDate *time.Time,
 ) error {
 	if userID == 0 {
-		return errors.New("user ID is required")
+		return errs.ErrUserIDRequired
 	}
 
 	if planID == 0 {
-		return errors.New("plan ID is required")
+		return errs.ErrPlanIDRequired
 	}
 
 	if startDate.IsZero() {
-		return errors.New("start date is required")
+		return errs.ErrStartDateRequired
 	}
 
 	if endDate != nil && !startDate.IsZero() && endDate.Before(startDate) {
-		return errors.New("end date cannot be before start date")
+		return errs.ErrEndDateBeforeStartDate
 	}
 
 	return nil

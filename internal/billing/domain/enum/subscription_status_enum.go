@@ -1,6 +1,10 @@
 package enum
 
-import "errors"
+import (
+	"fmt"
+
+	"github.com/cristiano-pacheco/goflix/internal/billing/domain/errs"
+)
 
 const (
 	EnumSubscriptionStatusActive    string = "Active"
@@ -36,7 +40,7 @@ func validateSubscriptionStatusEnum(value string) error {
 	}
 
 	if _, ok := allowedValues[value]; !ok {
-		return errors.New("invalid subscription status: " + value)
+		return fmt.Errorf("%w: %s", errs.ErrInvalidSubscriptionStatus, value)
 	}
 
 	return nil

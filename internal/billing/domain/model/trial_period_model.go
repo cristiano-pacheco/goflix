@@ -1,7 +1,7 @@
 package model
 
 import (
-	"errors"
+	"github.com/cristiano-pacheco/goflix/internal/billing/domain/errs"
 )
 
 const (
@@ -26,11 +26,11 @@ func (t *TrialPeriodModel) Days() uint {
 
 func validateTrialPeriod(value uint) error {
 	if value < minTrialPeriodDays {
-		return errors.New("trial period must be at least 1 day")
+		return errs.ErrTrialPeriodTooShort
 	}
 
 	if value > maxTrialPeriodDays {
-		return errors.New("trial period cannot exceed 365 days")
+		return errs.ErrTrialPeriodTooLong
 	}
 
 	return nil

@@ -3,12 +3,12 @@ package repository
 import (
 	"context"
 
+	"github.com/cristiano-pacheco/goflix/internal/billing/domain/errs"
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/model"
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/repository"
 	"github.com/cristiano-pacheco/goflix/internal/billing/infra/persistence/gorm/entity"
 	"github.com/cristiano-pacheco/goflix/internal/billing/infra/persistence/gorm/mapper"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/database"
-	"github.com/cristiano-pacheco/goflix/internal/shared/modules/errs"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
 )
 
@@ -64,10 +64,6 @@ func (r *planRepository) Delete(ctx context.Context, id uint64) error {
 		return result.Error
 	}
 
-	if result.RowsAffected == 0 {
-		return errs.ErrNotFound
-	}
-
 	return nil
 }
 
@@ -78,7 +74,7 @@ func (r *planRepository) FindByID(ctx context.Context, id uint64) (model.PlanMod
 	var planEntity entity.PlanEntity
 	r.db.WithContext(ctx).First(&planEntity, id)
 	if planEntity.ID == 0 {
-		return model.PlanModel{}, errs.ErrNotFound
+		return model.PlanModel{}, errs.ErrPlanNotFound
 	}
 
 	planModel, err := r.mapper.ToModel(planEntity)

@@ -1,7 +1,7 @@
 package model
 
 import (
-	"errors"
+	"github.com/cristiano-pacheco/goflix/internal/billing/domain/errs"
 )
 
 const (
@@ -25,7 +25,7 @@ func (a *AmountModel) Cents() uint {
 
 func validateAmount(value uint) error {
 	if value > maxAmountCents {
-		return errors.New("amount exceeds maximum allowed value")
+		return errs.ErrAmountExceedsMaximum
 	}
 
 	return nil
