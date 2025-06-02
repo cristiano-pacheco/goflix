@@ -8,9 +8,10 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 
-	"github.com/cristiano-pacheco/goflix/internal/identity/domain/repository"
+	"github.com/cristiano-pacheco/goflix/internal/shared/modules/database"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/errs"
-	shared_jwt "github.com/cristiano-pacheco/goflix/internal/shared/modules/jwt"
+	internal_jwt "github.com/cristiano-pacheco/goflix/internal/shared/modules/jwt"
+	"github.com/cristiano-pacheco/goflix/internal/shared/modules/logger"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/registry"
 	"github.com/cristiano-pacheco/goflix/internal/shared/sdk/http/request"
 	"github.com/cristiano-pacheco/goflix/internal/shared/sdk/http/response"
@@ -18,21 +19,22 @@ import (
 
 type AuthMiddleware struct {
 	jwtParser          *jwt.Parser
+	db                 *database.GoflixDB
+	logger             logger.Logger
 	errorMapper        errs.ErrorMapper
 	privateKeyRegistry registry.PrivateKeyRegistry
-	userRepository     repository.UserRepository
 }
 
 func NewAuthMiddleware(
 	jwtParser *jwt.Parser,
+	db *database.GoflixDB,
+	logger logger.Logger,
 	errorMapper errs.ErrorMapper,
 	privateKeyRegistry registry.PrivateKeyRegistry,
-	userRepository repository.UserRepository,
 ) *AuthMiddleware {
-	return &AuthMiddleware{jwtParser, errorMapper, privateKeyRegistry, userRepository}
+	return &AuthMiddleware{jwtParser, db, logger, errorMapper, privateKeyRegistry}
 }
 
-// Middleware returns a Chi middleware function for authentication
 func (m *AuthMiddleware) Middleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Extract and validate token
@@ -49,7 +51,7 @@ func (m *AuthMiddleware) Middleware(next http.HandlerFunc) http.HandlerFunc {
 			return &pk.PublicKey, nil
 		}
 
-		var claims shared_jwt.Claims
+		var claims internal_jwt.Claims
 		token, err := m.jwtParser.ParseWithClaims(jwtToken, &claims, tokenKeyFunc)
 		if err != nil {
 			m.handleError(w, errs.ErrInvalidToken)
@@ -68,14 +70,15 @@ func (m *AuthMiddleware) Middleware(next http.HandlerFunc) http.HandlerFunc {
 		}
 
 		ctx := r.Context()
-		isActivated, err := m.userRepository.IsActivated(ctx, userID)
+		isActivated, err := m.isUserActivated(ctx, userID)
 		if err != nil {
-			m.handleError(w, err)
+			m.handleError(w, errs.ErrInternalServer)
 			return
 		}
 
 		if !isActivated {
-			m.handleError(w, errs.ErrUserIsNotActivated)
+			mError := m.errorMapper.MapCustomError(http.StatusUnauthorized, errs.ErrUserIsNotActivated.Error())
+			response.Error(w, mError)
 			return
 		}
 
@@ -85,6 +88,22 @@ func (m *AuthMiddleware) Middleware(next http.HandlerFunc) http.HandlerFunc {
 		// Call next handler with updated context
 		next(w, r.WithContext(ctx))
 	}
+}
+
+func (m *AuthMiddleware) isUserActivated(ctx context.Context, userID uint64) (bool, error) {
+	var isActivated bool
+	err := m.db.WithContext(ctx).
+		Table("users").
+		Select("is_activated").
+		Where("id = ?", userID).
+		Scan(&isActivated).Error
+
+	if err != nil {
+		m.logger.Error("error checking if user is activated", "error", err)
+		return false, err
+	}
+
+	return isActivated, nil
 }
 
 func (m *AuthMiddleware) handleError(w http.ResponseWriter, err error) {
