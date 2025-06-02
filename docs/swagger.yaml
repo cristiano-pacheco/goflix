@@ -7,6 +7,11 @@ definitions:
       user_id:
         type: integer
     type: object
+  dto.CreateSubscriptionRequest:
+    properties:
+      plan_id:
+        type: integer
+    type: object
   dto.CreateUserRequest:
     properties:
       email:
@@ -100,6 +105,95 @@ paths:
       summary: Generate authentication token
       tags:
       - Authentication
+  /api/v1/subscriptions:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all subscriptions for the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved subscriptions
+          schema:
+            $ref: '#/definitions/response.Envelope'
+        "401":
+          description: Invalid credentials
+          schema:
+            $ref: '#/definitions/errs.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/errs.Error'
+      security:
+      - BearerAuth: []
+      summary: List user subscriptions
+      tags:
+      - Subscriptions
+    post:
+      consumes:
+      - application/json
+      description: Creates a new subscription for the authenticated user
+      parameters:
+      - description: Subscription data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateSubscriptionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created subscription
+          schema:
+            $ref: '#/definitions/response.Envelope'
+        "400":
+          description: Invalid request format or validation error
+          schema:
+            $ref: '#/definitions/errs.Error'
+        "401":
+          description: Invalid credentials
+          schema:
+            $ref: '#/definitions/errs.Error'
+        "422":
+          description: Invalid request format or validation error
+          schema:
+            $ref: '#/definitions/errs.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/errs.Error'
+      security:
+      - BearerAuth: []
+      summary: Create subscription
+      tags:
+      - Subscriptions
+  /api/v1/subscriptions/active:
+    get:
+      consumes:
+      - application/json
+      description: Checks if the authenticated user has an active subscription
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved subscription status
+          schema:
+            $ref: '#/definitions/response.Envelope'
+        "401":
+          description: Invalid credentials
+          schema:
+            $ref: '#/definitions/errs.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/errs.Error'
+      security:
+      - BearerAuth: []
+      summary: Check user subscription status
+      tags:
+      - Subscriptions
   /api/v1/users:
     post:
       consumes:
@@ -130,7 +224,35 @@ paths:
       summary: Create user
       tags:
       - Users
-  /api/v1/users/{id}:
+  /api/v1/users/activate:
+    post:
+      consumes:
+      - application/json
+      description: Activates an existing user
+      parameters:
+      - description: User data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ActivateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Successfully activated user
+        "400":
+          description: Invalid request format or validation error
+          schema:
+            $ref: '#/definitions/errs.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/errs.Error'
+      summary: Activate user
+      tags:
+      - Users
+  /api/v1/users/me:
     get:
       consumes:
       - application/json
@@ -203,34 +325,6 @@ paths:
       security:
       - BearerAuth: []
       summary: Update user
-      tags:
-      - Users
-  /api/v1/users/activate:
-    post:
-      consumes:
-      - application/json
-      description: Activates an existing user
-      parameters:
-      - description: User data
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.ActivateUserRequest'
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: Successfully activated user
-        "400":
-          description: Invalid request format or validation error
-          schema:
-            $ref: '#/definitions/errs.Error'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/errs.Error'
-      summary: Activate user
       tags:
       - Users
 securityDefinitions:
