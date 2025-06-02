@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
 
+	"github.com/cristiano-pacheco/goflix/internal/billing"
 	"github.com/cristiano-pacheco/goflix/internal/identity"
 	shared_modules "github.com/cristiano-pacheco/goflix/internal/shared/modules"
 )
@@ -18,6 +19,7 @@ var rootCmd = &cobra.Command{
 		app := fx.New(
 			shared_modules.Module,
 			identity.Module,
+			billing.Module,
 		)
 		app.Run()
 	},
