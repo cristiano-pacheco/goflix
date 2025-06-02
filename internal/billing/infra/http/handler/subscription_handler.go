@@ -16,18 +16,18 @@ import (
 
 type SubscriptionHandler struct {
 	errorMapper               shared_errs.ErrorMapper
-	createSubscriptionUseCase *usecase.CreateSubscriptionUseCase
+	subscriptionCreateUseCase *usecase.SubscriptionCreateUseCase
 	subscriptionRepository    repository.SubscriptionRepository
 }
 
 func NewSubscriptionHandler(
 	errorMapper shared_errs.ErrorMapper,
-	createSubscriptionUseCase *usecase.CreateSubscriptionUseCase,
+	subscriptionCreateUseCase *usecase.SubscriptionCreateUseCase,
 	subscriptionRepository repository.SubscriptionRepository,
 ) *SubscriptionHandler {
 	return &SubscriptionHandler{
 		errorMapper,
-		createSubscriptionUseCase,
+		subscriptionCreateUseCase,
 		subscriptionRepository,
 	}
 }
@@ -61,12 +61,12 @@ func (h *SubscriptionHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	input := usecase.CreateSubscriptionInput{
+	input := usecase.SubscriptionCreateInput{
 		PlanID: createSubscriptionRequest.PlanID,
 		UserID: userID,
 	}
 
-	output, err := h.createSubscriptionUseCase.Execute(ctx, input)
+	output, err := h.subscriptionCreateUseCase.Execute(ctx, input)
 	if err != nil {
 		if errors.Is(err, errs.ErrPlanNotFound) {
 			rError := h.errorMapper.MapCustomError(http.StatusBadRequest, err.Error())

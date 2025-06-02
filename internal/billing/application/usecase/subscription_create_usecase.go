@@ -16,7 +16,7 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/validator"
 )
 
-type CreateSubscriptionUseCase struct {
+type SubscriptionCreateUseCase struct {
 	subscriptionRepository repository.SubscriptionRepository
 	planRepository         repository.PlanRepository
 	endDateMapper          mapper.EndDateMapper
@@ -24,14 +24,14 @@ type CreateSubscriptionUseCase struct {
 	logger                 logger.Logger
 }
 
-func NewCreateSubscriptionUseCase(
+func NewSubscriptionCreateUseCase(
 	subscriptionRepository repository.SubscriptionRepository,
 	planRepository repository.PlanRepository,
 	endDateMapper mapper.EndDateMapper,
 	validate validator.Validate,
 	logger logger.Logger,
-) *CreateSubscriptionUseCase {
-	return &CreateSubscriptionUseCase{
+) *SubscriptionCreateUseCase {
+	return &SubscriptionCreateUseCase{
 		subscriptionRepository,
 		planRepository,
 		endDateMapper,
@@ -40,12 +40,12 @@ func NewCreateSubscriptionUseCase(
 	}
 }
 
-type CreateSubscriptionInput struct {
+type SubscriptionCreateInput struct {
 	PlanID uint64 `validate:"required,number"`
 	UserID uint64 `validate:"required,number"`
 }
 
-type CreateSubscriptionOutput struct {
+type SubscriptionCreateOutput struct {
 	SubscriptionID uint64
 	UserID         uint64
 	PlanID         uint64
@@ -55,14 +55,14 @@ type CreateSubscriptionOutput struct {
 	AutoRenew      bool
 }
 
-func (uc *CreateSubscriptionUseCase) Execute(
+func (uc *SubscriptionCreateUseCase) Execute(
 	ctx context.Context,
-	input CreateSubscriptionInput,
-) (CreateSubscriptionOutput, error) {
+	input SubscriptionCreateInput,
+) (SubscriptionCreateOutput, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "CreateSubscriptionUseCase.Execute")
 	defer span.End()
 
-	output := CreateSubscriptionOutput{}
+	output := SubscriptionCreateOutput{}
 
 	err := uc.validate.Struct(input)
 	if err != nil {
@@ -128,7 +128,7 @@ func (uc *CreateSubscriptionUseCase) Execute(
 	// TODO: send email to user
 
 	createdStatus := createdSubscription.Status()
-	output = CreateSubscriptionOutput{
+	output = SubscriptionCreateOutput{
 		SubscriptionID: createdSubscription.ID(),
 		UserID:         createdSubscription.UserID(),
 		PlanID:         createdSubscription.PlanID(),
