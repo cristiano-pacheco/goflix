@@ -39,7 +39,7 @@ func NewSubscriptionHandler(
 // @Produce		json
 // @Security 	BearerAuth
 // @Param		request	body	dto.CreateSubscriptionRequest	true	"Subscription data"
-// @Success		201	{object}	response.Envelope[dto.CreateSubscriptionResponse]	"Successfully created subscription"
+// @Success		201	{object}	object{data=dto.CreateSubscriptionResponse}	"Successfully created subscription"
 // @Failure		400	{object}	errs.Error	"Invalid request format or validation error"
 // @Failure		401	{object}	errs.Error	"Invalid credentials"
 // @Failure		422	{object}	errs.Error	"Invalid request format or validation error"
@@ -103,7 +103,7 @@ func (h *SubscriptionHandler) Create(w http.ResponseWriter, r *http.Request) {
 // @Accept		json
 // @Produce		json
 // @Security 	BearerAuth
-// @Success		200	{object}	response.Envelope[dto.ListSubscriptionsResponse]	"Successfully retrieved subscriptions"
+// @Success		200	{object}	object{data=dto.ListSubscriptionsResponse}	"Successfully retrieved subscriptions"
 // @Failure		401	{object}	errs.Error	"Invalid credentials"
 // @Failure		500	{object}	errs.Error	"Internal server error"
 // @Router		/api/v1/subscriptions [get]
@@ -153,7 +153,7 @@ func (h *SubscriptionHandler) FindByUserID(w http.ResponseWriter, r *http.Reques
 // @Accept		json
 // @Produce		json
 // @Security 	BearerAuth
-// @Success		200	{object}	response.Envelope[dto.IsUserSubscriptionActiveResponse]	"Successfully retrieved subscription status"
+// @Success		200	{object}	object{data=dto.IsUserSubscriptionActiveResponse}	"Successfully retrieved subscription status"
 // @Failure		401	{object}	errs.Error	"Invalid credentials"
 // @Failure		500	{object}	errs.Error	"Internal server error"
 // @Router		/api/v1/subscriptions/active [get]

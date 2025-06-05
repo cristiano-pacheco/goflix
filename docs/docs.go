@@ -43,7 +43,12 @@ const docTemplate = `{
                     "200": {
                         "description": "Successfully generated token",
                         "schema": {
-                            "$ref": "#/definitions/response.Envelope"
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "$ref": "#/definitions/dto.GenerateTokenResponse"
+                                }
+                            }
                         }
                     },
                     "400": {
@@ -95,7 +100,12 @@ const docTemplate = `{
                     "200": {
                         "description": "Successfully retrieved subscriptions",
                         "schema": {
-                            "$ref": "#/definitions/response.Envelope"
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "$ref": "#/definitions/dto.ListSubscriptionsResponse"
+                                }
+                            }
                         }
                     },
                     "401": {
@@ -144,7 +154,12 @@ const docTemplate = `{
                     "201": {
                         "description": "Successfully created subscription",
                         "schema": {
-                            "$ref": "#/definitions/response.Envelope"
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "$ref": "#/definitions/dto.CreateSubscriptionResponse"
+                                }
+                            }
                         }
                     },
                     "400": {
@@ -196,7 +211,12 @@ const docTemplate = `{
                     "200": {
                         "description": "Successfully retrieved subscription status",
                         "schema": {
-                            "$ref": "#/definitions/response.Envelope"
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "$ref": "#/definitions/dto.IsUserSubscriptionActiveResponse"
+                                }
+                            }
                         }
                     },
                     "401": {
@@ -242,7 +262,12 @@ const docTemplate = `{
                     "201": {
                         "description": "Successfully created user",
                         "schema": {
-                            "$ref": "#/definitions/response.Envelope"
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "$ref": "#/definitions/dto.CreateUserResponse"
+                                }
+                            }
                         }
                     },
                     "422": {
@@ -334,7 +359,12 @@ const docTemplate = `{
                     "200": {
                         "description": "Successfully found user",
                         "schema": {
-                            "$ref": "#/definitions/response.Envelope"
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "$ref": "#/definitions/dto.FindUserResponse"
+                                }
+                            }
                         }
                     },
                     "401": {
@@ -441,6 +471,32 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.CreateSubscriptionResponse": {
+            "type": "object",
+            "properties": {
+                "auto_renew": {
+                    "type": "boolean"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "plan_id": {
+                    "type": "integer"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "subscription_id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "dto.CreateUserRequest": {
             "type": "object",
             "properties": {
@@ -455,6 +511,31 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.CreateUserResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.FindUserResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.GenerateTokenRequest": {
             "type": "object",
             "properties": {
@@ -463,6 +544,59 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
+                }
+            }
+        },
+        "dto.GenerateTokenResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.IsUserSubscriptionActiveResponse": {
+            "type": "object",
+            "properties": {
+                "is_active": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "dto.ListSubscriptionsResponse": {
+            "type": "object",
+            "properties": {
+                "subscriptions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.SubscriptionResponse"
+                    }
+                }
+            }
+        },
+        "dto.SubscriptionResponse": {
+            "type": "object",
+            "properties": {
+                "auto_renew": {
+                    "type": "boolean"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "plan_id": {
+                    "type": "integer"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "subscription_id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },
@@ -512,10 +646,6 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
-        },
-        "response.Envelope": {
-            "type": "object",
-            "additionalProperties": {}
         }
     },
     "securityDefinitions": {

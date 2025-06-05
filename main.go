@@ -9,9 +9,9 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
 )
 
-// @title           Go modulith API
+// @title           Goflix API
 // @version         0.0.1
-// @description     Go modulith API
+// @description     Goflix API
 
 // @securityDefinitions.apikey BearerAuth
 // @in header

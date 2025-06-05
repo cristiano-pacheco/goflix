@@ -43,7 +43,7 @@ func NewUserHandler(
 // @Accept		json
 // @Produce		json
 // @Param		request	body	dto.CreateUserRequest	true	"User data"
-// @Success		201	{object}	response.Envelope[dto.CreateUserResponse]	"Successfully created user"
+// @Success		201	{object}	object{data=dto.CreateUserResponse}	"Successfully created user"
 // @Failure		422	{object}	errs.Error	"Invalid request format or validation error"
 // @Failure		500	{object}	errs.Error	"Internal server error"
 // @Router		/api/v1/users [post]
@@ -136,7 +136,7 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 // @Produce		json
 // @Security 	BearerAuth
 // @Param		id		path	integer		true	"User ID"
-// @Success		200	{object}	response.Envelope[dto.FindUserResponse]	"Successfully found user"
+// @Success		200	{object}	object{data=dto.FindUserResponse}	"Successfully found user"
 // @Failure		401	{object}	errs.Error	"Invalid credentials"
 // @Failure		404	{object}	errs.Error	"User not found"
 // @Failure		500	{object}	errs.Error	"Internal server error"
