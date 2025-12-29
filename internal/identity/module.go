@@ -22,32 +22,39 @@ var Module = fx.Module(
 		usecase.NewUserUpdateUseCase,
 		usecase.NewUserFindUseCase,
 		usecase.NewTokenGenerateUseCase,
-
-		domain_service.NewHashService,
-		validator.NewPasswordValidator,
-
 		handler.NewAuthHandler,
 		handler.NewUserHandler,
-
-		mapper.NewUserMapper,
-		mapper.NewAuthTokenMapper,
-
+		fx.Annotate(
+			domain_service.NewHashService,
+			fx.As(new(domain_service.HashServiceI)),
+		),
+		fx.Annotate(
+			validator.NewPasswordValidator,
+			fx.As(new(validator.PasswordValidatorI)),
+		),
+		fx.Annotate(
+			mapper.NewAuthTokenMapper,
+			fx.As(new(mapper.AuthTokenMapperI)),
+		),
+		fx.Annotate(
+			mapper.NewUserMapper,
+			fx.As(new(mapper.UserMapperI)),
+		),
 		fx.Annotate(
 			repository.NewUserRepository,
-			fx.As(new(domain_repository.UserRepository)),
+			fx.As(new(domain_repository.UserRepositoryI)),
 		),
 		fx.Annotate(
 			repository.NewAuthTokenRepository,
-			fx.As(new(domain_repository.AuthTokenRepository)),
+			fx.As(new(domain_repository.AuthTokenRepositoryI)),
 		),
-
 		fx.Annotate(
 			service.NewSendEmailConfirmationService,
-			fx.As(new(domain_service.SendEmailConfirmationService)),
+			fx.As(new(domain_service.SendEmailConfirmationServiceI)),
 		),
 		fx.Annotate(
 			service.NewTokenService,
-			fx.As(new(domain_service.TokenService)),
+			fx.As(new(domain_service.TokenServiceI)),
 		),
 	),
 	fx.Invoke(

@@ -6,7 +6,7 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
 )
 
-type AuthTokenRepository interface {
+type AuthTokenRepositoryI interface {
 	Create(ctx context.Context, authToken model.AuthTokenModel) (model.AuthTokenModel, error)
 	Update(ctx context.Context, authToken model.AuthTokenModel) error
 	Delete(ctx context.Context, id uint64) error

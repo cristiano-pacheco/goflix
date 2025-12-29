@@ -19,17 +19,17 @@ import (
 const confirmationTokenExpiryHours = 24
 
 type UserCreateUseCase struct {
-	sendEmailConfirmationService service.SendEmailConfirmationService
-	hashService                  service.HashService
-	userRepository               repository.UserRepository
+	sendEmailConfirmationService service.SendEmailConfirmationServiceI
+	hashService                  service.HashServiceI
+	userRepository               repository.UserRepositoryI
 	validate                     validator.Validate
 	logger                       logger.Logger
 }
 
 func NewUserCreateUseCase(
-	sendEmailConfirmationService service.SendEmailConfirmationService,
-	hashService service.HashService,
-	userRepo repository.UserRepository,
+	sendEmailConfirmationService service.SendEmailConfirmationServiceI,
+	hashService service.HashServiceI,
+	userRepo repository.UserRepositoryI,
 	validate validator.Validate,
 	logger logger.Logger,
 ) *UserCreateUseCase {

@@ -10,7 +10,7 @@ import (
 
 type HashServiceTestSuite struct {
 	suite.Suite
-	hashService service.HashService
+	hashService service.HashServiceI
 }
 
 func (suite *HashServiceTestSuite) SetupTest() {

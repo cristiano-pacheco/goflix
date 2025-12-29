@@ -5,19 +5,21 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/identity/infra/persistence/gorm/entity"
 )
 
-type AuthTokenMapper interface {
+type AuthTokenMapperI interface {
 	ToModel(entity entity.AuthTokenEntity) (model.AuthTokenModel, error)
 	ToEntity(model model.AuthTokenModel) entity.AuthTokenEntity
 }
 
-type authTokenMapper struct {
+type AuthTokenMapper struct {
 }
 
-func NewAuthTokenMapper() AuthTokenMapper {
-	return &authTokenMapper{}
+var _ AuthTokenMapperI = (*AuthTokenMapper)(nil)
+
+func NewAuthTokenMapper() *AuthTokenMapper {
+	return &AuthTokenMapper{}
 }
 
-func (m *authTokenMapper) ToModel(entity entity.AuthTokenEntity) (model.AuthTokenModel, error) {
+func (m *AuthTokenMapper) ToModel(entity entity.AuthTokenEntity) (model.AuthTokenModel, error) {
 	authTokenModel, err := model.RestoreAuthTokenModel(
 		entity.ID,
 		entity.UserID,
@@ -32,7 +34,7 @@ func (m *authTokenMapper) ToModel(entity entity.AuthTokenEntity) (model.AuthToke
 	return authTokenModel, nil
 }
 
-func (m *authTokenMapper) ToEntity(model model.AuthTokenModel) entity.AuthTokenEntity {
+func (m *AuthTokenMapper) ToEntity(model model.AuthTokenModel) entity.AuthTokenEntity {
 	return entity.AuthTokenEntity{
 		ID:        model.ID(),
 		UserID:    model.UserID(),

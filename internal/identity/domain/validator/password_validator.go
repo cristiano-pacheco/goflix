@@ -9,15 +9,17 @@ import (
 
 const minPasswordLength = 8
 
-type PasswordValidator interface {
+type PasswordValidatorI interface {
 	Validate(password string) error
 }
 
-type passwordValidator struct {
+type PasswordValidator struct {
 }
 
-func NewPasswordValidator() PasswordValidator {
-	return &passwordValidator{}
+var _ PasswordValidatorI = (*PasswordValidator)(nil)
+
+func NewPasswordValidator() *PasswordValidator {
+	return &PasswordValidator{}
 }
 
 type passwordRequirements struct {
@@ -27,7 +29,7 @@ type passwordRequirements struct {
 	hasSpecial bool
 }
 
-func (s *passwordValidator) checkRequirements(password string) passwordRequirements {
+func (s *PasswordValidator) checkRequirements(password string) passwordRequirements {
 	reqs := passwordRequirements{}
 
 	for _, r := range password {
@@ -46,7 +48,7 @@ func (s *passwordValidator) checkRequirements(password string) passwordRequireme
 	return reqs
 }
 
-func (s *passwordValidator) Validate(password string) error {
+func (s *PasswordValidator) Validate(password string) error {
 	if utf8.RuneCountInString(password) < minPasswordLength {
 		return errs.ErrPasswordTooShort
 	}

@@ -2,6 +2,6 @@ package service
 
 import "context"
 
-type SendEmailConfirmationService interface {
+type SendEmailConfirmationServiceI interface {
 	Execute(ctx context.Context, userID uint64) error
 }

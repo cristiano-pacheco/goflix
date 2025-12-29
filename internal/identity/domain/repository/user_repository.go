@@ -6,7 +6,7 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
 )
 
-type UserRepository interface {
+type UserRepositoryI interface {
 	Create(ctx context.Context, user model.UserModel) (model.UserModel, error)
 	Update(ctx context.Context, user model.UserModel) error
 

@@ -9,12 +9,12 @@ import (
 )
 
 type UserFindUseCase struct {
-	userRepo repository.UserRepository
+	userRepo repository.UserRepositoryI
 	logger   logger.Logger
 }
 
 func NewUserFindUseCase(
-	userRepo repository.UserRepository,
+	userRepo repository.UserRepositoryI,
 	logger logger.Logger,
 ) *UserFindUseCase {
 	return &UserFindUseCase{userRepo, logger}

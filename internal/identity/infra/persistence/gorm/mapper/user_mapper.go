@@ -5,19 +5,19 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/identity/infra/persistence/gorm/entity"
 )
 
-type UserMapper interface {
+type UserMapperI interface {
 	ToModel(entity entity.UserEntity) (model.UserModel, error)
 	ToEntity(model model.UserModel) entity.UserEntity
 }
 
-type userMapper struct {
+type UserMapper struct {
 }
 
-func NewUserMapper() UserMapper {
-	return &userMapper{}
+func NewUserMapper() *UserMapper {
+	return &UserMapper{}
 }
 
-func (u *userMapper) ToModel(entity entity.UserEntity) (model.UserModel, error) {
+func (u *UserMapper) ToModel(entity entity.UserEntity) (model.UserModel, error) {
 	userModel, err := model.RestoreUserModel(
 		entity.ID,
 		entity.Name,
@@ -38,7 +38,7 @@ func (u *userMapper) ToModel(entity entity.UserEntity) (model.UserModel, error) 
 	return userModel, nil
 }
 
-func (u *userMapper) ToEntity(model model.UserModel) entity.UserEntity {
+func (u *UserMapper) ToEntity(model model.UserModel) entity.UserEntity {
 	return entity.UserEntity{
 		ID:                     model.ID(),
 		Name:                   model.Name(),

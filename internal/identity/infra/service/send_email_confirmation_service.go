@@ -17,26 +17,24 @@ import (
 const sendAccountConfirmationEmailTemplate = "account_confirmation.gohtml"
 const sendAccountConfirmationEmailSubject = "Account Confirmation"
 
-type SendEmailConfirmationService interface {
-	service.SendEmailConfirmationService
-}
-
-type sendEmailConfirmationService struct {
+type SendEmailConfirmationService struct {
 	mailerTemplate mailer.Template
 	mailer         mailer.SMTPMailer
-	userRepository repository.UserRepository
+	userRepository repository.UserRepositoryI
 	logger         logger.Logger
 	cfg            config.Config
 }
 
+var _ service.SendEmailConfirmationServiceI = (*SendEmailConfirmationService)(nil)
+
 func NewSendEmailConfirmationService(
 	mailerTemplate mailer.Template,
 	smtpMailer mailer.SMTPMailer,
-	userRepository repository.UserRepository,
+	userRepository repository.UserRepositoryI,
 	logger logger.Logger,
 	cfg config.Config,
-) SendEmailConfirmationService {
-	return &sendEmailConfirmationService{
+) *SendEmailConfirmationService {
+	return &SendEmailConfirmationService{
 		mailerTemplate,
 		smtpMailer,
 		userRepository,
@@ -45,8 +43,8 @@ func NewSendEmailConfirmationService(
 	}
 }
 
-func (s *sendEmailConfirmationService) Execute(ctx context.Context, userID uint64) error {
-	ctx, span := otel.Trace().StartSpan(ctx, "sendEmailConfirmationService.Execute")
+func (s *SendEmailConfirmationService) Execute(ctx context.Context, userID uint64) error {
+	ctx, span := otel.Trace().StartSpan(ctx, "SendEmailConfirmationService.Execute")
 	defer span.End()
 
 	user, err := s.userRepository.FindByID(ctx, userID)

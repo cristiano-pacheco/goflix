@@ -12,13 +12,13 @@ import (
 )
 
 type UserActivateUseCase struct {
-	userRepository repository.UserRepository
+	userRepository repository.UserRepositoryI
 	validate       validator.Validate
 	logger         logger.Logger
 }
 
 func NewUserActivateUseCase(
-	userRepository repository.UserRepository,
+	userRepository repository.UserRepositoryI,
 	validate validator.Validate,
 	logger logger.Logger,
 ) *UserActivateUseCase {

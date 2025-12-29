@@ -15,25 +15,23 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/registry"
 )
 
-type TokenService interface {
-	service.TokenService
-}
-
-type tokenService struct {
+type TokenService struct {
 	privateKeyRegistry registry.PrivateKeyRegistry
 	conf               config.Config
 	logger             logger.Logger
 }
 
+var _ service.TokenServiceI = (*TokenService)(nil)
+
 func NewTokenService(
 	conf config.Config,
 	privateKeyRegistry registry.PrivateKeyRegistry,
 	logger logger.Logger,
-) TokenService {
-	return &tokenService{privateKeyRegistry, conf, logger}
+) *TokenService {
+	return &TokenService{privateKeyRegistry, conf, logger}
 }
 
-func (s *tokenService) Generate(ctx context.Context, user model.UserModel) (string, error) {
+func (s *TokenService) Generate(ctx context.Context, user model.UserModel) (string, error) {
 	_, span := otel.Trace().StartSpan(ctx, "TokenService.Generate")
 	defer span.End()
 

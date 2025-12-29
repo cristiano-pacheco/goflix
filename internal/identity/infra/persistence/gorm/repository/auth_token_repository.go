@@ -12,20 +12,18 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
 )
 
-type AuthTokenRepository interface {
-	repository.AuthTokenRepository
-}
-
-type authTokenRepository struct {
+type AuthTokenRepository struct {
 	db     *database.GoflixDB
 	mapper mapper.AuthTokenMapper
 }
 
-func NewAuthTokenRepository(db *database.GoflixDB, mapper mapper.AuthTokenMapper) AuthTokenRepository {
-	return &authTokenRepository{db, mapper}
+var _ repository.AuthTokenRepositoryI = (*AuthTokenRepository)(nil)
+
+func NewAuthTokenRepository(db *database.GoflixDB, mapper mapper.AuthTokenMapper) *AuthTokenRepository {
+	return &AuthTokenRepository{db, mapper}
 }
 
-func (r *authTokenRepository) Create(
+func (r *AuthTokenRepository) Create(
 	ctx context.Context,
 	authTokenModel model.AuthTokenModel,
 ) (model.AuthTokenModel, error) {
@@ -46,7 +44,7 @@ func (r *authTokenRepository) Create(
 	return authTokenModel, nil
 }
 
-func (r *authTokenRepository) Update(ctx context.Context, authTokenModel model.AuthTokenModel) error {
+func (r *AuthTokenRepository) Update(ctx context.Context, authTokenModel model.AuthTokenModel) error {
 	ctx, span := otel.Trace().StartSpan(ctx, "AuthTokenRepository.Update")
 	defer span.End()
 
@@ -59,7 +57,7 @@ func (r *authTokenRepository) Update(ctx context.Context, authTokenModel model.A
 	return nil
 }
 
-func (r *authTokenRepository) Delete(ctx context.Context, id uint64) error {
+func (r *AuthTokenRepository) Delete(ctx context.Context, id uint64) error {
 	ctx, span := otel.Trace().StartSpan(ctx, "AuthTokenRepository.Delete")
 	defer span.End()
 
@@ -75,7 +73,7 @@ func (r *authTokenRepository) Delete(ctx context.Context, id uint64) error {
 	return nil
 }
 
-func (r *authTokenRepository) FindByToken(ctx context.Context, token string) (model.AuthTokenModel, error) {
+func (r *AuthTokenRepository) FindByToken(ctx context.Context, token string) (model.AuthTokenModel, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "AuthTokenRepository.FindByToken")
 	defer span.End()
 

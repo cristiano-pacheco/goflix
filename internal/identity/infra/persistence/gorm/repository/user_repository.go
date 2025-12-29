@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
-	"github.com/cristiano-pacheco/goflix/internal/identity/domain/repository"
 	"github.com/cristiano-pacheco/goflix/internal/identity/infra/persistence/gorm/entity"
 	"github.com/cristiano-pacheco/goflix/internal/identity/infra/persistence/gorm/mapper"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/database"
@@ -12,20 +11,16 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
 )
 
-type UserRepository interface {
-	repository.UserRepository
-}
-
-type userRepository struct {
+type UserRepository struct {
 	db     *database.GoflixDB
 	mapper mapper.UserMapper
 }
 
-func NewUserRepository(db *database.GoflixDB, mapper mapper.UserMapper) UserRepository {
-	return &userRepository{db, mapper}
+func NewUserRepository(db *database.GoflixDB, mapper mapper.UserMapper) *UserRepository {
+	return &UserRepository{db, mapper}
 }
 
-func (r *userRepository) Create(ctx context.Context, userModel model.UserModel) (model.UserModel, error) {
+func (r *UserRepository) Create(ctx context.Context, userModel model.UserModel) (model.UserModel, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "UserRepository.Create")
 	defer span.End()
 
@@ -41,7 +36,7 @@ func (r *userRepository) Create(ctx context.Context, userModel model.UserModel) 
 	return userModel, nil
 }
 
-func (r *userRepository) Update(ctx context.Context, model model.UserModel) error {
+func (r *UserRepository) Update(ctx context.Context, model model.UserModel) error {
 	ctx, span := otel.Trace().StartSpan(ctx, "UserRepository.Update")
 	defer span.End()
 
@@ -53,7 +48,7 @@ func (r *userRepository) Update(ctx context.Context, model model.UserModel) erro
 	return nil
 }
 
-func (r *userRepository) FindByID(ctx context.Context, id uint64) (model.UserModel, error) {
+func (r *UserRepository) FindByID(ctx context.Context, id uint64) (model.UserModel, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "UserRepository.FindByID")
 	defer span.End()
 
@@ -71,7 +66,7 @@ func (r *userRepository) FindByID(ctx context.Context, id uint64) (model.UserMod
 	return userModel, nil
 }
 
-func (r *userRepository) FindByEmail(ctx context.Context, email string) (model.UserModel, error) {
+func (r *UserRepository) FindByEmail(ctx context.Context, email string) (model.UserModel, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "UserRepository.FindByEmail")
 	defer span.End()
 	var userEntity entity.UserEntity
@@ -86,7 +81,7 @@ func (r *userRepository) FindByEmail(ctx context.Context, email string) (model.U
 	return userModel, nil
 }
 
-func (r *userRepository) FindByConfirmationToken(ctx context.Context, token string) (model.UserModel, error) {
+func (r *UserRepository) FindByConfirmationToken(ctx context.Context, token string) (model.UserModel, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "UserRepository.FindByConfirmationToken")
 	defer span.End()
 	var userEntity entity.UserEntity
@@ -101,7 +96,7 @@ func (r *userRepository) FindByConfirmationToken(ctx context.Context, token stri
 	return userModel, nil
 }
 
-func (r *userRepository) FindByResetPasswordToken(ctx context.Context, token string) (model.UserModel, error) {
+func (r *UserRepository) FindByResetPasswordToken(ctx context.Context, token string) (model.UserModel, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "UserRepository.FindByResetPasswordToken")
 	defer span.End()
 	var userEntity entity.UserEntity
@@ -116,7 +111,7 @@ func (r *userRepository) FindByResetPasswordToken(ctx context.Context, token str
 	return userModel, nil
 }
 
-func (r *userRepository) IsActivated(ctx context.Context, userID uint64) (bool, error) {
+func (r *UserRepository) IsActivated(ctx context.Context, userID uint64) (bool, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "UserRepository.IsActivated")
 	defer span.End()
 	var userEntity entity.UserEntity

@@ -6,6 +6,6 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
 )
 
-type TokenService interface {
+type TokenServiceI interface {
 	Generate(ctx context.Context, user model.UserModel) (string, error)
 }

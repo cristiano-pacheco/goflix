@@ -13,16 +13,16 @@ import (
 
 type TokenGenerateUseCase struct {
 	validator    validator.Validate
-	userRepo     repository.UserRepository
-	hashService  service.HashService
-	tokenService service.TokenService
+	userRepo     repository.UserRepositoryI
+	hashService  service.HashServiceI
+	tokenService service.TokenServiceI
 }
 
 func NewTokenGenerateUseCase(
 	validator validator.Validate,
-	userRepo repository.UserRepository,
-	hashService service.HashService,
-	tokenService service.TokenService,
+	userRepo repository.UserRepositoryI,
+	hashService service.HashServiceI,
+	tokenService service.TokenServiceI,
 ) *TokenGenerateUseCase {
 	return &TokenGenerateUseCase{
 		validator,

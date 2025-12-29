@@ -12,19 +12,20 @@ import (
 )
 
 type UserUpdateUseCase struct {
+	hashService service.HashServiceI
+	userRepo    repository.UserRepositoryI
 	validate    validator.Validate
-	userRepo    repository.UserRepository
 	logger      logger.Logger
-	hashService service.HashService
 }
 
 func NewUserUpdateUseCase(
+	hashService service.HashServiceI,
+	userRepo repository.UserRepositoryI,
 	validate validator.Validate,
-	userRepo repository.UserRepository,
 	logger logger.Logger,
-	hashService service.HashService,
+
 ) *UserUpdateUseCase {
-	return &UserUpdateUseCase{validate, userRepo, logger, hashService}
+	return &UserUpdateUseCase{hashService, userRepo, validate, logger}
 }
 
 type UserUpdateInput struct {
