@@ -6,7 +6,7 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/content/domain/model"
 )
 
-type MovieRepository interface {
+type MovieRepositoryI interface {
 	Create(ctx context.Context, movie model.MovieModel) (model.MovieModel, error)
 	Update(ctx context.Context, movie model.MovieModel) error
 	Delete(ctx context.Context, id uint64) error

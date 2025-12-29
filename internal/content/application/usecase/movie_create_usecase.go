@@ -8,10 +8,10 @@ import (
 )
 
 type MovieCreateUsecase struct {
-	repository repository.MovieRepository
+	repository repository.MovieRepositoryI
 }
 
-func NewMovieCreateUsecase(repository repository.MovieRepository) *MovieCreateUsecase {
+func NewMovieCreateUsecase(repository repository.MovieRepositoryI) *MovieCreateUsecase {
 	return &MovieCreateUsecase{repository: repository}
 }
 
