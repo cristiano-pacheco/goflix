@@ -12,20 +12,18 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
 )
 
-type PlanRepository interface {
-	repository.PlanRepository
-}
-
-type planRepository struct {
+type PlanRepository struct {
 	db     *database.GoflixDB
 	mapper mapper.PlanMapper
 }
 
-func NewPlanRepository(db *database.GoflixDB, mapper mapper.PlanMapper) PlanRepository {
-	return &planRepository{db, mapper}
+var _ repository.PlanRepositoryI = (*PlanRepository)(nil)
+
+func NewPlanRepository(db *database.GoflixDB, mapper mapper.PlanMapper) *PlanRepository {
+	return &PlanRepository{db, mapper}
 }
 
-func (r *planRepository) Create(ctx context.Context, planModel model.PlanModel) (model.PlanModel, error) {
+func (r *PlanRepository) Create(ctx context.Context, planModel model.PlanModel) (model.PlanModel, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "PlanRepository.Create")
 	defer span.End()
 
@@ -43,7 +41,7 @@ func (r *planRepository) Create(ctx context.Context, planModel model.PlanModel) 
 	return planModel, nil
 }
 
-func (r *planRepository) Update(ctx context.Context, planModel model.PlanModel) error {
+func (r *PlanRepository) Update(ctx context.Context, planModel model.PlanModel) error {
 	ctx, span := otel.Trace().StartSpan(ctx, "PlanRepository.Update")
 	defer span.End()
 
@@ -55,7 +53,7 @@ func (r *planRepository) Update(ctx context.Context, planModel model.PlanModel) 
 	return nil
 }
 
-func (r *planRepository) Delete(ctx context.Context, id uint64) error {
+func (r *PlanRepository) Delete(ctx context.Context, id uint64) error {
 	ctx, span := otel.Trace().StartSpan(ctx, "PlanRepository.Delete")
 	defer span.End()
 
@@ -67,7 +65,7 @@ func (r *planRepository) Delete(ctx context.Context, id uint64) error {
 	return nil
 }
 
-func (r *planRepository) FindByID(ctx context.Context, id uint64) (model.PlanModel, error) {
+func (r *PlanRepository) FindByID(ctx context.Context, id uint64) (model.PlanModel, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "PlanRepository.FindByID")
 	defer span.End()
 
@@ -85,7 +83,7 @@ func (r *planRepository) FindByID(ctx context.Context, id uint64) (model.PlanMod
 	return planModel, nil
 }
 
-func (r *planRepository) FindAll(ctx context.Context) ([]model.PlanModel, error) {
+func (r *PlanRepository) FindAll(ctx context.Context) ([]model.PlanModel, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "PlanRepository.FindAll")
 	defer span.End()
 

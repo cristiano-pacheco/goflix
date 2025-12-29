@@ -12,20 +12,18 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
 )
 
-type SubscriptionRepository interface {
-	repository.SubscriptionRepository
-}
-
-type subscriptionRepository struct {
+type SubscriptionRepository struct {
 	db     *database.GoflixDB
 	mapper mapper.SubscriptionMapper
 }
 
-func NewSubscriptionRepository(db *database.GoflixDB, mapper mapper.SubscriptionMapper) SubscriptionRepository {
-	return &subscriptionRepository{db, mapper}
+var _ repository.SubscriptionRepositoryI = (*SubscriptionRepository)(nil)
+
+func NewSubscriptionRepository(db *database.GoflixDB, mapper mapper.SubscriptionMapper) *SubscriptionRepository {
+	return &SubscriptionRepository{db, mapper}
 }
 
-func (r *subscriptionRepository) Create(
+func (r *SubscriptionRepository) Create(
 	ctx context.Context,
 	subscriptionModel model.SubscriptionModel,
 ) (model.SubscriptionModel, error) {
@@ -46,7 +44,7 @@ func (r *subscriptionRepository) Create(
 	return subscriptionModel, nil
 }
 
-func (r *subscriptionRepository) Update(ctx context.Context, subscriptionModel model.SubscriptionModel) error {
+func (r *SubscriptionRepository) Update(ctx context.Context, subscriptionModel model.SubscriptionModel) error {
 	ctx, span := otel.Trace().StartSpan(ctx, "SubscriptionRepository.Update")
 	defer span.End()
 
@@ -58,7 +56,7 @@ func (r *subscriptionRepository) Update(ctx context.Context, subscriptionModel m
 	return nil
 }
 
-func (r *subscriptionRepository) Delete(ctx context.Context, id uint64) error {
+func (r *SubscriptionRepository) Delete(ctx context.Context, id uint64) error {
 	ctx, span := otel.Trace().StartSpan(ctx, "SubscriptionRepository.Delete")
 	defer span.End()
 
@@ -70,7 +68,7 @@ func (r *subscriptionRepository) Delete(ctx context.Context, id uint64) error {
 	return nil
 }
 
-func (r *subscriptionRepository) FindByID(ctx context.Context, id uint64) (model.SubscriptionModel, error) {
+func (r *SubscriptionRepository) FindByID(ctx context.Context, id uint64) (model.SubscriptionModel, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "SubscriptionRepository.FindByID")
 	defer span.End()
 
@@ -88,7 +86,7 @@ func (r *subscriptionRepository) FindByID(ctx context.Context, id uint64) (model
 	return subscriptionModel, nil
 }
 
-func (r *subscriptionRepository) FindByUserID(ctx context.Context, userID uint64) ([]model.SubscriptionModel, error) {
+func (r *SubscriptionRepository) FindByUserID(ctx context.Context, userID uint64) ([]model.SubscriptionModel, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "SubscriptionRepository.FindByUserID")
 	defer span.End()
 
@@ -110,7 +108,7 @@ func (r *subscriptionRepository) FindByUserID(ctx context.Context, userID uint64
 	return subscriptionModels, nil
 }
 
-func (r *subscriptionRepository) FindActiveSubscriptionByUserID(
+func (r *SubscriptionRepository) FindActiveSubscriptionByUserID(
 	ctx context.Context,
 	userID uint64,
 ) (model.SubscriptionModel, error) {

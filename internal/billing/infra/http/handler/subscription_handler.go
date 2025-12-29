@@ -17,13 +17,13 @@ import (
 type SubscriptionHandler struct {
 	errorMapper               shared_errs.ErrorMapper
 	subscriptionCreateUseCase *usecase.SubscriptionCreateUseCase
-	subscriptionRepository    repository.SubscriptionRepository
+	subscriptionRepository    repository.SubscriptionRepositoryI
 }
 
 func NewSubscriptionHandler(
 	errorMapper shared_errs.ErrorMapper,
 	subscriptionCreateUseCase *usecase.SubscriptionCreateUseCase,
-	subscriptionRepository repository.SubscriptionRepository,
+	subscriptionRepository repository.SubscriptionRepositoryI,
 ) *SubscriptionHandler {
 	return &SubscriptionHandler{
 		errorMapper,

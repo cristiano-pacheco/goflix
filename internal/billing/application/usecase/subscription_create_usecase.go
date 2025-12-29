@@ -17,17 +17,17 @@ import (
 )
 
 type SubscriptionCreateUseCase struct {
-	subscriptionRepository repository.SubscriptionRepository
-	planRepository         repository.PlanRepository
-	endDateMapper          mapper.EndDateMapper
+	subscriptionRepository repository.SubscriptionRepositoryI
+	planRepository         repository.PlanRepositoryI
+	endDateMapper          mapper.EndDateMapperI
 	validate               validator.Validate
 	logger                 logger.Logger
 }
 
 func NewSubscriptionCreateUseCase(
-	subscriptionRepository repository.SubscriptionRepository,
-	planRepository repository.PlanRepository,
-	endDateMapper mapper.EndDateMapper,
+	subscriptionRepository repository.SubscriptionRepositoryI,
+	planRepository repository.PlanRepositoryI,
+	endDateMapper mapper.EndDateMapperI,
 	validate validator.Validate,
 	logger logger.Logger,
 ) *SubscriptionCreateUseCase {

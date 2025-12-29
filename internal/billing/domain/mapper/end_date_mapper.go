@@ -6,18 +6,20 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/enum"
 )
 
-type EndDateMapper interface {
+type EndDateMapperI interface {
 	Map(startDate time.Time, planInterval enum.PlanIntervalEnum) *time.Time
 }
 
-type endDateMapper struct {
+type EndDateMapper struct {
 }
 
-func NewEndDateMapper() EndDateMapper {
-	return &endDateMapper{}
+var _ EndDateMapperI = (*EndDateMapper)(nil)
+
+func NewEndDateMapper() *EndDateMapper {
+	return &EndDateMapper{}
 }
 
-func (m *endDateMapper) Map(startDate time.Time, planInterval enum.PlanIntervalEnum) *time.Time {
+func (m *EndDateMapper) Map(startDate time.Time, planInterval enum.PlanIntervalEnum) *time.Time {
 	const (
 		daysInWeek = 7
 		daysInDay  = 1

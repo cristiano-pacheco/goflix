@@ -5,19 +5,21 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/billing/infra/persistence/gorm/entity"
 )
 
-type PlanMapper interface {
+type PlanMapperI interface {
 	ToModel(entity entity.PlanEntity) (model.PlanModel, error)
 	ToEntity(model model.PlanModel) entity.PlanEntity
 }
 
-type planMapper struct {
+type PlanMapper struct {
 }
 
-func NewPlanMapper() PlanMapper {
-	return &planMapper{}
+var _ PlanMapperI = (*PlanMapper)(nil)
+
+func NewPlanMapper() *PlanMapper {
+	return &PlanMapper{}
 }
 
-func (p *planMapper) ToModel(entity entity.PlanEntity) (model.PlanModel, error) {
+func (p *PlanMapper) ToModel(entity entity.PlanEntity) (model.PlanModel, error) {
 	var trialPeriod *uint
 	if entity.TrialPeriod > 0 {
 		trialPeriod = &entity.TrialPeriod
@@ -40,7 +42,7 @@ func (p *planMapper) ToModel(entity entity.PlanEntity) (model.PlanModel, error) 
 	return planModel, nil
 }
 
-func (p *planMapper) ToEntity(model model.PlanModel) entity.PlanEntity {
+func (p *PlanMapper) ToEntity(model model.PlanModel) entity.PlanEntity {
 	var trialPeriod uint
 	if model.TrialPeriod() != nil {
 		trialPeriod = model.TrialPeriod().Days()

@@ -7,19 +7,21 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/billing/infra/persistence/gorm/entity"
 )
 
-type SubscriptionMapper interface {
+type SubscriptionMapperI interface {
 	ToModel(entity entity.SubscriptionEntity) (model.SubscriptionModel, error)
 	ToEntity(model model.SubscriptionModel) entity.SubscriptionEntity
 }
 
-type subscriptionMapper struct {
+type SubscriptionMapper struct {
 }
 
-func NewSubscriptionMapper() SubscriptionMapper {
-	return &subscriptionMapper{}
+var _ SubscriptionMapperI = (*SubscriptionMapper)(nil)
+
+func NewSubscriptionMapper() *SubscriptionMapper {
+	return &SubscriptionMapper{}
 }
 
-func (s *subscriptionMapper) ToModel(entity entity.SubscriptionEntity) (model.SubscriptionModel, error) {
+func (s *SubscriptionMapper) ToModel(entity entity.SubscriptionEntity) (model.SubscriptionModel, error) {
 	var endDate *time.Time
 	if !entity.EndDate.IsZero() {
 		endDate = &entity.EndDate
@@ -42,7 +44,7 @@ func (s *subscriptionMapper) ToModel(entity entity.SubscriptionEntity) (model.Su
 	return subscriptionModel, nil
 }
 
-func (s *subscriptionMapper) ToEntity(model model.SubscriptionModel) entity.SubscriptionEntity {
+func (s *SubscriptionMapper) ToEntity(model model.SubscriptionModel) entity.SubscriptionEntity {
 	var endDate time.Time
 	if model.EndDate() != nil {
 		endDate = *model.EndDate()

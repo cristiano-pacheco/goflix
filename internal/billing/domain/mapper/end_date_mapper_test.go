@@ -12,7 +12,7 @@ import (
 
 type EndDateMapperTestSuite struct {
 	suite.Suite
-	sut mapper.EndDateMapper
+	sut mapper.EndDateMapperI
 }
 
 func (s *EndDateMapperTestSuite) SetupTest() {

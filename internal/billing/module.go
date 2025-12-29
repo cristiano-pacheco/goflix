@@ -15,19 +15,31 @@ import (
 var Module = fx.Module(
 	"billing",
 	fx.Provide(
-		NewFacade,
 		usecase.NewSubscriptionCreateUseCase,
 		handler.NewSubscriptionHandler,
-		domain_mapper.NewEndDateMapper,
-		mapper.NewSubscriptionMapper,
-		mapper.NewPlanMapper,
+		fx.Annotate(
+			NewBillingFacade,
+			fx.As(new(BillingFacadeI)),
+		),
+		fx.Annotate(
+			domain_mapper.NewEndDateMapper,
+			fx.As(new(domain_mapper.EndDateMapperI)),
+		),
+		fx.Annotate(
+			mapper.NewSubscriptionMapper,
+			fx.As(new(mapper.SubscriptionMapperI)),
+		),
+		fx.Annotate(
+			mapper.NewPlanMapper,
+			fx.As(new(mapper.PlanMapperI)),
+		),
 		fx.Annotate(
 			repository.NewSubscriptionRepository,
-			fx.As(new(domain_repository.SubscriptionRepository)),
+			fx.As(new(domain_repository.SubscriptionRepositoryI)),
 		),
 		fx.Annotate(
 			repository.NewPlanRepository,
-			fx.As(new(domain_repository.PlanRepository)),
+			fx.As(new(domain_repository.PlanRepositoryI)),
 		),
 	),
 	fx.Invoke(

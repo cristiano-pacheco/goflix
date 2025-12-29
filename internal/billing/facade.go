@@ -6,21 +6,21 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/repository"
 )
 
-type FacadeInterface interface {
+type BillingFacadeI interface {
 	IsUserSubscriptionActive(ctx context.Context, userID uint64) (bool, error)
 }
 
-type facade struct {
-	subscriptionRepository repository.SubscriptionRepository
+type BillingFacade struct {
+	subscriptionRepository repository.SubscriptionRepositoryI
 }
 
-func NewFacade(subscriptionRepository repository.SubscriptionRepository) FacadeInterface {
-	return &facade{
+func NewBillingFacade(subscriptionRepository repository.SubscriptionRepositoryI) *BillingFacade {
+	return &BillingFacade{
 		subscriptionRepository,
 	}
 }
 
-func (f *facade) IsUserSubscriptionActive(ctx context.Context, userID uint64) (bool, error) {
+func (f *BillingFacade) IsUserSubscriptionActive(ctx context.Context, userID uint64) (bool, error) {
 	_, err := f.subscriptionRepository.FindActiveSubscriptionByUserID(ctx, userID)
 	if err != nil {
 		return false, err
