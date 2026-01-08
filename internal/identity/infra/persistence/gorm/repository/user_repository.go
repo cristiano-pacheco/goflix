@@ -6,6 +6,7 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
 	"github.com/cristiano-pacheco/goflix/internal/identity/infra/persistence/gorm/entity"
 	"github.com/cristiano-pacheco/goflix/internal/identity/infra/persistence/gorm/mapper"
+	"github.com/cristiano-pacheco/goflix/internal/identity/ports"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/database"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/errs"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
@@ -19,6 +20,8 @@ type UserRepository struct {
 func NewUserRepository(db *database.GoflixDB, mapper mapper.UserMapper) *UserRepository {
 	return &UserRepository{db, mapper}
 }
+
+var _ ports.UserRepositoryI = (*UserRepository)(nil)
 
 func (r *UserRepository) Create(ctx context.Context, userModel model.UserModel) (model.UserModel, error) {
 	ctx, span := otel.Trace().StartSpan(ctx, "UserRepository.Create")

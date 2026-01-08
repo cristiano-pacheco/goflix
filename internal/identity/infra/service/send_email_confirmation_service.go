@@ -6,8 +6,7 @@ import (
 	"fmt"
 
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/errs"
-	"github.com/cristiano-pacheco/goflix/internal/identity/domain/repository"
-	"github.com/cristiano-pacheco/goflix/internal/identity/domain/service"
+	"github.com/cristiano-pacheco/goflix/internal/identity/ports"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/config"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/logger"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/mailer"
@@ -20,17 +19,17 @@ const sendAccountConfirmationEmailSubject = "Account Confirmation"
 type SendEmailConfirmationService struct {
 	mailerTemplate mailer.Template
 	mailer         mailer.SMTPMailer
-	userRepository repository.UserRepositoryI
+	userRepository ports.UserRepositoryI
 	logger         logger.Logger
 	cfg            config.Config
 }
 
-var _ service.SendEmailConfirmationServiceI = (*SendEmailConfirmationService)(nil)
+var _ ports.SendEmailConfirmationServiceI = (*SendEmailConfirmationService)(nil)
 
 func NewSendEmailConfirmationService(
 	mailerTemplate mailer.Template,
 	smtpMailer mailer.SMTPMailer,
-	userRepository repository.UserRepositoryI,
+	userRepository ports.UserRepositoryI,
 	logger logger.Logger,
 	cfg config.Config,
 ) *SendEmailConfirmationService {

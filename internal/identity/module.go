@@ -12,6 +12,7 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/identity/infra/persistence/gorm/mapper"
 	"github.com/cristiano-pacheco/goflix/internal/identity/infra/persistence/gorm/repository"
 	"github.com/cristiano-pacheco/goflix/internal/identity/infra/service"
+	"github.com/cristiano-pacheco/goflix/internal/identity/ports"
 )
 
 var Module = fx.Module(
@@ -30,7 +31,7 @@ var Module = fx.Module(
 		),
 		fx.Annotate(
 			validator.NewPasswordValidator,
-			fx.As(new(validator.PasswordValidatorI)),
+			fx.As(new(ports.PasswordValidatorI)),
 		),
 		fx.Annotate(
 			mapper.NewAuthTokenMapper,
@@ -50,11 +51,11 @@ var Module = fx.Module(
 		),
 		fx.Annotate(
 			service.NewSendEmailConfirmationService,
-			fx.As(new(domain_service.SendEmailConfirmationServiceI)),
+			fx.As(new(ports.SendEmailConfirmationServiceI)),
 		),
 		fx.Annotate(
 			service.NewTokenService,
-			fx.As(new(domain_service.TokenServiceI)),
+			fx.As(new(ports.TokenServiceI)),
 		),
 	),
 	fx.Invoke(

@@ -5,18 +5,15 @@ import (
 	"unicode/utf8"
 
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/errs"
+	"github.com/cristiano-pacheco/goflix/internal/identity/ports"
 )
 
 const minPasswordLength = 8
 
-type PasswordValidatorI interface {
-	Validate(password string) error
-}
-
 type PasswordValidator struct {
 }
 
-var _ PasswordValidatorI = (*PasswordValidator)(nil)
+var _ ports.PasswordValidatorI = (*PasswordValidator)(nil)
 
 func NewPasswordValidator() *PasswordValidator {
 	return &PasswordValidator{}

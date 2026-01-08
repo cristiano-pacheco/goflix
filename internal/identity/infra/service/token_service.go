@@ -8,7 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
-	"github.com/cristiano-pacheco/goflix/internal/identity/domain/service"
+	"github.com/cristiano-pacheco/goflix/internal/identity/ports"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/config"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/logger"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
@@ -21,7 +21,7 @@ type TokenService struct {
 	logger             logger.Logger
 }
 
-var _ service.TokenServiceI = (*TokenService)(nil)
+var _ ports.TokenServiceI = (*TokenService)(nil)
 
 func NewTokenService(
 	conf config.Config,

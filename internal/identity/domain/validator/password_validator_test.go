@@ -11,7 +11,7 @@ import (
 
 type PasswordValidatorTestSuite struct {
 	suite.Suite
-	validator validator.PasswordValidatorI
+	validator *validator.PasswordValidator
 }
 
 func (suite *PasswordValidatorTestSuite) SetupTest() {

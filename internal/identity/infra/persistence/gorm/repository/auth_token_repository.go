@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
-	"github.com/cristiano-pacheco/goflix/internal/identity/domain/repository"
 	"github.com/cristiano-pacheco/goflix/internal/identity/infra/persistence/gorm/entity"
 	"github.com/cristiano-pacheco/goflix/internal/identity/infra/persistence/gorm/mapper"
+	"github.com/cristiano-pacheco/goflix/internal/identity/ports"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/database"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/errs"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
@@ -17,7 +17,7 @@ type AuthTokenRepository struct {
 	mapper mapper.AuthTokenMapper
 }
 
-var _ repository.AuthTokenRepositoryI = (*AuthTokenRepository)(nil)
+var _ ports.AuthTokenRepositoryI = (*AuthTokenRepository)(nil)
 
 func NewAuthTokenRepository(db *database.GoflixDB, mapper mapper.AuthTokenMapper) *AuthTokenRepository {
 	return &AuthTokenRepository{db, mapper}
