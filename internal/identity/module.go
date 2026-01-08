@@ -4,7 +4,6 @@ import (
 	"go.uber.org/fx"
 
 	"github.com/cristiano-pacheco/goflix/internal/identity/application/usecase"
-	domain_repository "github.com/cristiano-pacheco/goflix/internal/identity/domain/repository"
 	domain_service "github.com/cristiano-pacheco/goflix/internal/identity/domain/service"
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/validator"
 	"github.com/cristiano-pacheco/goflix/internal/identity/infra/http/handler"
@@ -43,11 +42,11 @@ var Module = fx.Module(
 		),
 		fx.Annotate(
 			repository.NewUserRepository,
-			fx.As(new(domain_repository.UserRepositoryI)),
+			fx.As(new(ports.UserRepositoryI)),
 		),
 		fx.Annotate(
 			repository.NewAuthTokenRepository,
-			fx.As(new(domain_repository.AuthTokenRepositoryI)),
+			fx.As(new(ports.AuthTokenRepositoryI)),
 		),
 		fx.Annotate(
 			service.NewSendEmailConfirmationService,
