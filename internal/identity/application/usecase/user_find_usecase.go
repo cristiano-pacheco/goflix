@@ -3,18 +3,18 @@ package usecase
 import (
 	"context"
 
-	"github.com/cristiano-pacheco/goflix/internal/identity/domain/repository"
+	"github.com/cristiano-pacheco/goflix/internal/identity/ports"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/logger"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
 )
 
 type UserFindUseCase struct {
-	userRepo repository.UserRepositoryI
+	userRepo ports.UserRepositoryI
 	logger   logger.Logger
 }
 
 func NewUserFindUseCase(
-	userRepo repository.UserRepositoryI,
+	userRepo ports.UserRepositoryI,
 	logger logger.Logger,
 ) *UserFindUseCase {
 	return &UserFindUseCase{userRepo, logger}

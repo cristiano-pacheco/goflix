@@ -8,8 +8,8 @@ import (
 
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/errs"
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
-	"github.com/cristiano-pacheco/goflix/internal/identity/domain/repository"
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/service"
+	"github.com/cristiano-pacheco/goflix/internal/identity/ports"
 	shared_errs "github.com/cristiano-pacheco/goflix/internal/shared/modules/errs"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/logger"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
@@ -19,17 +19,17 @@ import (
 const confirmationTokenExpiryHours = 24
 
 type UserCreateUseCase struct {
-	sendEmailConfirmationService service.SendEmailConfirmationServiceI
+	sendEmailConfirmationService ports.SendEmailConfirmationServiceI
 	hashService                  service.HashServiceI
-	userRepository               repository.UserRepositoryI
+	userRepository               ports.UserRepositoryI
 	validate                     validator.Validate
 	logger                       logger.Logger
 }
 
 func NewUserCreateUseCase(
-	sendEmailConfirmationService service.SendEmailConfirmationServiceI,
+	sendEmailConfirmationService ports.SendEmailConfirmationServiceI,
 	hashService service.HashServiceI,
-	userRepo repository.UserRepositoryI,
+	userRepo ports.UserRepositoryI,
 	validate validator.Validate,
 	logger logger.Logger,
 ) *UserCreateUseCase {

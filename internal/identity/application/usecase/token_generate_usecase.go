@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/cristiano-pacheco/goflix/internal/identity/domain/repository"
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/service"
+	"github.com/cristiano-pacheco/goflix/internal/identity/ports"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/errs"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/validator"
@@ -13,16 +13,16 @@ import (
 
 type TokenGenerateUseCase struct {
 	validator    validator.Validate
-	userRepo     repository.UserRepositoryI
+	userRepo     ports.UserRepositoryI
 	hashService  service.HashServiceI
-	tokenService service.TokenServiceI
+	tokenService ports.TokenServiceI
 }
 
 func NewTokenGenerateUseCase(
 	validator validator.Validate,
-	userRepo repository.UserRepositoryI,
+	userRepo ports.UserRepositoryI,
 	hashService service.HashServiceI,
-	tokenService service.TokenServiceI,
+	tokenService ports.TokenServiceI,
 ) *TokenGenerateUseCase {
 	return &TokenGenerateUseCase{
 		validator,

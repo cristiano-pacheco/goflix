@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 
-	"github.com/cristiano-pacheco/goflix/internal/identity/domain/repository"
+	"github.com/cristiano-pacheco/goflix/internal/identity/ports"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/errs"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/logger"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
@@ -12,13 +12,13 @@ import (
 )
 
 type UserActivateUseCase struct {
-	userRepository repository.UserRepositoryI
+	userRepository ports.UserRepositoryI
 	validate       validator.Validate
 	logger         logger.Logger
 }
 
 func NewUserActivateUseCase(
-	userRepository repository.UserRepositoryI,
+	userRepository ports.UserRepositoryI,
 	validate validator.Validate,
 	logger logger.Logger,
 ) *UserActivateUseCase {

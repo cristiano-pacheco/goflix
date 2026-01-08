@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/model"
-	"github.com/cristiano-pacheco/goflix/internal/identity/domain/repository"
 	"github.com/cristiano-pacheco/goflix/internal/identity/domain/service"
+	"github.com/cristiano-pacheco/goflix/internal/identity/ports"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/logger"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/validator"
@@ -13,14 +13,14 @@ import (
 
 type UserUpdateUseCase struct {
 	hashService service.HashServiceI
-	userRepo    repository.UserRepositoryI
+	userRepo    ports.UserRepositoryI
 	validate    validator.Validate
 	logger      logger.Logger
 }
 
 func NewUserUpdateUseCase(
 	hashService service.HashServiceI,
-	userRepo repository.UserRepositoryI,
+	userRepo ports.UserRepositoryI,
 	validate validator.Validate,
 	logger logger.Logger,
 
