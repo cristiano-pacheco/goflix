@@ -4,14 +4,14 @@ import (
 	"context"
 
 	"github.com/cristiano-pacheco/goflix/internal/content/domain/model"
-	"github.com/cristiano-pacheco/goflix/internal/content/domain/repository"
+	"github.com/cristiano-pacheco/goflix/internal/content/ports"
 )
 
 type MovieCreateUsecase struct {
-	repository repository.MovieRepositoryI
+	repository ports.MovieRepositoryI
 }
 
-func NewMovieCreateUsecase(repository repository.MovieRepositoryI) *MovieCreateUsecase {
+func NewMovieCreateUsecase(repository ports.MovieRepositoryI) *MovieCreateUsecase {
 	return &MovieCreateUsecase{repository: repository}
 }
 
