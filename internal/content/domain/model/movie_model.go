@@ -21,11 +21,12 @@ func NewMovieModel(
 	updatedAt time.Time,
 ) MovieModel {
 	return MovieModel{
-		content:   content,
-		video:     video,
-		thumbnail: thumbnail,
-		createdAt: createdAt,
-		updatedAt: updatedAt,
+		externalRating: externalRating,
+		content:        content,
+		video:          video,
+		thumbnail:      thumbnail,
+		createdAt:      createdAt,
+		updatedAt:      updatedAt,
 	}
 }
 
@@ -39,12 +40,13 @@ func RestoreMovieModel(
 	updatedAt time.Time,
 ) MovieModel {
 	return MovieModel{
-		id:        id,
-		content:   content,
-		video:     video,
-		thumbnail: thumbnail,
-		createdAt: createdAt,
-		updatedAt: updatedAt,
+		id:             id,
+		externalRating: externalRating,
+		content:        content,
+		video:          video,
+		thumbnail:      thumbnail,
+		createdAt:      createdAt,
+		updatedAt:      updatedAt,
 	}
 }
 

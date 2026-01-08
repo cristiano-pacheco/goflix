@@ -18,8 +18,8 @@ var Module = fx.Module(
 		usecase.NewSubscriptionCreateUseCase,
 		handler.NewSubscriptionHandler,
 		fx.Annotate(
-			NewBillingFacade,
-			fx.As(new(BillingFacadeI)),
+			NewFacade,
+			fx.As(new(FacadeI)),
 		),
 		fx.Annotate(
 			domain_mapper.NewEndDateMapper,
