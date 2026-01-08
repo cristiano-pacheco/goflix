@@ -5,11 +5,11 @@ import (
 
 	"github.com/cristiano-pacheco/goflix/internal/billing/application/usecase"
 	domain_mapper "github.com/cristiano-pacheco/goflix/internal/billing/domain/mapper"
-	domain_repository "github.com/cristiano-pacheco/goflix/internal/billing/domain/repository"
 	"github.com/cristiano-pacheco/goflix/internal/billing/infra/http/handler"
 	"github.com/cristiano-pacheco/goflix/internal/billing/infra/http/router"
 	"github.com/cristiano-pacheco/goflix/internal/billing/infra/persistence/gorm/mapper"
 	"github.com/cristiano-pacheco/goflix/internal/billing/infra/persistence/gorm/repository"
+	"github.com/cristiano-pacheco/goflix/internal/billing/ports"
 )
 
 var Module = fx.Module(
@@ -25,21 +25,15 @@ var Module = fx.Module(
 			domain_mapper.NewEndDateMapper,
 			fx.As(new(domain_mapper.EndDateMapperI)),
 		),
-		fx.Annotate(
-			mapper.NewSubscriptionMapper,
-			fx.As(new(mapper.SubscriptionMapperI)),
-		),
-		fx.Annotate(
-			mapper.NewPlanMapper,
-			fx.As(new(mapper.PlanMapperI)),
-		),
+		mapper.NewSubscriptionMapper,
+		mapper.NewPlanMapper,
 		fx.Annotate(
 			repository.NewSubscriptionRepository,
-			fx.As(new(domain_repository.SubscriptionRepositoryI)),
+			fx.As(new(ports.SubscriptionRepositoryI)),
 		),
 		fx.Annotate(
 			repository.NewPlanRepository,
-			fx.As(new(domain_repository.PlanRepositoryI)),
+			fx.As(new(ports.PlanRepositoryI)),
 		),
 	),
 	fx.Invoke(

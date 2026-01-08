@@ -13,7 +13,7 @@ import (
 
 type SubscriptionMapperTestSuite struct {
 	suite.Suite
-	sut mapper.SubscriptionMapperI
+	sut *mapper.SubscriptionMapper
 }
 
 func (s *SubscriptionMapperTestSuite) SetupTest() {

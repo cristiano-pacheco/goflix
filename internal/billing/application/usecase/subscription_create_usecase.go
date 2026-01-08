@@ -9,7 +9,7 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/errs"
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/mapper"
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/model"
-	"github.com/cristiano-pacheco/goflix/internal/billing/domain/repository"
+	"github.com/cristiano-pacheco/goflix/internal/billing/ports"
 	sharedErrs "github.com/cristiano-pacheco/goflix/internal/shared/modules/errs"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/logger"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
@@ -17,16 +17,16 @@ import (
 )
 
 type SubscriptionCreateUseCase struct {
-	subscriptionRepository repository.SubscriptionRepositoryI
-	planRepository         repository.PlanRepositoryI
+	subscriptionRepository ports.SubscriptionRepositoryI
+	planRepository         ports.PlanRepositoryI
 	endDateMapper          mapper.EndDateMapperI
 	validate               validator.Validate
 	logger                 logger.Logger
 }
 
 func NewSubscriptionCreateUseCase(
-	subscriptionRepository repository.SubscriptionRepositoryI,
-	planRepository repository.PlanRepositoryI,
+	subscriptionRepository ports.SubscriptionRepositoryI,
+	planRepository ports.PlanRepositoryI,
 	endDateMapper mapper.EndDateMapperI,
 	validate validator.Validate,
 	logger logger.Logger,

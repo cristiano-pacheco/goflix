@@ -7,15 +7,8 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/billing/infra/persistence/gorm/entity"
 )
 
-type SubscriptionMapperI interface {
-	ToModel(entity entity.SubscriptionEntity) (model.SubscriptionModel, error)
-	ToEntity(model model.SubscriptionModel) entity.SubscriptionEntity
-}
-
 type SubscriptionMapper struct {
 }
-
-var _ SubscriptionMapperI = (*SubscriptionMapper)(nil)
 
 func NewSubscriptionMapper() *SubscriptionMapper {
 	return &SubscriptionMapper{}

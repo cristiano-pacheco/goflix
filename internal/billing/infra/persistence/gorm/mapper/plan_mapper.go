@@ -5,15 +5,8 @@ import (
 	"github.com/cristiano-pacheco/goflix/internal/billing/infra/persistence/gorm/entity"
 )
 
-type PlanMapperI interface {
-	ToModel(entity entity.PlanEntity) (model.PlanModel, error)
-	ToEntity(model model.PlanModel) entity.PlanEntity
-}
-
 type PlanMapper struct {
 }
-
-var _ PlanMapperI = (*PlanMapper)(nil)
 
 func NewPlanMapper() *PlanMapper {
 	return &PlanMapper{}

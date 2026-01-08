@@ -3,7 +3,7 @@ package billing
 import (
 	"context"
 
-	"github.com/cristiano-pacheco/goflix/internal/billing/domain/repository"
+	"github.com/cristiano-pacheco/goflix/internal/billing/ports"
 )
 
 type BillingFacadeI interface {
@@ -11,10 +11,10 @@ type BillingFacadeI interface {
 }
 
 type BillingFacade struct {
-	subscriptionRepository repository.SubscriptionRepositoryI
+	subscriptionRepository ports.SubscriptionRepositoryI
 }
 
-func NewBillingFacade(subscriptionRepository repository.SubscriptionRepositoryI) *BillingFacade {
+func NewBillingFacade(subscriptionRepository ports.SubscriptionRepositoryI) *BillingFacade {
 	return &BillingFacade{
 		subscriptionRepository,
 	}

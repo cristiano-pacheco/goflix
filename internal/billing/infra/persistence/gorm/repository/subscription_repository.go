@@ -5,9 +5,9 @@ import (
 
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/errs"
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/model"
-	"github.com/cristiano-pacheco/goflix/internal/billing/domain/repository"
 	"github.com/cristiano-pacheco/goflix/internal/billing/infra/persistence/gorm/entity"
 	"github.com/cristiano-pacheco/goflix/internal/billing/infra/persistence/gorm/mapper"
+	"github.com/cristiano-pacheco/goflix/internal/billing/ports"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/database"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
 )
@@ -17,7 +17,7 @@ type SubscriptionRepository struct {
 	mapper mapper.SubscriptionMapper
 }
 
-var _ repository.SubscriptionRepositoryI = (*SubscriptionRepository)(nil)
+var _ ports.SubscriptionRepositoryI = (*SubscriptionRepository)(nil)
 
 func NewSubscriptionRepository(db *database.GoflixDB, mapper mapper.SubscriptionMapper) *SubscriptionRepository {
 	return &SubscriptionRepository{db, mapper}

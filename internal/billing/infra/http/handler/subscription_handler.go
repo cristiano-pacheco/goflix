@@ -6,8 +6,8 @@ import (
 
 	"github.com/cristiano-pacheco/goflix/internal/billing/application/usecase"
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/errs"
-	"github.com/cristiano-pacheco/goflix/internal/billing/domain/repository"
 	"github.com/cristiano-pacheco/goflix/internal/billing/infra/http/dto"
+	"github.com/cristiano-pacheco/goflix/internal/billing/ports"
 	shared_errs "github.com/cristiano-pacheco/goflix/internal/shared/modules/errs"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
 	"github.com/cristiano-pacheco/goflix/internal/shared/sdk/http/request"
@@ -17,13 +17,13 @@ import (
 type SubscriptionHandler struct {
 	errorMapper               shared_errs.ErrorMapper
 	subscriptionCreateUseCase *usecase.SubscriptionCreateUseCase
-	subscriptionRepository    repository.SubscriptionRepositoryI
+	subscriptionRepository    ports.SubscriptionRepositoryI
 }
 
 func NewSubscriptionHandler(
 	errorMapper shared_errs.ErrorMapper,
 	subscriptionCreateUseCase *usecase.SubscriptionCreateUseCase,
-	subscriptionRepository repository.SubscriptionRepositoryI,
+	subscriptionRepository ports.SubscriptionRepositoryI,
 ) *SubscriptionHandler {
 	return &SubscriptionHandler{
 		errorMapper,

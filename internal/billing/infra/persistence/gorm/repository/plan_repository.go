@@ -5,9 +5,9 @@ import (
 
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/errs"
 	"github.com/cristiano-pacheco/goflix/internal/billing/domain/model"
-	"github.com/cristiano-pacheco/goflix/internal/billing/domain/repository"
 	"github.com/cristiano-pacheco/goflix/internal/billing/infra/persistence/gorm/entity"
 	"github.com/cristiano-pacheco/goflix/internal/billing/infra/persistence/gorm/mapper"
+	"github.com/cristiano-pacheco/goflix/internal/billing/ports"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/database"
 	"github.com/cristiano-pacheco/goflix/internal/shared/modules/otel"
 )
@@ -17,7 +17,7 @@ type PlanRepository struct {
 	mapper mapper.PlanMapper
 }
 
-var _ repository.PlanRepositoryI = (*PlanRepository)(nil)
+var _ ports.PlanRepositoryI = (*PlanRepository)(nil)
 
 func NewPlanRepository(db *database.GoflixDB, mapper mapper.PlanMapper) *PlanRepository {
 	return &PlanRepository{db, mapper}
